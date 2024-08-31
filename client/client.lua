@@ -26,9 +26,10 @@ local function init()
                     }})
                     if success then
                         TriggerServerEvent('gm-restaurant:craft',formattedIngredients,item)
+                        menu()
                     else
                         print("Progress cancelled for: " .. item)
-                    end
+                    end                    
                 end,
                 groups = Config.Job,
                 items = formattedIngredients,
@@ -76,10 +77,56 @@ local function init()
             debug = Config.DebugMode,
             options = options                
         }) 
+    end   
+
+    local options = {}
+    for key, caisse in pairs(Config.Carte) do
+        local options = {}
+        table.insert(options,{
+            name = "carte",  -- Nom de l'option, unique pour chaque interaction
+            label = caisse.title,  -- Texte affiché à l'utilisateur
+            icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            onSelect = function()                    
+                menu()
+            end,
+        });
+
+
+        exports.ox_target:addSphereZone({ 
+            coords = caisse.coords,
+            radius = caisse.size,
+            debug = Config.DebugMode,
+            options = options   })    
     end
     
-    
 end
+
+function menu()
+  SetNuiFocus(true, true)
+  local Menu = {}
+  Menu =Config.Menu
+  for key, menu in pairs(Menu) do
+    menu.Label = exports.ox_inventory:Items()[key].label
+  end
+
+    SendNUIMessage({
+        action = 'openMenu',
+        toggle = true,
+        data = Config.Menu
+    })
+
+end
+
+RegisterNetEvent('gm-restaurant:client:menu')
+AddEventHandler('gm-restaurant:client:menu', function(prm)
+    SendNUIMessage({
+        action = 'openMeter',
+        toggle = true,
+        meterData = 5
+    })
+end)
+
+
 
 AddEventHandler('onResourceStart', function(r) 
     if GetCurrentResourceName() ~= r then return end	
@@ -88,4 +135,18 @@ end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     init()
+end)
+
+
+function closeMenu()
+    SetNuiFocus(false, false)
+end
+
+-- Gestion du NUI Callback
+RegisterNUICallback('nuiCallback', function(data, cb)
+    if data.action == 'closeMenu' then
+        closeMenu()  -- Appelle la fonction Lua avec le paramètre envoyé depuis JS
+    end
+
+    cb('ok')  -- Réponse à envoyer au JS
 end)

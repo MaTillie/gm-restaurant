@@ -1,3 +1,5 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 RegisterNetEvent('gm-restaurant:craft')
 AddEventHandler('gm-restaurant:craft', function(ingredients,item)	
     local src = source
