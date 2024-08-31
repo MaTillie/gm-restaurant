@@ -26,7 +26,6 @@ local function init()
                     }})
                     if success then
                         TriggerServerEvent('gm-restaurant:craft',formattedIngredients,item)
-                        menu()
                     else
                         print("Progress cancelled for: " .. item)
                     end                    
