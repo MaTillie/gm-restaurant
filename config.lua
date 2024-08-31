@@ -7,71 +7,103 @@ Config.Menu = {
     -- Liste des item 
     -- à la carte si menu = true, sinon ce sont des ingrédients
     ["fishnchips"] = {
-        name = "Fish and chips",
         price = 7.0,
         menu = true,
         ingredients = {
-            ["fish"] = {amount = 1},
-            ["cutted_potato"] = {amount = 1},
+            ["hogspub_fishmeatcooked"] = {amount = 1},
+            ["hogspub_cuttedpotato"] = {amount = 1},
         },
     },
     ["bierreobeurre"] = {
-        name = "Bièraubeurre",
         menu = true,
         price = 8.0,
         ingredients = {},
     },
     ["polynectar"] = {
-        name = "Polynectar",
         menu = true,
         price = 8.0,
         ingredients = {},
     },
     ["jusdecitrouille"] = {
-        name = "Jus de citrouille",
         menu = true,
         price = 8.0,
         ingredients = {},
     },
-    ["cutted_potato"] = {
-        name = "Pomme frite",
+    ["hogspub_cuttedpotato"] = {
         menu = false,
         price = 0,
         ingredients = {
-            ["potato"] = {amount = 1},
+            ["hogspub_potato"] = {amount = 1},
         },
     },
     ["bubblensqueak"] = {
-        name = "Bubble and squeak",
         price = 7.0,
         menu = true,
         ingredients = {
-            ["cabbage"] = {amount = 1},
-            ["lcegg"] = {amount = 1},
-            ["potato"] = {amount = 1},
+            ["hogspub_cabbage"] = {amount = 1},
+            ["hogspub_eggcooked"] = {amount = 1},
+            ["hogspub_potato"] = {amount = 1},
         },
     },
     ["chickenpie"] = {
-        name = "Chicken pie",
         price = 7.0,
         menu = true,
         ingredients = {
-            ["chicken"] = {amount = 1},
+            ["hogspub_chickenmeatcooked"] = {amount = 1},
+            ["hogspub_flour"] = {amount = 1},
         },
     },
+    ["chocolapin"] = {
+        price = 7.0,
+        menu = true,
+        ingredients = {
+            ["hogspub_cacaobean"] = {amount = 1},
+            ["hogspub_flour"] = {amount = 1},
+        },
+    },
+    ["hogspub_fishmeat"] = {
+        price = 7.0,
+        menu = false,
+        ingredients = {
+            ["hogspub_fish"] = {amount = 1},
+        },
+    },
+    ["hogspub_fishmeatcooked"] = {
+        price = 7.0,
+        menu = false,
+        ingredients = {
+            ["hogspub_fishmeat"] = {amount = 1},
+        },
+    },
+    ["hogspub_chickenmeatcooked"] = {
+        price = 7.0,
+        menu = false,
+        ingredients = {
+            ["hogspub_chickenmeat"] = {amount = 1},
+        },
+    },
+    ["hogspub_eggcooked"] = {
+        price = 7.0,
+        menu = false,
+        ingredients = {
+            ["hogspub_egg"] = {amount = 1},
+        },
+    },  
+    
+    
 }
 
 Config.Kitchen = {
     [1] ={
-        -- Cuisson
-        coords = vec3(-587.36, -279.48, 41.69),
+        -- Cuisson vec3(-586.97, -277.55, 41.69)
+        coords = vec3(-587.51, -276.82, 41.69),
         size = 0.5,
         title = "Préparer",
         duration = 5000,
         items = {
-            "fishnchips",
-            "bubblensqueak",
-            "chickenpie",
+            "hogspub_chickenmeatcooked",
+            "hogspub_fishmeatcooked",
+            "hogspub_eggcooked",
         }
         -- Animation plus tard
     },
@@ -108,23 +140,40 @@ Config.Kitchen = {
         title = "Couper",
         duration = 2000,
         items = {
-            "cutted_potato"
+            "hogspub_cuttedpotato",
+            "hogspub_fishmeat",
         }    
     },   
+    [5] ={
+        -- Cuisson vec3(-587.63, -278.46, 41.69)
+        coords = vec3(-587.03, -279.30, 41.69),
+        size = 0.5,
+        title = "Préparer",
+        duration = 5000,
+        items = {
+            "fishnchips",
+            "bubblensqueak",
+            "chickenpie",
+            "chocolapin",
+        }
+        -- Animation plus tard
+    },
 }
 
 Config.Fridge = {
     [1] ={
-        coords = vec3(-584.2, -280.29, 41.69),
+        coords = vec3(-583.74, -280.97, 41.69),
         size = 0.5,
         title = "Frigo",
         duration = 2000,
         items = {
-            "fish",
-            "potato",
-            "chicken",
-            "cabbage",
-            "lcegg",
+            "hogspub_fish",
+            "hogspub_chickenmeat",
+            "hogspub_flour",
+            "hogspub_cabbage",
+            "hogspub_cacaobean",
+            "hogspub_egg",
+            "hogspub_potato",
         }
         -- Animation plus tard
     },

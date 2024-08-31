@@ -15,7 +15,7 @@ local function init()
 
             table.insert(options,{
                 name = item,  -- Nom de l'option, unique pour chaque interaction
-                label = Config.Menu[item].name,  -- Texte affiché à l'utilisateur
+                label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
                     local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
@@ -49,15 +49,16 @@ local function init()
         for _, item in ipairs(kitchen.items) do
             table.insert(options,{
                 name = item,  -- Nom de l'option, unique pour chaque interaction
-                label = item,  -- Texte affiché à l'utilisateur
+                label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    local success = lib.progressBar({duration = 1000, label = "Fouille"}, disable = {
+                    --local success = lib.progressBar({duration = 1000, label = "Fouille"})
+                    local success = lib.progressBar({duration = 1000, label = "Fouille", disable = {
                         move = true,
                         car = true,
                         mouse = false,
                         combat = true,
-                    })
+                    }})
                     if success then
                         TriggerServerEvent('gm-restaurant:craft',{},item)                                              
                     else
