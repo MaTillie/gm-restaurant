@@ -26,9 +26,9 @@ ui_page "web/index.html"
 
 files {
     "web/index.html",
-    "web/assets/**.**",
+    "web/styles.css",
+    "web/image/**.**",
     "web/main.js",
-    "web/vue.min.js",
 }
 
 lua54 'yes'

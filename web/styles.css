@@ -1,0 +1,105 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Harry P',  Arial, sans-serif;
+  }
+
+body {
+    background-color: transparent;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #690101;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.close-button:hover {
+    background-color: #9e0f0f;
+}
+
+.menu-container {
+    position: relative; /* Pour permettre le positionnement absolu du bouton */
+    width: 800px;
+    height: 800px;
+    background-color: #221301;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    margin: auto;
+    display: none; 
+}
+
+/* Les autres styles restent inchangés */
+
+
+h1 {
+    font-size: 30px;
+    color: #dfa300;
+    margin-bottom: 5px;
+}
+
+p {
+    font-size: 20px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+.item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.item-info {
+    margin-top: 10px;
+}
+
+.item-info p {
+    margin: 10px 0;
+}
+
+.price-tag {
+    background-color: #003d1c;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}

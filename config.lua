@@ -7,7 +7,7 @@ Config.Menu = {
     -- Liste des item 
     -- à la carte si menu = true, sinon ce sont des ingrédients
     ["fishnchips"] = {
-        price = 7.0,
+        price = 10.0,
         menu = true,
         ingredients = {
             ["hogspub_fishmeatcooked"] = {amount = 1},
@@ -26,7 +26,7 @@ Config.Menu = {
     },
     ["jusdecitrouille"] = {
         menu = true,
-        price = 8.0,
+        price = 5.0,
         ingredients = {},
     },
     ["hogspub_cuttedpotato"] = {
@@ -37,7 +37,7 @@ Config.Menu = {
         },
     },
     ["bubblensqueak"] = {
-        price = 7.0,
+        price = 10.0,
         menu = true,
         ingredients = {
             ["hogspub_cabbage"] = {amount = 1},
@@ -46,7 +46,7 @@ Config.Menu = {
         },
     },
     ["chickenpie"] = {
-        price = 7.0,
+        price = 10.0,
         menu = true,
         ingredients = {
             ["hogspub_chickenmeatcooked"] = {amount = 1},
@@ -54,7 +54,7 @@ Config.Menu = {
         },
     },
     ["chocolapin"] = {
-        price = 7.0,
+        price = 6.0,
         menu = true,
         ingredients = {
             ["hogspub_cacaobean"] = {amount = 1},
@@ -177,4 +177,20 @@ Config.Fridge = {
         }
         -- Animation plus tard
     },
+}
+
+Config.Carte ={
+    [1] ={
+        coords = vec3(-590.26, -289.18, 35.80),
+        size = 0.7,
+        title = "Afficher la carte",
+    },
+    [2] ={
+        coords = vec3(-587.37, -282.88, 50.57),
+        size = 0.7,
+        title = "Afficher la carte",
+    },
+
+
+    
 }
