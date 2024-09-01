@@ -2,6 +2,8 @@ Config = {}
 Config.DebugMode = true
 
 Config.Job = "hogspub"
+-- Titre de la facture
+Config.invoiceWording = "Facture du Hogs Pub"
 
 Config.Menu = {
     -- Liste des item 
@@ -89,8 +91,18 @@ Config.Menu = {
             ["hogspub_egg"] = {amount = 1},
         },
     },  
-    
-    
+    ["peanuts"] = {
+        price = 7.0,
+        menu = true,
+        ingredients = {
+        },
+    },
+    ["chipscheese"] = {
+        price = 7.0,
+        menu = true,
+        ingredients = {
+        },
+    },    
 }
 
 Config.Kitchen = {
@@ -190,7 +202,4 @@ Config.Carte ={
         size = 0.7,
         title = "Afficher la carte",
     },
-
-
-    
 }

@@ -10,15 +10,22 @@
     <link href="https://fonts.cdnfonts.com/css/harry-p" rel="stylesheet">
 </head>
 <body>
-    <div class="menu-container">
-        <button class="close-button" onclick="closeMenu()">×</button>
-        <h1>Menu du Hogspub</h1>
-        <p>Liste de tous les articles disponibles</p>
-        <div class="grid-container">
 
-
+        <div class="menu-container">
+            <button class="close-button" onclick="closeMenu()">×</button>
+            <h1>Menu du Hogspub</h1>
+            <p>Liste de tous les articles disponibles</p>
+            <div class="grid-container">
+            </div>
+            <div class="footer">
+                <div class="total-price">
+                    Total: $<span id="totalPrice">0.00</span>
+                </div>
+                <button id="payButton" onclick="order()">Valider la commande</button>
+            </div>
         </div>
-    </div>
+        
+
     <script src="main.js"></script>
 </body>
 </html>

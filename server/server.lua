@@ -1,7 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-RegisterNetEvent('gm-restaurant:craft')
-AddEventHandler('gm-restaurant:craft', function(ingredients,item)	
+RegisterNetEvent('gm-restaurant:server:craft')
+AddEventHandler('gm-restaurant:server:craft', function(ingredients,item)	
     local src = source
     if(ingredients) then
         print("pas null")
@@ -28,3 +28,40 @@ AddEventHandler('gm-restaurant:craft', function(ingredients,item)
     end
 
 end)	
+
+
+
+RegisterNetEvent('gm-restaurant:server:order')
+AddEventHandler('gm-restaurant:server:order', function(bill)
+    local src = source 
+    print("server order")
+    TriggerClientEvent('gm-restaurant:client:updateCarte', src,bill)  
+end)
+
+RegisterNetEvent('gm-restaurant:server:createBill')
+AddEventHandler('gm-restaurant:server:createBill', function(data)
+    print("Create bills")
+    MySQL.Async.execute('INSERT INTO dusa_bills (reference, title, description, billFrom, billTo, amount, status, type, date) VALUES (@reference, @title, @description, @billFrom, @billTo, @amount, @status, @type, @date)',
+    {
+        ['@reference']   = data.referance,
+        ['@title']   = data.title,
+        ['@description']   = data.description,
+        ['@billFrom']   = json.encode(data.billFrom),
+        ['@billTo']   = json.encode(data.billTo),
+        ['@amount'] = data.amount,
+        ['@status']   = data.status,
+        ['@type']   = data.type,
+        ['@date']   = data.date,
+    }, function (rowsChanged)
+        bills = MySQL.prepare.await('SELECT * FROM dusa_bills', {})
+        -- PrintTable(bills)
+    end)
+end)
+
+RegisterNetEvent('gm-restaurant:server:payment')
+AddEventHandler('gm-restaurant:server:payment', function(bill)
+    local src = source 
+    print("server order")
+    TriggerClientEvent('gm-restaurant:client:updateCartePayed', src,bill)  
+end)
+
