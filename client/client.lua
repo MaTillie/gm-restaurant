@@ -217,6 +217,7 @@ function order(data)
 
     bill.coords = coords
 
+    
     TriggerServerEvent('gm-restaurant:server:order',bill)   
 end
 
@@ -304,6 +305,7 @@ function createBill(bill)
     
 
     TriggerServerEvent('gm-restaurant:server:createBill',bill)  
+    --TriggerServerEvent('dusa_billing:sv:createCustomInvoice',playerData.citizenid, bill.title,bill.description ,bill.amount,"compagny")  
     TriggerServerEvent('gm-restaurant:server:payment',bill)   
     
 end
