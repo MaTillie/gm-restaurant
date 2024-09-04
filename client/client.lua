@@ -1,6 +1,7 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local sharedConfig = require 'config'
 local idCaisses = {}
+local orderDisplayOpen = false
 
 local function coordsEqual(a, b)
     return a.x == b.x and a.y == b.y and a.z == b.z
@@ -174,6 +175,21 @@ end
 
 -- Retour du js, permet de récuépérer les informations nécessaire à la facture
 function order(data)
+
+    local player = source
+    local items = {}
+
+    for _, item in ipairs(data) do
+        table.insert(items, {
+            name = item.name,
+            amount = item.amount
+        })
+    end
+
+    local metadata = {
+        orderItems = items
+    }
+
     local bill ={}
 
     local playerData = QBCore.Functions.GetPlayerData()
@@ -190,6 +206,8 @@ function order(data)
         description = description..item.label.." x"..item.quantity..", "
         amount = amount + item.quantity * item.price
     end    
+
+    
 
     bill.referance = createReference()
     bill.title = Config.invoiceWording
@@ -218,7 +236,7 @@ function order(data)
     bill.coords = coords
 
     
-    TriggerServerEvent('gm-restaurant:server:order',bill)   
+    TriggerServerEvent('gm-restaurant:server:order',bill,metadata)   
 end
 
 -- Met à jour la caisse la plus proche pour ajouter l'option payer 
@@ -304,8 +322,9 @@ function createBill(bill)
     bill.billTo = billTo
     
 
-    TriggerServerEvent('gm-restaurant:server:createBill',bill)  
-    --TriggerServerEvent('dusa_billing:sv:createCustomInvoice',playerData.citizenid, bill.title,bill.description ,bill.amount,"compagny")  
+    --TriggerServerEvent('gm-restaurant:server:createBill',bill)  
+    TriggerServerEvent('dusa_billing:sv:createBill',bill)  
+   -- TriggerServerEvent('dusa_billing:sv:createCustomInvoice',playerData.citizenid, bill.title,bill.description ,bill.amount,"compagny")  
     TriggerServerEvent('gm-restaurant:server:payment',bill)   
     
 end
@@ -395,4 +414,39 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill)
     end
 
 
+end)
+
+
+-- Fonction pour afficher la commande
+RegisterNetEvent('gm-restaurant:client:displayOrder', function(orderItems)
+    orderDisplayOpen = true
+    local displayText = "Détails de la commande :\n\n"
+
+    for _, item in ipairs(orderItems) do
+        displayText = displayText .. string.format("%s - Quantité: %d\n", item.name, item.amount)
+    end
+
+    -- Afficher un message avec ox_lib
+    lib.showTextUI(displayText, {
+        position = "center",
+        icon = '🍽️',
+        style = {
+            borderRadius = 10,
+            backgroundColor = '#1d1d1d',
+            color = 'white'
+        }
+    })
+end)
+
+-- Gestion de la fermeture de l'affichage avec la touche échapp
+CreateThread(function()
+    while true do
+        if orderDisplayOpen then
+            if IsControlJustPressed(0, 200) then -- Touche Esc (200 correspond à la touche échap)
+                lib.hideTextUI() -- Cache l'UI de commande
+                orderDisplayOpen = false
+            end
+        end
+        Wait(0)
+    end
 end)

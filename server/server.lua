@@ -29,13 +29,32 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item)
 
 end)	
 
+QBCore.Functions.CreateUseableItem('hogspub_ticket', function(source)
+    TriggerEvent('gm-restaurant:server:useTicket', source)
+end)
 
 
 RegisterNetEvent('gm-restaurant:server:order')
-AddEventHandler('gm-restaurant:server:order', function(bill)
+AddEventHandler('gm-restaurant:server:order', function(bill,data)
+    print("order")
     local src = source 
-    print("server order")
+    exports.ox_inventory:AddItem(src, 'hogspub_ticket', 1, metadata)
     TriggerClientEvent('gm-restaurant:client:updateCarte', src,bill)  
+end)
+
+RegisterNetEvent('gm-restaurant:server:useTicket', function()
+    local player = source
+    local ticket = exports.ox_inventory:GetItem(player, 'hogspub_ticket')
+
+    if ticket then
+        local metadata = ticket.metadata
+        if metadata and metadata.orderItems then
+            local items = metadata.orderItems
+            TriggerClientEvent('gm-restaurant:client:displayOrder', player, items)
+        end
+    else
+        TriggerClientEvent('ox_lib:notify', player, {type = 'error', description = 'Aucun ticket trouvé dans votre inventaire.'})
+    end
 end)
 
 RegisterNetEvent('gm-restaurant:server:createBill')
