@@ -107,7 +107,7 @@ function initCarte()
             label = "Caisse",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()                    
-                launchCaisse()
+                launchCaisse(key)
             end,
             groups = Config.Job,
         });
@@ -119,7 +119,7 @@ function initCarte()
             debug = Config.DebugMode,
             options = options   })    
 
-        table.insert(idCaisses,{id=idCaisse,coords = caisse.coords})  
+        table.insert(idCaisses,{id=idCaisse,coords = caisse.coords, index= key})  
     end
 end
 
@@ -141,10 +141,11 @@ function lauchMenu()
 
 end
 
-function launchCaisse()
+function launchCaisse(idCaisse)
     SetNuiFocus(true, true)
     local Menu = {}
-    Menu =Config.Menu
+    Menu = Config.Menu
+    Menu.idCaisse = idCaisse
     for key, menu in pairs(Menu) do
       menu.Label = exports.ox_inventory:Items()[key].label
     end
@@ -186,7 +187,7 @@ function order(data)
 
     local description = ""
     local amount = 0.0
-    for _, item in ipairs(data) do
+    for _, item in ipairs(data.items) do
         description = description..item.label.." x"..item.quantity..", "
         amount = amount + item.quantity * item.price
     end    
@@ -202,21 +203,7 @@ function order(data)
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
     local msg = "date : "..year.."-"..month.."-"..day
     exports.qbx_core:Notify(msg, "inform",10000,"",'center-right')
-    -- identification de la caisse la plus proche 
-    local dist = 10000
-    local coords 
-    local ped = PlayerPedId()
-    local pos = GetEntityCoords(ped)
-    for key, caisse in pairs(Config.Carte) do
-        local ldist = #(caisse.coords - pos)
-        if(ldist<dist)then
-            dist = dist
-            coords = caisse.coords
-        end
-    end
-
-    bill.coords = coords
-
+    bill.idCaisse = data.idCaisse
     
     TriggerServerEvent('gm-restaurant:server:order',bill)   
 end
@@ -227,26 +214,20 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
     print("updateCarte")
     local idCaisse = nil
     print("billx "..bill.coords.x)
-    for _, item in ipairs(idCaisses) do
-        if(coordsEqual(item.coords , bill.coords))then
-            idCaisse = item.id 
-        end
-    end   
-
     local index 
-
-    for i, v in ipairs(idCaisses) do
-        if(v.coords == bill.coords)then
+    for i, item in ipairs(idCaisses) do
+        if(bill.idCaisse == item.index)then
+            idCaisse = item.id 
             index = i
         end
-    end
+    end   
 
     table.remove(idCaisses, index)
     exports.ox_target:removeZone(idCaisse)
 
 
     for key, caisse in pairs(Config.Carte) do
-        if(coordsEqual(caisse.coords,bill.coords))then
+        if(key = bill.idCaisse)then
             print("updateCarte égale")
             local options = {}
             table.insert(options,{
@@ -272,7 +253,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
                 label = "Caisse",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    launchCaisse()
+                    launchCaisse(key)
                 end,
                 groups = Config.Job,
             });
@@ -284,7 +265,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
                 debug = Config.DebugMode,
                 options = options   })    
 
-            table.insert(idCaisses,{id=lidCaisse,coords = caisse.coords})  
+            table.insert(idCaisses,{id=lidCaisse,coords = caisse.coords, index = key})  
         end
     end
 
@@ -378,7 +359,7 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill)
                 label = "Caisse",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    launchCaisse()
+                    launchCaisse(key)
                 end,
                 groups = Config.Job,
             });

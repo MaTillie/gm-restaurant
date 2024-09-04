@@ -1,6 +1,6 @@
 // Liste pour stocker les articles
 let itemsList = [];
-
+let menu = {}
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
     // Rechercher si l'article existe déjà dans la liste
@@ -43,6 +43,7 @@ function updateTotalPrice() {
 
 
 function generateMenuItems(menuConfig) {
+    menu = menuConfig;
     document.querySelector('.grid-container').innerHTML = '';
     const container = document.querySelector('.grid-container'); // Conteneur où les items seront ajoutés    
     for (const key in menuConfig) {
@@ -93,6 +94,7 @@ function generateMenuItems(menuConfig) {
 
 
 function generateOrderItems(menuConfig) {
+    menu = menuConfig;
     document.querySelector('.grid-container').innerHTML = '';
     const container = document.querySelector('.grid-container'); // Conteneur où les items seront ajoutés    
     for (const key in menuConfig) {
@@ -220,7 +222,7 @@ function closeMenu() {
 
 function order() {
     document.querySelector('.menu-container').style.display = 'none';
-    callLuaFunction({ action: 'order', param: itemsList });
+    callLuaFunction({ action: 'order', param: {items : itemsList, idCaisse : menu.idCaisse} });
     itemsList = [];
     updateTotalPrice()
     closeMenu()
