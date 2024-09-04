@@ -9,7 +9,7 @@ Config.Menu = {
     -- Liste des item 
     -- à la carte si menu = true, sinon ce sont des ingrédients
     ["fishnchips"] = {
-        price = 10.0,
+        price = 20.0,
         menu = true,
         ingredients = {
             ["hogspub_fishmeatcooked"] = {amount = 1},
@@ -18,17 +18,17 @@ Config.Menu = {
     },
     ["bierreobeurre"] = {
         menu = true,
-        price = 8.0,
+        price = 15.0,
         ingredients = {},
     },
     ["polynectar"] = {
         menu = true,
-        price = 8.0,
+        price = 10.0,
         ingredients = {},
     },
     ["jusdecitrouille"] = {
         menu = true,
-        price = 5.0,
+        price = 10.0,
         ingredients = {},
     },
     ["hogspub_cuttedpotato"] = {
@@ -39,7 +39,7 @@ Config.Menu = {
         },
     },
     ["bubblensqueak"] = {
-        price = 10.0,
+        price = 20.0,
         menu = true,
         ingredients = {
             ["hogspub_cabbage"] = {amount = 1},
@@ -48,7 +48,7 @@ Config.Menu = {
         },
     },
     ["chickenpie"] = {
-        price = 10.0,
+        price = 20.0,
         menu = true,
         ingredients = {
             ["hogspub_chickenmeatcooked"] = {amount = 1},

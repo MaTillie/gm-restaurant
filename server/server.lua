@@ -38,7 +38,7 @@ RegisterNetEvent('gm-restaurant:server:order')
 AddEventHandler('gm-restaurant:server:order', function(bill,data)
     print("order")
     local src = source 
-    exports.ox_inventory:AddItem(src, 'hogspub_ticket', 1, metadata)
+    --exports.ox_inventory:AddItem(src, 'hogspub_ticket', 1, metadata)
     TriggerClientEvent('gm-restaurant:client:updateCarte', src,bill)  
 end)
 

@@ -107,8 +107,9 @@ function initCarte()
             name = "order",  -- Nom de l'option, unique pour chaque interaction
             label = "Caisse",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-            onSelect = function()                    
-                launchCaisse()
+            onSelect = function()     
+                print("key launchCaisse "..key)               
+                launchCaisse(key)
             end,
             groups = Config.Job,
         });
@@ -120,7 +121,7 @@ function initCarte()
             debug = Config.DebugMode,
             options = options   })    
 
-        table.insert(idCaisses,{id=idCaisse,coords = caisse.coords})  
+        table.insert(idCaisses,{id=idCaisse,index = key})  
     end
 end
 
@@ -142,18 +143,21 @@ function lauchMenu()
 
 end
 
-function launchCaisse()
+function launchCaisse(indexCaisse)
+    print("indexCaisse "..indexCaisse)
     SetNuiFocus(true, true)
     local Menu = {}
-    Menu =Config.Menu
-    for key, menu in pairs(Menu) do
+    Menu.items =Config.Menu
+    Menu.indexCaisse = indexCaisse
+
+    for key, menu in pairs(Menu.items) do
       menu.Label = exports.ox_inventory:Items()[key].label
     end
   
       SendNUIMessage({
           action = 'openOrder',
           toggle = true,
-          data = Config.Menu
+          data = Menu
       })
   
   end
@@ -175,11 +179,11 @@ end
 
 -- Retour du js, permet de récuépérer les informations nécessaire à la facture
 function order(data)
-
+    print("order indexCaisse "..data.indexCaisse)
     local player = source
     local items = {}
 
-    for _, item in ipairs(data) do
+    for _, item in ipairs(data.items) do
         table.insert(items, {
             name = item.name,
             amount = item.amount
@@ -202,13 +206,13 @@ function order(data)
 
     local description = ""
     local amount = 0.0
-    for _, item in ipairs(data) do
+    for _, item in ipairs(data.items) do
         description = description..item.label.." x"..item.quantity..", "
         amount = amount + item.quantity * item.price
     end    
 
     
-
+    bill.indexCaisse = data.indexCaisse
     bill.referance = createReference()
     bill.title = Config.invoiceWording
     bill.description = description
@@ -216,10 +220,10 @@ function order(data)
     bill.amount = amount 
     bill.status = "unpaid"
     bill.type = "compagny"
-    bill.date = GetClockYear().."-"..GetClockMonth().."-"..GetClockDayOfMonth()
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
-    local msg = "date : "..year.."-"..month.."-"..day
-    exports.qbx_core:Notify(msg, "inform",10000,"",'center-right')
+   -- local msg = "date : "..year.."-"..month.."-"..day
+    bill.date = year.."-"..month.."-"..day
+   -- exports.qbx_core:Notify(msg, "inform",10000,"",'center-right')
     -- identification de la caisse la plus proche 
     local dist = 10000
     local coords 
@@ -244,18 +248,13 @@ RegisterNetEvent('gm-restaurant:client:updateCarte')
 AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
     print("updateCarte")
     local idCaisse = nil
-    print("billx "..bill.coords.x)
-    for _, item in ipairs(idCaisses) do
-        if(coordsEqual(item.coords , bill.coords))then
-            idCaisse = item.id 
-        end
-    end   
-
     local index 
 
     for i, v in ipairs(idCaisses) do
-        if(v.coords == bill.coords)then
+        print("I "..v.index.."/"..bill.indexCaisse)
+        if(v.index == bill.indexCaisse)then
             index = i
+            idCaisse = v.id 
         end
     end
 
@@ -264,7 +263,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
 
 
     for key, caisse in pairs(Config.Carte) do
-        if(coordsEqual(caisse.coords,bill.coords))then
+        if(key == bill.indexCaisse)then
             print("updateCarte égale")
             local options = {}
             table.insert(options,{
@@ -290,7 +289,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
                 label = "Caisse",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    launchCaisse()
+                    launchCaisse(key)
                 end,
                 groups = Config.Job,
             });
@@ -302,7 +301,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
                 debug = Config.DebugMode,
                 options = options   })    
 
-            table.insert(idCaisses,{id=lidCaisse,coords = caisse.coords})  
+            table.insert(idCaisses,{id=lidCaisse,index = key})  
         end
     end
 
@@ -310,7 +309,6 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
 end)
 
 function createBill(bill)
-    print("bill")
     local msg = "La  facture vient de vous être émise. Utilisez votre application de paiement favorite."
     exports.qbx_core:Notify(msg, "inform",10000,"",'center-right')
     local playerData = QBCore.Functions.GetPlayerData()
@@ -362,25 +360,22 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill)
     print("updateCarte")
     local idCaisse = nil
     print("billx "..bill.coords.x)
-    for _, item in ipairs(idCaisses) do
-        if(coordsEqual(item.coords , bill.coords))then
-            idCaisse = item.id 
-        end
-    end   
 
     local index 
 
-    for i, v in ipairs(idCaisses) do
-        if(v.coords == bill.coords)then
+    for i, item in ipairs(idCaisses) do
+        if(item.index == bill.indexCaisse)then
+            idCaisse = item.id 
             index = i
         end
-    end
+    end   
 
+    
     table.remove(idCaisses, index)
     exports.ox_target:removeZone(idCaisse)
 
     for key, caisse in pairs(Config.Carte) do
-        if(coordsEqual(caisse.coords,bill.coords))then
+        if(key == bill.indexCaisse)then
             print("updateCarte égale")
             local options = {}
             table.insert(options,{
@@ -397,7 +392,7 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill)
                 label = "Caisse",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    launchCaisse()
+                    launchCaisse(key)
                 end,
                 groups = Config.Job,
             });
@@ -409,7 +404,7 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill)
                 debug = Config.DebugMode,
                 options = options   })    
 
-            table.insert(idCaisses,{id=lidCaisse,coords = caisse.coords})  
+            table.insert(idCaisses,{id=lidCaisse,index = key})  
         end
     end
 
