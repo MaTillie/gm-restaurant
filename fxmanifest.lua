@@ -14,12 +14,12 @@ shared_script {"config.lua",
 }
 
 client_scripts {
-    "client/client.lua",
+    "client/*.lua",
 }
 
 server_scripts {
     "@mysql-async/lib/MySQL.lua",
-    "server/server.lua",
+    "server/*.lua",
 }
 
 ui_page "web/index.html"

@@ -1,5 +1,6 @@
 // Liste pour stocker les articles
 let itemsList = [];
+let currentDiscount = 0.00;
 let IndexCaisse = 0;
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
@@ -37,10 +38,30 @@ function updateTotalPrice() {
         total += item.price * item.quantity;
     });
 
+    let discountedPrice = total - currentDiscount;
     // Mettre à jour l'élément HTML avec le total
-    document.getElementById('totalPrice').textContent = `${total.toFixed(2)}`;
+    document.getElementById("initialPrice").textContent = total.toFixed(2);
+    document.getElementById("discount").textContent = currentDiscount.toFixed(2);
+    document.getElementById("totalPrice").textContent = discountedPrice.toFixed(2);    
 }
 
+document.getElementById("addButton").addEventListener("click", function(event) {
+    if (event.ctrlKey) {
+        currentDiscount += 5;  // Ajoute 5 si "Ctrl" est enfoncé
+    } else {
+        currentDiscount += 1;  // Sinon, ajoute 1
+    }
+    updateTotalPrice();
+});
+
+document.getElementById("subtractButton").addEventListener("click", function(event) {
+    if (event.ctrlKey) {
+        currentDiscount -= 5;  // Ajoute 5 si "Ctrl" est enfoncé
+    } else {
+        currentDiscount -= 1;  // Sinon, ajoute 1
+    }
+        updateTotalPrice();
+});
 
 function generateMenuItems(menuConfig) {
     document.querySelector('.grid-container').innerHTML = '';
@@ -174,7 +195,12 @@ function generateOrderItems(menuConfig) {
                 console.log(`Plus button clicked for item: ${name}, Price: ${price}, Label: ${label}`);
                 
                 let quantity = parseInt(quantitySpan.textContent);
-                quantitySpan.textContent = ++quantity;
+                if (event.ctrlKey) {
+                    quantity += 5;
+                }else{
+                    quantity += 1;
+                }
+                quantitySpan.textContent = quantity;
 
                 updateItem(name, label, price, quantity)
             });
@@ -186,9 +212,17 @@ function generateOrderItems(menuConfig) {
                 console.log(`Minus button clicked for item: ${name}, Price: ${price}, Label: ${label}`);
                 
                 let quantity = parseInt(quantitySpan.textContent);
-                if (quantity > 0) {
-                    quantitySpan.textContent = --quantity;
+                if (event.ctrlKey) {
+                    quantity -= 5;
+                }else{
+                    quantity -= 1;
                 }
+
+                if (quantity < 0) {
+                    quantity = 0;
+                }
+
+                quantitySpan.textContent = quantity;
 
                 updateItem(name, label, price, quantity)
             });
@@ -215,14 +249,17 @@ function callLuaFunction(data) {
 
 function closeMenu() {
     document.querySelector('.menu-container').style.display = 'none';
+    document.getElementById('ticket').style.display = 'none';
     callLuaFunction({ action: 'closeMenu', param: 'someValue' });
     itemsList = [];
+    currentDiscount = 0.00;
 }
 
 function order() {
     document.querySelector('.menu-container').style.display = 'none';
-    callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse} });
+    callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount} });
     itemsList = [];
+    currentDiscount = 0.00;
     updateTotalPrice()
     closeMenu()
 }
@@ -238,7 +275,7 @@ $(document).ready(function () {
             closeMenu();
           }
           break;
-        case "openOrder":
+        case "openOrder":            
               if (eventData.toggle) {
                 generateOrderItems(eventData.data.items);
                 IndexCaisse = eventData.data.indexCaisse;
@@ -246,12 +283,24 @@ $(document).ready(function () {
                 closeMenu();
               }
               break;
-        case "updateMeter":
-          updateMeter(eventData.data);
-          break;
-        case "resetMeter":
-          resetMeter();
-          break;
+              case "openTicket":
+                console.log("openTicket :" )
+                // Vider la liste des commandes
+                const orderList = document.getElementById('orderList');
+                orderList.innerHTML = '';
+        
+                // Ajouter les items à la liste
+                eventData.items.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${item.name}  ${item.amount}`;  
+                    listItem.setAttribute('id', item.cl);    
+                         
+                    orderList.appendChild(listItem);
+                });
+        
+                // Afficher le ticket
+                document.getElementById('ticket').style.display = 'block';
+
         default:
           break;
       }

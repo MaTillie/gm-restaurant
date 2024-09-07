@@ -1,9 +1,13 @@
 Config = {}
 Config.DebugMode = true
 
+
 Config.Job = "hogspub"
+Config.Ticket = true
+Config.TrayLabel = "Hos's Pub"
+
 -- Titre de la facture
-Config.invoiceWording = "Facture du Hogs Pub"
+Config.invoiceWording = "Facture du Hog's Pub"
 
 Config.Menu = {
     -- Liste des item 
@@ -172,6 +176,8 @@ Config.Kitchen = {
     },
 }
 
+--# Fridge #--
+
 Config.Fridge = {
     [1] ={
         coords = vec3(-583.74, -280.97, 41.69),
@@ -191,6 +197,7 @@ Config.Fridge = {
     },
 }
 
+--## Caisse ##--
 Config.Carte ={
     [1] ={
         coords = vec3(-590.26, -289.18, 35.80),
@@ -202,4 +209,15 @@ Config.Carte ={
         size = 0.7,
         title = "Afficher la carte",
     },
+}
+
+--## Delivery ##--
+
+Config.NPCCoords = vec3(-594.76, -285.07, 35.45)
+Config.NPCHeading = 227.13
+
+Config.Delivery = {
+    [1] = { coords = vec3(-639.91, 296.93, 82.46)}, 
+    [2] = { coords = vec3(-1221.67, -329.82, 37.55)}, 
+    [3] = { coords = vec3(-668.19, -971.63, 22.34)},
 }

@@ -18,11 +18,27 @@
             <div class="grid-container">
             </div>
             <div class="footer">
-                <div class="total-price">
-                    Total: $<span id="totalPrice">0.00</span>
+                <div class="price-details">
+                    <p>Prix initial: $<span id="initialPrice">0.00</span></p>
                 </div>
+                <div class="buttons">
+                    <p> Reduction: $
+                    <button id="subtractButton">-</button>
+                    <span id="discount">0.00</span>
+                    <button id="addButton">+</button></p>
+                </div>      
+                <div class="price-details">
+                    <p>Total: $<span id="totalPrice">0.00</span></p>
+                </div>       
                 <button id="payButton" onclick="order()">Valider la commande</button>
             </div>
+        </div>
+        <div id="ticket" class="notepad">
+            <h1>Ticket de Commande</h1>
+            <ul id="orderList">
+                <!-- Les items seront insérés ici via JS -->
+            </ul>
+            <button class="close-button" onclick="closeMenu()">×</button>
         </div>
         
 

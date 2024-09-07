@@ -31,6 +31,8 @@ local function init()
                         combat = true,
                     }})
                     if success then
+                        
+                --TriggerServerEvent('gm-restaurant:server:craftCompo',formattedIngredients,item)
                         TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item)
                     else
                         print("Progress cancelled for: " .. item)
@@ -114,6 +116,15 @@ function initCarte()
             groups = Config.Job,
         });
 
+        table.insert(options,{
+            name = "plateau",  -- Nom de l'option, unique pour chaque interaction
+            label = "Plateau",  -- Texte affiché à l'utilisateur
+            icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            onSelect = function()                    
+                exports.ox_inventory:openInventory('stash', Config.Job.."plateau"..key)
+            end,
+        });
+
 
         local idCaisse = exports.ox_target:addSphereZone({ 
             coords = caisse.coords,
@@ -186,12 +197,12 @@ function order(data)
     for _, item in ipairs(data.items) do
         table.insert(items, {
             name = item.name,
-            amount = item.amount
+            amount = item.quantity
         })
     end
 
     local metadata = {
-        orderItems = items
+        items = items
     }
 
     local bill ={}
@@ -204,7 +215,15 @@ function order(data)
         job = playerData.job.name,
     }
 
-    local description = ""
+    local descReduc = ""
+    if (data.reduc < 0) then
+        descReduc = "Surcoût de $"..data.reduc
+    else if (data.reduc > 0) then
+        descReduc = "Réduction de $"..data.reduc
+    end
+    end
+
+    local description = descReduc..","
     local amount = 0.0
     for _, item in ipairs(data.items) do
         description = description..item.label.." x"..item.quantity..", "
@@ -217,7 +236,7 @@ function order(data)
     bill.title = Config.invoiceWording
     bill.description = description
     bill.billFrom = billFrom
-    bill.amount = amount 
+    bill.amount = amount + (data.reduc * -1)
     bill.status = "unpaid"
     bill.type = "compagny"
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
@@ -240,7 +259,7 @@ function order(data)
     bill.coords = coords
 
     
-    TriggerServerEvent('gm-restaurant:server:order',bill,metadata)   
+    TriggerServerEvent('gm-restaurant:server:order',bill,items)   
 end
 
 -- Met à jour la caisse la plus proche pour ajouter l'option payer 
@@ -293,6 +312,17 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill)
                 end,
                 groups = Config.Job,
             });
+
+            table.insert(options,{
+                name = "plateau",  -- Nom de l'option, unique pour chaque interaction
+                label = "Plateau",  -- Texte affiché à l'utilisateur
+                icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                onSelect = function()                    
+                    exports.ox_inventory:openInventory('stash', Config.Job.."plateau"..key)
+                end,
+            });
+
+            
 
 
             local lidCaisse = exports.ox_target:addSphereZone({ 
@@ -397,6 +427,15 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill)
                 groups = Config.Job,
             });
 
+            table.insert(options,{
+                name = "plateau",  -- Nom de l'option, unique pour chaque interaction
+                label = "Plateau",  -- Texte affiché à l'utilisateur
+                icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                onSelect = function()                    
+                    exports.ox_inventory:openInventory('stash', Config.Job.."plateau"..key)
+                end,
+            });
+
 
             local lidCaisse = exports.ox_target:addSphereZone({ 
                 coords = caisse.coords,
@@ -413,24 +452,25 @@ end)
 
 
 -- Fonction pour afficher la commande
-RegisterNetEvent('gm-restaurant:client:displayOrder', function(orderItems)
+RegisterNetEvent('gm-restaurant:client:displayOrder')
+AddEventHandler('gm-restaurant:client:displayOrder', function(orderItems)
     orderDisplayOpen = true
-    local displayText = "Détails de la commande :\n\n"
-
-    for _, item in ipairs(orderItems) do
-        displayText = displayText .. string.format("%s - Quantité: %d\n", item.name, item.amount)
+    print("displayOrder")    
+    if(orderItems)then
+        print("order data"..json.encode(orderItems))
+    else
+        print("order data null")
     end
 
-    -- Afficher un message avec ox_lib
-    lib.showTextUI(displayText, {
-        position = "center",
-        icon = '🍽️',
-        style = {
-            borderRadius = 10,
-            backgroundColor = '#1d1d1d',
-            color = 'white'
-        }
+    orderDisplayOpen = true
+    -- On envoie les items à la NUI (HTML)
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = "openTicket",
+        items = orderItems
     })
+
+
 end)
 
 -- Gestion de la fermeture de l'affichage avec la touche échapp
@@ -445,3 +485,5 @@ CreateThread(function()
         Wait(0)
     end
 end)
+
+-- ouvrir le plateau exports.ox_inventory:openInventory('stash', Config.job.."plateau")

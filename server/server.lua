@@ -1,5 +1,16 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
+local fridgeName = ""
+AddEventHandler('onServerResourceStart', function(resourceName)
+    if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
+        for index, stash in ipairs(Config.Carte) do
+            exports.ox_inventory:RegisterStash(Config.Job.."plateau"..index, Config.TrayLabel, 20,2000)
+        end
+    end
+    fridgeName = Config.Job.."fridge"
+    exports.ox_inventory:RegisterStash(fridgeName, Config.TrayLabel, 100,2000000)
+end)
+
 RegisterNetEvent('gm-restaurant:server:craft')
 AddEventHandler('gm-restaurant:server:craft', function(ingredients,item)	
     local src = source
@@ -13,6 +24,10 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item)
         print("Ingrédient: " .. ingredient .. ", Quantité: " .. amount)
         local igd = exports.ox_inventory:GetItem(src, ingredient, nil, true)
 
+        --[[if (exports.ox_inventory:GetItemCount(fridgeName, itemName)>= amount) then
+
+        end]]--
+        
         if igd and igd >= amount then
             requis = requis
         else
@@ -29,58 +44,110 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item)
 
 end)	
 
-QBCore.Functions.CreateUseableItem('hogspub_ticket', function(source)
-    TriggerEvent('gm-restaurant:server:useTicket', source)
+RegisterNetEvent('gm-restaurant:server:craftCompo')
+AddEventHandler('gm-restaurant:server:craftCompo', function(ingredients,item)	
+
 end)
 
+
+QBCore.Functions.CreateUseableItem('hogspub_ticket', function(source, item)
+    TriggerEvent('gm-restaurant:server:useTicket', source, item.info or item.metadata,item.slot)
+end)
+
+QBCore.Functions.CreateUseableItem('hogspub_repas', function(source, item)
+    TriggerEvent('gm-restaurant:server:useBoite', source, item.info or item.metadata,item.slot)
+end)
+
+function CreateRegisterItem(k)
+    exports.qbx_core:CreateUseableItem(k, function(source, item)
+        TriggerEvent('um-idcard:server:sendData', source, item.info or item.metadata)
+    end)
+end
 
 RegisterNetEvent('gm-restaurant:server:order')
 AddEventHandler('gm-restaurant:server:order', function(bill,data)
+    local src = source
     print("order")
-    local src = source 
-    --exports.ox_inventory:AddItem(src, 'hogspub_ticket', 1, metadata)
-    TriggerClientEvent('gm-restaurant:client:updateCarte', src,bill)  
-end)
 
-RegisterNetEvent('gm-restaurant:server:useTicket', function()
-    local player = source
-    local ticket = exports.ox_inventory:GetItem(player, 'hogspub_ticket')
-
-    if ticket then
-        local metadata = ticket.metadata
-        if metadata and metadata.orderItems then
-            local items = metadata.orderItems
-            TriggerClientEvent('gm-restaurant:client:displayOrder', player, items)
-        end
+    if(data)then
+        print("order data"..json.encode(data))
     else
-        TriggerClientEvent('ox_lib:notify', player, {type = 'error', description = 'Aucun ticket trouvé dans votre inventaire.'})
+        print("order data null")
     end
+
+
+    exports.ox_inventory:AddItem(src, 'hogspub_ticket', 1, data)
+    
+
+    local players = QBCore.Functions.GetQBPlayers()
+    for _, v in pairs(players) do
+        TriggerClientEvent('gm-restaurant:client:updateCarte', v.PlayerData.source,bill)  
+    end    
 end)
 
-RegisterNetEvent('gm-restaurant:server:createBill')
-AddEventHandler('gm-restaurant:server:createBill', function(data)
-    print("Create bills")
-    MySQL.Async.execute('INSERT INTO dusa_bills (reference, title, description, billFrom, billTo, amount, status, type, date) VALUES (@reference, @title, @description, @billFrom, @billTo, @amount, @status, @type, @date)',
-    {
-        ['@reference']   = data.referance,
-        ['@title']   = data.title,
-        ['@description']   = data.description,
-        ['@billFrom']   = json.encode(data.billFrom),
-        ['@billTo']   = json.encode(data.billTo),
-        ['@amount'] = data.amount,
-        ['@status']   = data.status,
-        ['@type']   = data.type,
-        ['@date']   = data.date,
-    }, function (rowsChanged)
-        bills = MySQL.prepare.await('SELECT * FROM dusa_bills', {})
-        -- PrintTable(bills)
-    end)
+
+RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot)
+    print("useTicket" .. slot)
+    local src = source
+
+    local items = {}
+
+    local hasAllItems = true
+    for _, item in ipairs(metadata) do
+        local itemCount = exports.ox_inventory:Search(src, 'count', item.name)
+        if itemCount < item.amount then
+            hasAllItems = false
+            table.insert(items, {
+                name = item.name,
+                amount = itemCount.."/"..item.amount,
+                cl = notCompleted,
+            })
+        else
+            table.insert(items, {
+                name = item.name,
+                amount = item.amount.."/"..item.amount,
+                cl = completed,
+            })
+        end
+    end
+    
+    if hasAllItems then
+        -- Retirer les items de la commande de l'inventaire du joueur
+        for _, item in ipairs(metadata) do
+            exports.ox_inventory:RemoveItem(src, item.name, item.amount)
+        end
+        exports.ox_inventory:RemoveItem(src, "hogspub_ticket", 1, metadata,slot)
+        -- Ajouter l'item "repas_empaquete" avec les mêmes métadonnées
+        exports.ox_inventory:AddItem(src, 'hogspub_repas', 1, metadata)
+        TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = 'Vous avez empaqueté le repas !'})
+    else
+        TriggerClientEvent('gm-restaurant:client:displayOrder', src, items)
+    end   
+end)
+
+RegisterNetEvent('gm-restaurant:server:useBoite', function(source,metadata,slot)
+    local src = source
+    for _, item in ipairs(metadata) do
+        exports.ox_inventory:AddItem(src, item.name, item.amount)
+    end 
+    exports.ox_inventory:RemoveItem(src, "hogspub_repas", 1,metadata, slot)
+end)
+
+exports('hogspub_ticket', function(event, item, inventory, slot, data)
+    print("useTicket")
+    if event == 'usingItem' then
+        local itemSlot = exports.ox_inventory:GetSlot(inventory.id, slot)
+        print(json.encode(itemSlot.metadata, {indent=true}))
+    end
 end)
 
 RegisterNetEvent('gm-restaurant:server:payment')
 AddEventHandler('gm-restaurant:server:payment', function(bill)
     local src = source 
     print("server order")
-    TriggerClientEvent('gm-restaurant:client:updateCartePayed', src,bill)  
+    local players = QBCore.Functions.GetQBPlayers()
+    for _, v in pairs(players) do
+        TriggerClientEvent('gm-restaurant:client:updateCartePayed', v.PlayerData.source,bill)  
+    end  
 end)
 
