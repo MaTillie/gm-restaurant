@@ -7,6 +7,40 @@ local function coordsEqual(a, b)
     return a.x == b.x and a.y == b.y and a.z == b.z
 end
 
+local function initKitchen(cfg,key)
+    for _, item in ipairs(kitchen.items) do
+        local formattedIngredients = {}
+        --print("A1"..item)
+        for ingredient, details in pairs(restaurant.Menu[item].ingredients) do
+        --   print("P  " .. ingredient .. ": " .. details.amount)
+            formattedIngredients[ingredient] = details.amount
+        end
+
+        table.insert(options,{
+            name = item,  -- Nom de l'option, unique pour chaque interaction
+            label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
+            icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            onSelect = function()                    
+                local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
+                    move = true,
+                    car = true,
+                    mouse = false,
+                    combat = true,
+                }})
+                if success then
+                    
+            --TriggerServerEvent('gm-restaurant:server:craftCompo',formattedIngredients,item)
+                    TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item)
+                else
+                    print("Progress cancelled for: " .. item)
+                end                    
+            end,
+            groups = restaurant.Job,
+            items = formattedIngredients,
+        });
+    end
+end
+
 local function init()
     print("A1")
     for index, restaurant in ipairs(Config.Restaurants) do
@@ -366,7 +400,7 @@ RegisterNUICallback('nuiCallback', function(data, cb)
         closeMenu()  -- Appelle la fonction Lua avec le paramètre envoyé depuis JS
     else if(data.action == 'order')then
     end
-        order(data.param)
+        order(data.param,data.cfg)
     end
 
     cb('ok')  -- Réponse à envoyer au JS
