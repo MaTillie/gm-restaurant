@@ -7,138 +7,122 @@ local function coordsEqual(a, b)
     return a.x == b.x and a.y == b.y and a.z == b.z
 end
 
-local function initKitchen(cfg,key)
-    for _, item in ipairs(kitchen.items) do
-        local formattedIngredients = {}
-        --print("A1"..item)
-        for ingredient, details in pairs(restaurant.Menu[item].ingredients) do
-        --   print("P  " .. ingredient .. ": " .. details.amount)
-            formattedIngredients[ingredient] = details.amount
+function initKitchen(cfg,key)
+    for key, kitchen in pairs(cfg.Kitchen) do
+        local options = {}
+        for _, item in ipairs(kitchen.items) do
+            
+            local formattedIngredients = {}
+            if(cfg.DebugMode) then
+                print("initKitchen item: "..item)
+            end
+            for ingredient, details in pairs(restaurant.Menu[item].ingredients) do
+                if(cfg.DebugMode) then
+                    print("initKitchen recipe detail : " .. ingredient .. ": " .. details.amount)
+                end
+                formattedIngredients[ingredient] = details.amount
+            end
+
+            table.insert(options,{
+                name = item, 
+                label = gm_bridge_itemLabel(item),  -- Texte affiché à l'utilisateur
+                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                onSelect = function()                    
+                    local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
+                        move = true,
+                        car = true,
+                        mouse = false,
+                        combat = true,
+                    }})
+                    if success then                                          
+                        TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item,key)
+                        if(cfg.DebugMode) then  
+                            print("Progress success for: " .. item)    
+                        end
+                    else
+                        if(cfg.DebugMode) then  
+                            print("Progress cancelled for: " .. item)
+                        end
+                    end                    
+                end,
+                groups = cfg.job,
+            });
         end
 
-        table.insert(options,{
-            name = item,  -- Nom de l'option, unique pour chaque interaction
-            label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
-            icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-            onSelect = function()                    
-                local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
-                    move = true,
-                    car = true,
-                    mouse = false,
-                    combat = true,
-                }})
-                if success then
-                    
-            --TriggerServerEvent('gm-restaurant:server:craftCompo',formattedIngredients,item)
-                    TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item)
-                else
-                    print("Progress cancelled for: " .. item)
-                end                    
-            end,
-            groups = restaurant.Job,
-            items = formattedIngredients,
-        });
+        exports.ox_target:addSphereZone({ 
+            coords = kitchen.coords,
+            radius = kitchen.size,
+            debug = cfg.DebugMode,
+            options = options                
+        })
     end
+end
+
+function initFidge(cfg,key)
+    for key, fridge in pairs(restaurant.Fridge) do
+        local options = {}
+
+        for _, item in ipairs(fridge.items) do
+            table.insert(options,{
+                name = item,  -- Nom de l'option, unique pour chaque interaction
+                label = gm_bridge_itemLabel(item),  -- Texte affiché à l'utilisateur
+                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                onSelect = function()                    
+                    --local success = lib.progressBar({duration = 1000, label = "Fouille"})
+                    local success = lib.progressBar({duration = 1000, label = "Fouille", disable = {
+                        move = true,
+                        car = true,
+                        mouse = false,
+                        combat = true,
+                    }})
+                    if success then
+                        TriggerServerEvent('gm-restaurant:server:craft',{},item)    
+                        if(cfg.DebugMode) then  
+                            print("Progress success for: " .. item)    
+                        end                                          
+                    else
+                        if(cfg.DebugMode) then  
+                            print("Progress cancelled for: " .. item)
+                        end
+                    end
+                end,
+                groups = cfg.job,
+            });
+
+                    
+        end
+        exports.ox_target:addSphereZone({ 
+            coords = fridge.coords,
+            radius = fridge.size,
+            debug = cfg.DebugMode,
+            options = options                
+        }) 
+    end 
 end
 
 local function init()
     print("A1")
     for index, restaurant in ipairs(Config.Restaurants) do
-        print("A2")
-        for key, kitchen in pairs(restaurant.Kitchen) do
-            local options = {}
-
-            for _, item in ipairs(kitchen.items) do
-                local formattedIngredients = {}
-                --print("A1"..item)
-                for ingredient, details in pairs(restaurant.Menu[item].ingredients) do
-                --   print("P  " .. ingredient .. ": " .. details.amount)
-                    formattedIngredients[ingredient] = details.amount
-                end
-
-                table.insert(options,{
-                    name = item,  -- Nom de l'option, unique pour chaque interaction
-                    label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
-                    icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                    onSelect = function()                    
-                        local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
-                            move = true,
-                            car = true,
-                            mouse = false,
-                            combat = true,
-                        }})
-                        if success then
-                            
-                    --TriggerServerEvent('gm-restaurant:server:craftCompo',formattedIngredients,item)
-                            TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item)
-                        else
-                            print("Progress cancelled for: " .. item)
-                        end                    
-                    end,
-                    groups = restaurant.Job,
-                    items = formattedIngredients,
-                });
-            end
-
-            exports.ox_target:addSphereZone({ 
-                    coords = kitchen.coords,
-                    radius = kitchen.size,
-                    debug = restaurant.DebugMode,
-                    options = options                
-                })
-        end
-
-        for key, kitchen in pairs(restaurant.Fridge) do
-            local options = {}
-
-            for _, item in ipairs(kitchen.items) do
-                table.insert(options,{
-                    name = item,  -- Nom de l'option, unique pour chaque interaction
-                    label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
-                    icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                    onSelect = function()                    
-                        --local success = lib.progressBar({duration = 1000, label = "Fouille"})
-                        local success = lib.progressBar({duration = 1000, label = "Fouille", disable = {
-                            move = true,
-                            car = true,
-                            mouse = false,
-                            combat = true,
-                        }})
-                        if success then
-                            TriggerServerEvent('gm-restaurant:server:craft',{},item)                                              
-                        else
-                            print("Progress cancelled for: " .. item)
-                        end
-                    end,
-                    groups = restaurant.Job,
-                });
-
-                        
-            end
-            exports.ox_target:addSphereZone({ 
-                coords = kitchen.coords,
-                radius = kitchen.size,
-                debug = restaurant.DebugMode,
-                options = options                
-            }) 
-        end   
+        initfridge(Config.Restaurants,index)
+        initkitchen(Config.Restaurants,index)
+          
 
         initCarte(restaurant)
     end
 end
 
-function initCarte(cfg)
+function initCarte(cfg,key)
     local options = {}
     idCaisses ={}
 
-    for key, caisse in pairs(cfg.Carte) do
+    for index, caisse in pairs(cfg.Carte) do
         local options = {}
         table.insert(options,{
             name = "carte",  -- Nom de l'option, unique pour chaque interaction
             label = caisse.title,  -- Texte affiché à l'utilisateur
             icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()                    
-                lauchMenu(cfg)
+                lauchMenu(cfg,key)
             end,
         });
 
@@ -147,8 +131,8 @@ function initCarte(cfg)
             label = "Caisse",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()     
-                print("key launchCaisse "..key)               
-                launchCaisse(key,cfg)
+                print("key launchCaisse "..index)               
+                launchCaisse(index,cfg,key)
             end,
             groups = cfg.Job,
         });
@@ -158,7 +142,7 @@ function initCarte(cfg)
             label = "Plateau",  -- Texte affiché à l'utilisateur
             icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()                    
-                exports.ox_inventory:openInventory('stash', cfg.Job.."plateau"..key)
+                exports.ox_inventory:openInventory('stash', cfg.Job.."plateau"..index)
             end,
         });
 
@@ -169,18 +153,18 @@ function initCarte(cfg)
             debug = cfg.DebugMode,
             options = options   })    
 
-        table.insert(idCaisses,{id=idCaisse,index = key})  
+        table.insert(idCaisses,{id=idCaisse,index = index, key=key})  
     end
 end
 
 
 
-function lauchMenu(cfg)
+function lauchMenu(cfg,key)
   SetNuiFocus(true, true)
   local Menu = {}
   Menu = cfg.Menu
-  for key, menu in pairs(Menu) do
-    menu.Label = exports.ox_inventory:Items()[key].label
+  for item, menu in pairs(Menu) do
+    menu.Label = gm_bridge_itemLabel(item)
   end
 
     SendNUIMessage({
@@ -191,15 +175,16 @@ function lauchMenu(cfg)
 
 end
 
-function launchCaisse(indexCaisse,cfg)
+function launchCaisse(indexCaisse,cfg,key)
     print("indexCaisse "..indexCaisse)
     SetNuiFocus(true, true)
     local Menu = {}
     Menu.items =cfg.Menu
     Menu.indexCaisse = indexCaisse
+    Menu.key = key
 
-    for key, menu in pairs(Menu.items) do
-      menu.Label = exports.ox_inventory:Items()[key].label
+    for item, menu in pairs(Menu.items) do
+      menu.Label = gm_bridge_itemLabel(item)
     end
   
       SendNUIMessage({
@@ -277,24 +262,7 @@ function order(data,cfg)
     bill.status = "unpaid"
     bill.type = "compagny"
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
-   -- local msg = "date : "..year.."-"..month.."-"..day
     bill.date = year.."-"..month.."-"..day
-   -- exports.qbx_core:Notify(msg, "inform",10000,"",'center-right')
-    -- identification de la caisse la plus proche 
-    local dist = 10000
-    local coords 
-    local ped = PlayerPedId()
-    local pos = GetEntityCoords(ped)
-    for key, caisse in pairs(cfg.Carte) do
-        local ldist = #(caisse.coords - pos)
-        if(ldist<dist)then
-            dist = dist
-            coords = caisse.coords
-        end
-    end
-
-    bill.coords = coords
-
     
     TriggerServerEvent('gm-restaurant:server:order',bill,items,cfg)   
 end
@@ -307,7 +275,6 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
     local index 
 
     for i, v in ipairs(idCaisses) do
-        print("I "..v.index.."/"..bill.indexCaisse)
         if(v.index == bill.indexCaisse)then
             index = i
             idCaisse = v.id 
@@ -375,7 +342,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
 
 end)
 
-function createBill(bill)
+function createBill(bill,cfg)
     local msg = "La  facture vient de vous être émise. Utilisez votre application de paiement favorite."
     exports.qbx_core:Notify(msg, "inform",10000,"",'center-right')
     local playerData = QBCore.Functions.GetPlayerData()
@@ -384,13 +351,12 @@ function createBill(bill)
         citizen = playerData.citizenid,
         name = playerData.charinfo.firstname .. " " .. playerData.charinfo.lastname,
     }
-    bill.billTo = billTo
     
+    bill.billTo = billTo
 
-    --TriggerServerEvent('gm-restaurant:server:createBill',bill)  
     TriggerServerEvent('dusa_billing:sv:createBill',bill)  
-   -- TriggerServerEvent('dusa_billing:sv:createCustomInvoice',playerData.citizenid, bill.title,bill.description ,bill.amount,"compagny")  
-    TriggerServerEvent('gm-restaurant:server:payment',bill)   
+
+    TriggerServerEvent('gm-restaurant:server:payment',bill,cfg)   
     
 end
 
@@ -412,21 +378,22 @@ function createReference()
     local charactersLength = string.len(characters)
     local counter = 0
 
-    while counter < 7 do
+    while counter < 10 do
         local randomIndex = math.random(1, charactersLength)
         result = result .. string.sub(characters, randomIndex, randomIndex)
         counter = counter + 1
     end
 
-    return "HOG"..result
+    return result
 end
 
 
 RegisterNetEvent('gm-restaurant:client:updateCartePayed')
 AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill,cfg)
-    print("updateCarte")
+    if(cfg.DebugMode)then
+        print("updateCartePayed")
+    end
     local idCaisse = nil
-    print("billx "..bill.coords.x)
 
     local index 
 

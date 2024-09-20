@@ -13,10 +13,12 @@ shared_script {
 
 client_scripts {
     'client/*.lua',
+    'bridge/client.lua',
 }
 
 server_scripts {
     'server/*.lua',
+    'bridge/server.lua',
 }
 
 ui_page 'web/index.html'

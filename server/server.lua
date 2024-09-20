@@ -122,7 +122,6 @@ end)
 
 
 RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot)
-    print("useTicket" .. slot)
     local src = source
 
     local items = {}
@@ -133,13 +132,13 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
         if itemCount < item.amount then
             hasAllItems = false
             table.insert(items, {
-                name = item.name,
+                name = gm_bridge_itemLabel(item.name),
                 amount = itemCount.."/"..item.amount,
                 cl = notCompleted,
             })
         else
             table.insert(items, {
-                name = item.name,
+                name = gm_bridge_itemLabel(item.name),
                 amount = item.amount.."/"..item.amount,
                 cl = completed,
             })
@@ -169,10 +168,10 @@ RegisterNetEvent('gm-restaurant:server:useBoite', function(source,metadata,slot)
 end)
 
 exports('hogspub_ticket', function(event, item, inventory, slot, data)
-    print("useTicket")
+    -- print("Use ticket")
     if event == 'usingItem' then
         local itemSlot = exports.ox_inventory:GetSlot(inventory.id, slot)
-        print(json.encode(itemSlot.metadata, {indent=true}))
+        --print(json.encode(itemSlot.metadata, {indent=true}))
     end
 end)
 
