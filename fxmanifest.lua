@@ -1,34 +1,32 @@
-----------------------------------------------------------------
-----                   DUSADEV.TEBEX.IO                    	----
-----------------------------------------------------------------
-fx_version 'bodacious'
+fx_version 'cerulean'
 game 'gta5'
-author 'dusadev.tebex.io'
-description 'Dusa Billing'
-version '0.8'
+author 'Gaïus Mancini'
+description 'gm-restaurants'
+version '0.4'
 
-shared_script {"config.lua",
+shared_script {
     '@ox_lib/init.lua',
 	'@qbx_core/modules/lib.lua',
     '@qbx_core/shared/locale.lua',
+    'config/*.lua'
 }
 
 client_scripts {
-    "client/*.lua",
+    'client/*.lua',
 }
 
 server_scripts {
-    "@mysql-async/lib/MySQL.lua",
-    "server/*.lua",
+    'server/*.lua',
 }
 
-ui_page "web/index.html"
+ui_page 'web/index.html'
 
 files {
-    "web/index.html",
-    "web/styles.css",
-    "web/image/**.**",
-    "web/main.js",
+    'web/index.html',
+    'web/styles.css',
+    'web/image/**.**',
+    'web/main.js',    
+    'config.lua'
 }
 
 lua54 'yes'
