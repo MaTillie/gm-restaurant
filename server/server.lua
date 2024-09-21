@@ -2,22 +2,33 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 AddEventHandler('onServerResourceStart', function(resourceName)
     if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
-        for index, restaurant in ipairs(Restaurants) do
-            print("A2 "..restaurant)
-            local cheminConfig = string.format('config_%s.lua', restaurant)
-            local Config
-            local status, err = pcall(function() 
-                Config = {} -- Reset Config pour chaque entreprise
-                dofile(cheminConfig) -- Charger le fichier de config spécifique
-            end)
-            for i, stash in ipairs(Config.Carte) do
-                exports.ox_inventory:RegisterStash(Config.Job.."plateau"..i, Config.TrayLabel, 20,2000)
+        for index, restaurant in ipairs(Config.Restaurants) do
+            for i, stash in ipairs(restaurant.Carte) do
+                exports.ox_inventory:RegisterStash(restaurant.Job.."plateau"..i, Config.TrayLabel, 20,2000)
             end
-            exports.ox_inventory:RegisterStash(Config.Job.."virtualfridge", Config.TrayLabel, 100,2000000)
-            exports.ox_inventory:RegisterStash(Config.Job.."fridge","Frigo", 50, 200000, false,{[Config.Job] = 0})
+            exports.ox_inventory:RegisterStash(restaurant.Job.."virtualfridge", restaurant.TrayLabel, 100,2000000)
+            exports.ox_inventory:RegisterStash(restaurant.Job.."fridge","Frigo", 50, 200000, false,{[restaurant.Job] = 0})
         end        
+        
     end    
 end)
+
+function PrintTable(t, indent)
+    indent = indent or 0
+    local prefix = string.rep(" ", indent)
+    if type(t) == "table" then
+        for k, v in pairs(t) do
+            if type(v) == "table" then
+                print(prefix .. tostring(k) .. ":")
+                PrintTable(v, indent + 2)
+            else
+                print(prefix .. tostring(k) .. ": " .. tostring(v))
+            end
+        end
+    else
+        print(prefix .. tostring(t))
+    end
+end
 
 function FridgeName()
     local src = source
@@ -128,17 +139,19 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
 
     local hasAllItems = true
     for _, item in ipairs(metadata) do
-        local itemCount = exports.ox_inventory:Search(src, 'count', item.name)
+        local itemCount = exports.ox_inventory:GetItemCount(src, item.name)
+        print("itemname "..item.name.." amount "..item.amount )
+
         if itemCount < item.amount then
             hasAllItems = false
             table.insert(items, {
-                name = gm_bridge_itemLabel(item.name),
+                name = item.name,
                 amount = itemCount.."/"..item.amount,
                 cl = notCompleted,
             })
         else
             table.insert(items, {
-                name = gm_bridge_itemLabel(item.name),
+                name = item.name,
                 amount = item.amount.."/"..item.amount,
                 cl = completed,
             })
@@ -155,7 +168,10 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
         exports.ox_inventory:AddItem(src, 'hogspub_repas', 1, metadata)
         TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = 'Vous avez empaqueté le repas !'})
     else
-        TriggerClientEvent('gm-restaurant:client:displayOrder', src, items)
+        local src = source
+        local player = exports.qbx_core:GetPlayer(src)
+
+        TriggerClientEvent('gm-restaurant:client:displayOrder', src, items,player.PlayerData.job.name)
     end   
 end)
 

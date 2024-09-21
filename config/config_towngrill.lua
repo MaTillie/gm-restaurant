@@ -141,7 +141,7 @@ Config.Fridge = {
 --## Caisse ##--
 Config.Carte ={
     [1] ={
-        coords = vec3(1122.55, -640.13, 56.7),
+        coords = vec3(-585.16, -284.98, 35.45),
         size = 0.7,
         title = "Afficher la carte",
     },

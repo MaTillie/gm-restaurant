@@ -2,11 +2,13 @@
 let itemsList = [];
 let currentDiscount = 0.00;
 let IndexCaisse = 0;
+let Theme = "styles.css"
+let Config = {}
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
     // Rechercher si l'article existe déjà dans la liste
     const itemIndex = itemsList.findIndex(item => item.name === name);
-
+    
     if (itemIndex === -1) {
         // Si l'article n'est pas dans la liste et la quantité est positive, on l'ajoute
         if (quantity > 0) {
@@ -63,11 +65,12 @@ document.getElementById("subtractButton").addEventListener("click", function(eve
         updateTotalPrice();
 });
 
-function generateMenuItems(menuConfig) {
+/*function generateMenuItems(menuConfig) {
     document.querySelector('.grid-container').innerHTML = '';
+    let themeLink = document.getElementById("theme-link");
+    themeLink.setAttribute("href", Theme);
     const container = document.querySelector('.grid-container'); // Conteneur où les items seront ajoutés    
     for (const key in menuConfig) {
-        if (menuConfig[key].menu) { // On vérifie que c'est bien un item du menu
             const item = menuConfig[key];
 
             // Créer l'élément div.item
@@ -88,7 +91,7 @@ function generateMenuItems(menuConfig) {
 
             // Créer l'élément p pour le nom de l'item
             const itemName = document.createElement('p');
-            itemName.textContent = key.charAt(0).toUpperCase() + item.Label.slice(1); // Nom de l'item
+            itemName.textContent = item.Label.charAt(0).toUpperCase() + item.Label.slice(1); // Nom de l'item
 
             // Ajouter le nom de l'item à item-info
             itemInfoDiv.appendChild(itemName);
@@ -106,18 +109,92 @@ function generateMenuItems(menuConfig) {
 
             // Ajouter l'item complet au container
             container.appendChild(itemDiv);
-        }
+        
         document.querySelector('.menu-container').style.display = 'flex';
         document.querySelector('.footer').style.display = 'none';
     }
+}
+*/
+
+function generateMenuItems(menuConfig) {
+    // Vider les items actuels avant d'ajouter les nouveaux
+    document.querySelector('.items-container').innerHTML = '';
+    
+    let themeLink = document.getElementById("theme-link");
+    themeLink.setAttribute("href", Theme);
+    
+    const container = document.querySelector('.items-container'); // Conteneur avec scroll
+
+    for (const categoryKey in menuConfig) {
+        const category = menuConfig[categoryKey];
+
+        // Créer un conteneur pour la catégorie
+        const categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container');
+
+        const categoryDiv = document.createElement('div');
+        categoryDiv.classList.add('category');
+
+        // Ajouter le nom de la catégorie
+        const categoryLabel = document.createElement('h2');
+        categoryLabel.textContent = category.label;
+        categoryDiv.appendChild(categoryLabel);
+
+        // Créer le grid-container pour les items de cette catégorie
+        const gridContainer = document.createElement('div');
+        gridContainer.classList.add('grid-container');
+
+        // Ajouter les items de la catégorie
+        category.items.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('item');
+
+            const img = document.createElement('img');
+            img.src = `image/${item.Label.toLowerCase().replace(/\s/g, '')}.png`;
+            img.alt = item.Label;
+
+            itemDiv.appendChild(img);
+
+            const itemInfoDiv = document.createElement('div');
+            itemInfoDiv.classList.add('item-info');
+
+            const itemName = document.createElement('p');
+            itemName.textContent = item.Label.charAt(0).toUpperCase() + item.Label.slice(1);
+
+            itemInfoDiv.appendChild(itemName);
+
+            const priceTag = document.createElement('div');
+            priceTag.classList.add('price-tag');
+            priceTag.textContent = `$${item.price.toFixed(2)}`;
+
+            itemInfoDiv.appendChild(priceTag);
+
+            itemDiv.appendChild(itemInfoDiv);
+
+            gridContainer.appendChild(itemDiv);
+        });
+
+        // Ajouter le grid-container des items à la catégorie
+        categoryDiv.appendChild(gridContainer);
+
+        // Ajouter la catégorie au conteneur principal
+        categoryContainer.appendChild(categoryDiv);
+
+        // Ajouter le conteneur de catégorie complet au container global
+        container.appendChild(categoryContainer);
+    }
+
+    document.querySelector('.menu-container').style.display = 'flex';
+    document.querySelector('.footer').style.display = 'none';
 }
 
 
 function generateOrderItems(menuConfig) {
     document.querySelector('.grid-container').innerHTML = '';
+
     const container = document.querySelector('.grid-container'); // Conteneur où les items seront ajoutés    
     for (const key in menuConfig) {
-        if (menuConfig[key].menu) { // On vérifie que c'est bien un item du menu
+
             const item = menuConfig[key];
                 
             // Créer l'élément div.item
@@ -227,7 +304,7 @@ function generateOrderItems(menuConfig) {
                 updateItem(name, label, price, quantity)
             });
            
-        }
+        
         document.querySelector('.menu-container').style.display = 'flex';
         document.querySelector('.footer').style.display = 'flex';
     }
@@ -257,7 +334,7 @@ function closeMenu() {
 
 function order() {
     document.querySelector('.menu-container').style.display = 'none';
-    callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount} });
+    callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount,cfg:Config} });
     itemsList = [];
     currentDiscount = 0.00;
     updateTotalPrice()
@@ -267,10 +344,16 @@ function order() {
 $(document).ready(function () {
     window.addEventListener("message", (event) => {
       const eventData = event.data;
+      Theme =  eventData.data.theme;
+      let themeLink = document.getElementById("theme-link");
+      themeLink.setAttribute("href", Theme);
+
+      console.log("Theme :",eventData.data.theme )
+      Config = eventData.data.cfg;
       switch (eventData.action) {
         case "openMenu":
           if (eventData.toggle) {
-            generateMenuItems(eventData.data);
+            generateMenuItems(eventData.data.items);
           } else {
             closeMenu();
           }
@@ -278,29 +361,31 @@ $(document).ready(function () {
         case "openOrder":            
               if (eventData.toggle) {
                 generateOrderItems(eventData.data.items);
-                IndexCaisse = eventData.data.indexCaisse;
+                IndexCaisse = eventData.data.indexCaisse;               
               } else {
                 closeMenu();
               }
               break;
-              case "openTicket":
-                console.log("openTicket :" )
-                // Vider la liste des commandes
-                const orderList = document.getElementById('orderList');
-                orderList.innerHTML = '';
-        
-                // Ajouter les items à la liste
-                eventData.items.forEach(item => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = `${item.name}  ${item.amount}`;  
-                    listItem.setAttribute('id', item.cl);    
-                         
-                    orderList.appendChild(listItem);
-                });
-        
-                // Afficher le ticket
-                document.getElementById('ticket').style.display = 'block';
+        case "openTicket":
+        console.log("openTicket :" )
+       
 
+        // Vider la liste des commandes
+        const orderList = document.getElementById('orderList');
+        orderList.innerHTML = '';
+
+        // Ajouter les items à la liste
+        eventData.data.items.forEach(item => {
+            const listItem = document.createElement('li');
+            listItem.textContent = `${item.name}  ${item.amount}`;  
+            listItem.setAttribute('id', item.cl);    
+                    
+            orderList.appendChild(listItem);
+        });
+
+        // Afficher le ticket
+        document.getElementById('ticket').style.display = 'block';
+        break;
         default:
           break;
       }

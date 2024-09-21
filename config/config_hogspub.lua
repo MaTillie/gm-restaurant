@@ -10,103 +10,74 @@ Config.TrayLabel = "Hos's Pub"
 -- Titre de la facture
 Config.invoiceWording = "Facture du Hog's Pub"
 
+Config.Categorie ={
+    [1]={
+        name = "entree",
+        label = "Entrées",
+    },
+    [2]={
+        name = "plat",
+        label = "Plats",
+    },
+    [3]={
+        name = "dessert",
+        label = "Dessert",
+    },
+    [4]={
+        name = "alcool",
+        label = "Alcool",
+    },
+    [5]={
+        name = "soft",
+        label = "Softs",
+    },
+    [6]={
+        name = "side",
+        label = "Accompagnements",
+    },
+    [7]={
+        name = "snack",
+        label = "Grignotte",
+    },
+}
+
 Config.Menu = {
-    -- Liste des item 
-    -- à la carte si menu = true, sinon ce sont des ingrédients
+    -- Liste des items à la carte
     ["fishnchips"] = {
         price = 20.0,
-        menu = true,
-        ingredients = {
-            ["hogspub_fishmeatcooked"] = {amount = 1},
-            ["hogspub_cuttedpotato"] = {amount = 1},
-        },
+        categorie = "plat",
     },
     ["bierreobeurre"] = {
-        menu = true,
         price = 15.0,
-        ingredients = {},
+        categorie = "alcool",
     },
     ["polynectar"] = {
-        menu = true,
         price = 10.0,
-        ingredients = {},
+        categorie = "alcool",
     },
     ["jusdecitrouille"] = {
-        menu = true,
         price = 10.0,
-        ingredients = {},
-    },
-    ["hogspub_cuttedpotato"] = {
-        menu = false,
-        price = 0,
-        ingredients = {
-            ["hogspub_potato"] = {amount = 1},
-        },
+        categorie = "soft",
     },
     ["bubblensqueak"] = {
         price = 20.0,
-        menu = true,
-        ingredients = {
-            ["hogspub_cabbage"] = {amount = 1},
-            ["hogspub_eggcooked"] = {amount = 1},
-            ["hogspub_potato"] = {amount = 1},
-        },
+        categorie = "plat",
     },
     ["chickenpie"] = {
         price = 20.0,
-        menu = true,
-        ingredients = {
-            ["hogspub_chickenmeatcooked"] = {amount = 1},
-            ["hogspub_flour"] = {amount = 1},
-        },
+        categorie = "plat",
     },
     ["chocolapin"] = {
         price = 6.0,
-        menu = true,
-        ingredients = {
-            ["hogspub_cacaobean"] = {amount = 1},
-            ["hogspub_flour"] = {amount = 1},
-        },
-    },
-    ["hogspub_fishmeat"] = {
-        price = 7.0,
-        menu = false,
-        ingredients = {
-            ["hogspub_fish"] = {amount = 1},
-        },
-    },
-    ["hogspub_fishmeatcooked"] = {
-        price = 7.0,
-        menu = false,
-        ingredients = {
-            ["hogspub_fishmeat"] = {amount = 1},
-        },
-    },
-    ["hogspub_chickenmeatcooked"] = {
-        price = 7.0,
-        menu = false,
-        ingredients = {
-            ["hogspub_chickenmeat"] = {amount = 1},
-        },
-    },
-    ["hogspub_eggcooked"] = {
-        price = 7.0,
-        menu = false,
-        ingredients = {
-            ["hogspub_egg"] = {amount = 1},
-        },
-    },  
+        categorie = "dessert",
+    }, 
     ["peanuts"] = {
         price = 7.0,
-        menu = true,
-        ingredients = {
-        },
+        categorie = "snack",
     },
     ["chipscheese"] = {
         price = 7.0,
-        menu = true,
-        ingredients = {
-        },
+        categorie = "snack",
     },    
 }
 

@@ -1,9 +1,6 @@
 * {
     box-sizing: border-box;
-    /*font-family: 'Harry P','Bodoni MT',  Arial, sans-serif;*/
-    /*font-family: 'Bodoni MT', 'Bodoni 72', 'Didot', 'Didot LT STD', 'Hoefler Text', 'Garamond', 'Times New Roman', serif;
-    font-family: 'Optima', 'Segoe', 'Segoe UI', 'Candara', 'Calibri', Arial, sans-serif;*/
-    font-family: "Playwrite CU", cursive;
+    font-family: 'Harry P',  Arial, sans-serif;
   }
 
 body {
@@ -27,45 +24,101 @@ body {
     border-radius: 50%;
     width: 30px;
     height: 30px;
-    font-size: 15px;
+    font-size: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 
 
 .close-button:hover {
     background-color: #9e0f0f;
 }
 
+/* Conteneur principal du menu (fixe, sans scroll) */
 .menu-container {
     display: none;
     flex-direction: column;
     width: 800px;
     height: 800px;
-    background-color: #012218;
-    /*background-color: #221301;*/
+    background-color: #221301;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     margin: auto;
-    overflow: hidden;
     position: relative;
+    overflow: hidden; 
+}
+
+/* Conteneur pour les items avec scroll */
+.items-container {
+    flex: 1; /* Permet de prendre tout l'espace disponible */
+    overflow-y: auto; /* Activer le défilement uniquement sur cette zone */
+    padding-right: 10px; /* Espacement pour que la barre de défilement n'empiète pas sur le contenu */
+    margin-top: 20px; /* Espacement par rapport au titre */
 }
 
 h1 {
     font-size: 30px;
-    color: #00df70;
+    color: #dfa300;
     margin-bottom: 5px;
 }
 
 p {
-    font-size: 12px;
+    font-size: 20px;
     color: #ffffff;
     margin-bottom: 20px;
 }
 
+/* Conteneur global pour chaque catégorie */
+.category-container {
+    width: 100%;
+    margin-bottom: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Titre de la catégorie */
+.category h2 {
+    font-size: 28px;
+    color: #dfa300;
+    margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 2px solid #dfa300;
+    padding-bottom: 10px;
+}
+
+/* Ajustements pour la grille des items dans une catégorie */
+.category .grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /*repeat(auto-fill, minmax(150px, 1fr));*/
+    gap: 20px;
+    padding: 15px;
+    width: 100%;
+    overflow: hidden; /* Empêche les items de sortir de la grille */
+}
+
+
+/* Style pour les items */
+.item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+
+
 .grid-container {
-    flex: 1;
+    /*flex: 1;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;    
@@ -73,7 +126,8 @@ p {
     box-sizing: content-box;
     padding: 15px;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);*/
+    justify-items: center;
 }
 
 .item {
@@ -104,11 +158,11 @@ p {
 }
 
 .price-tag {
-    background-color: #005e75;
+    background-color: #003d1c;
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
-    font-size: 12px;
+    font-size: 16px;
     position: absolute;
     top: 10px;
     right: 10px;
@@ -122,10 +176,10 @@ p {
 }
 
 .quantity-btn {
-    background-color: #00311e;
+    background-color: #312200;
     border: none;
     color: white;
-    font-size: 14px;
+    font-size: 18px;
     width: 30px;
     height: 30px;
     border-radius: 5px;
@@ -134,13 +188,13 @@ p {
 }
 
 .quantity-btn:hover {
-    background-color: #00df70;
-    color: #00311e;
+    background-color: #dfa300;
+    color: #312200;
 }
 
 .quantity {
     margin: 0 10px;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
     min-width: 30px;
     text-align: center;
@@ -156,19 +210,19 @@ p {
 }
 
 .price-details {
-    font-size: 18px;
+    font-size: 24px;
 }
 
 .buttons {
-    font-size: 18px;
+    font-size: 24px;
     display: flex;
     gap: 5px;
 }
 
 #addButton, #subtractButton {
     padding: 5px 15px;
-    font-size: 12px;
-    background-color: #00311e;
+    font-size: 20px;
+    background-color: #312200;
     color: white;
     border: none;
     border-radius: 5px;
@@ -176,14 +230,14 @@ p {
 }
 
 #addButton:hover, #subtractButton:hover {
-    background-color: #00df70;
-    color: #00311e;
+    background-color: #dfa300;
+    color: #312200;
 }
 
 #payButton {
     padding: 10px 20px;
-    font-size: 16px;
-    background-color: #00311e;
+    font-size: 24px;
+    background-color: #312200;
     color: white;
     border: none;
     border-radius: 5px;
@@ -191,8 +245,8 @@ p {
 }
 
 #payButton:hover {
-    background-color: #00df70;
-    color: #00311e;
+    background-color: #dfa300;
+    color: #312200;
 }
 
 /* Style pour l'ascenseur */
@@ -207,7 +261,7 @@ p {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #00311e;
+    background: #312200;
     border-radius: 10px;
 }
 
@@ -223,7 +277,7 @@ html {
 
 .notepad {
     width: 300px;
-    background-color: #012218;
+    background-color: #221301;
     /*border: 2px solid #000;*/
     border-radius: 10 px;
     padding: 20px;
@@ -247,7 +301,7 @@ html {
 
 .notepad ul li {
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: 24px;
 }
 
 #ticket{

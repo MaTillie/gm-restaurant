@@ -1,5 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local sharedConfig = require 'config'
+local config = require 'config'
+
 local idCaisses = {}
 local orderDisplayOpen = false
 
@@ -16,7 +17,7 @@ function initKitchen(cfg,key)
             if(cfg.DebugMode) then
                 print("initKitchen item: "..item)
             end
-            for ingredient, details in pairs(restaurant.Menu[item].ingredients) do
+            for ingredient, details in pairs(cfg.Menu[item].ingredients) do
                 if(cfg.DebugMode) then
                     print("initKitchen recipe detail : " .. ingredient .. ": " .. details.amount)
                 end
@@ -25,7 +26,7 @@ function initKitchen(cfg,key)
 
             table.insert(options,{
                 name = item, 
-                label = gm_bridge_itemLabel(item),  -- Texte affiché à l'utilisateur
+                label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
                     local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
@@ -59,13 +60,13 @@ function initKitchen(cfg,key)
 end
 
 function initFidge(cfg,key)
-    for key, fridge in pairs(restaurant.Fridge) do
+    for key, fridge in pairs(cfg.Fridge) do
         local options = {}
 
         for _, item in ipairs(fridge.items) do
             table.insert(options,{
                 name = item,  -- Nom de l'option, unique pour chaque interaction
-                label = gm_bridge_itemLabel(item),  -- Texte affiché à l'utilisateur
+                label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
                     --local success = lib.progressBar({duration = 1000, label = "Fouille"})
@@ -101,13 +102,10 @@ function initFidge(cfg,key)
 end
 
 local function init()
-    print("A1")
     for index, restaurant in ipairs(Config.Restaurants) do
-        initfridge(Config.Restaurants,index)
-        initkitchen(Config.Restaurants,index)
-          
-
-        initCarte(restaurant)
+        initFidge(restaurant,index)
+       -- initKitchen(restaurant,index)
+        initCarte(restaurant,index)
     end
 end
 
@@ -159,20 +157,64 @@ end
 
 
 
-function lauchMenu(cfg,key)
+--[[function lauchMenu(cfg,key)
   SetNuiFocus(true, true)
-  local Menu = {}
-  Menu = cfg.Menu
-  for item, menu in pairs(Menu) do
-    menu.Label = gm_bridge_itemLabel(item)
+  local Menu = {}  
+  Menu.items = cfg.Menu
+  Menu.key = key
+  Menu.theme = "styles_"..cfg.Job..".css"
+  Menu.cfg = cfg
+  for item, menu in pairs(Menu.items) do
+    menu.Label = exports.ox_inventory:Items()[item].label
   end
+
+  
 
     SendNUIMessage({
         action = 'openMenu',
         toggle = true,
-        data = cfg.Menu
+        data = Menu
     })
 
+end]]--
+function lauchMenu(cfg, key)
+    SetNuiFocus(true, true)
+    local Menu = {}
+    Menu.items = {}
+    Menu.key = key
+    Menu.theme = "styles_" .. cfg.Job .. ".css"
+    Menu.cfg = cfg
+
+   -- Parcourir les catégories dans l'ordre défini
+   for _, categorie in ipairs(cfg.Categorie) do
+    local categoryItems = {}
+
+        -- Parcourir les items et les assigner à leur catégorie
+        for item, menu in pairs(cfg.Menu) do
+            if menu.categorie == categorie.name then
+                local itemData = {
+                    Label = exports.ox_inventory:Items()[item].label,
+                    price = menu.price
+                }
+                table.insert(categoryItems, itemData)
+            end
+        end
+
+        -- Ajouter la catégorie seulement si elle contient des items
+        if #categoryItems > 0 then
+            table.insert(Menu.items, {
+                label = categorie.label,
+                name = categorie.name,
+                items = categoryItems
+            })
+        end
+    end
+
+    SendNUIMessage({
+        action = 'openMenu',
+        toggle = true,
+        data = Menu
+    })
 end
 
 function launchCaisse(indexCaisse,cfg,key)
@@ -182,18 +224,19 @@ function launchCaisse(indexCaisse,cfg,key)
     Menu.items =cfg.Menu
     Menu.indexCaisse = indexCaisse
     Menu.key = key
-
+    Menu.theme = "styles_"..cfg.Job..".css"
+    Menu.cfg = cfg
     for item, menu in pairs(Menu.items) do
-      menu.Label = gm_bridge_itemLabel(item)
+      menu.Label = exports.ox_inventory:Items()[item].label
     end
   
-      SendNUIMessage({
-          action = 'openOrder',
-          toggle = true,
-          data = Menu
-      })
+    SendNUIMessage({
+        action = 'openOrder',
+        toggle = true,
+        data = Menu
+    })
   
-  end
+end
 
 
 AddEventHandler('onResourceStart', function(r) 
@@ -211,7 +254,7 @@ function closeMenu()
 end
 
 -- Retour du js, permet de récuépérer les informations nécessaire à la facture
-function order(data,cfg)
+function order(data)
     print("order indexCaisse "..data.indexCaisse)
     local player = source
     local items = {}
@@ -255,7 +298,7 @@ function order(data,cfg)
     
     bill.indexCaisse = data.indexCaisse
     bill.referance = createReference()
-    bill.title = cfg.invoiceWording
+    bill.title = data.cfg.invoiceWording
     bill.description = description
     bill.billFrom = billFrom
     bill.amount = amount + (data.reduc * -1)
@@ -264,7 +307,7 @@ function order(data,cfg)
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
     bill.date = year.."-"..month.."-"..day
     
-    TriggerServerEvent('gm-restaurant:server:order',bill,items,cfg)   
+    TriggerServerEvent('gm-restaurant:server:order',bill,items,data.cfg)   
 end
 
 -- Met à jour la caisse la plus proche pour ajouter l'option payer 
@@ -294,7 +337,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
                 label = caisse.title,  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    lauchMenu(cfg)
+                    lauchMenu(cfg,key)
                 end,
             });
 
@@ -312,7 +355,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
                 label = "Caisse",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    launchCaisse(key)
+                    launchCaisse(index,cfg,key)
                 end,
                 groups = cfg.Job,
             });
@@ -417,7 +460,7 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill,cfg)
                 label = caisse.title,  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    lauchMenu(cfg)
+                    lauchMenu(cfg,key)
                 end,
             });
 
@@ -426,7 +469,7 @@ AddEventHandler('gm-restaurant:client:updateCartePayed', function(bill,cfg)
                 label = "Caisse",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    launchCaisse(key)
+                    launchCaisse(index,cfg,key)
                 end,
                 groups = cfg.Job,
             });
@@ -457,7 +500,8 @@ end)
 
 -- Fonction pour afficher la commande
 RegisterNetEvent('gm-restaurant:client:displayOrder')
-AddEventHandler('gm-restaurant:client:displayOrder', function(orderItems)
+AddEventHandler('gm-restaurant:client:displayOrder', function(orderItems,job)   
+     
     orderDisplayOpen = true
     print("displayOrder")    
     if(orderItems)then
@@ -465,13 +509,16 @@ AddEventHandler('gm-restaurant:client:displayOrder', function(orderItems)
     else
         print("order data null")
     end
-
+    local data ={}
+    data.items = orderItems
+    data.theme = "styles_"..job..".css" 
+    print(data.theme)
     orderDisplayOpen = true
     -- On envoie les items à la NUI (HTML)
     SetNuiFocus(true, true)
     SendNUIMessage({
         action = "openTicket",
-        items = orderItems
+        data = data
     })
 
 
