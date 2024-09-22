@@ -4,6 +4,23 @@ local config = require 'config'
 local idCaisses = {}
 local orderDisplayOpen = false
 
+function PrintTable(t, indent)
+    indent = indent or 0
+    local prefix = string.rep(" ", indent)
+    if type(t) == "table" then
+        for k, v in pairs(t) do
+            if type(v) == "table" then
+                print(prefix .. tostring(k) .. ":")
+                PrintTable(v, indent + 2)
+            else
+                print(prefix .. tostring(k) .. ": " .. tostring(v))
+            end
+        end
+    else
+        print(prefix .. tostring(t))
+    end
+end
+
 local function coordsEqual(a, b)
     return a.x == b.x and a.y == b.y and a.z == b.z
 end
@@ -102,6 +119,7 @@ function initFidge(cfg,key)
 end
 
 local function init()
+    idCaisses ={}
     for index, restaurant in ipairs(Config.Restaurants) do
         initFidge(restaurant,index)
        -- initKitchen(restaurant,index)
@@ -111,7 +129,6 @@ end
 
 function initCarte(cfg,key)
     local options = {}
-    idCaisses ={}
 
     for index, caisse in pairs(cfg.Carte) do
         local options = {}
@@ -155,28 +172,7 @@ function initCarte(cfg,key)
     end
 end
 
-
-
---[[function lauchMenu(cfg,key)
-  SetNuiFocus(true, true)
-  local Menu = {}  
-  Menu.items = cfg.Menu
-  Menu.key = key
-  Menu.theme = "styles_"..cfg.Job..".css"
-  Menu.cfg = cfg
-  for item, menu in pairs(Menu.items) do
-    menu.Label = exports.ox_inventory:Items()[item].label
-  end
-
-  
-
-    SendNUIMessage({
-        action = 'openMenu',
-        toggle = true,
-        data = Menu
-    })
-
-end]]--
+-- Prépare et lance le menu
 function lauchMenu(cfg, key)
     SetNuiFocus(true, true)
     local Menu = {}
@@ -188,12 +184,23 @@ function lauchMenu(cfg, key)
    -- Parcourir les catégories dans l'ordre défini
    for _, categorie in ipairs(cfg.Categorie) do
     local categoryItems = {}
-
+    local Recipe = getRecipe(cfg.Job)
         -- Parcourir les items et les assigner à leur catégorie
         for item, menu in pairs(cfg.Menu) do
             if menu.categorie == categorie.name then
+                local label = item
+                print("### item ### "..item)
+                for recipeName, recipeData in pairs(Recipes.List) do
+                    print('recipeName '..recipeName)
+                    if recipeName == item then
+                        -- Ajouter le couple itemname/label dans le tableau
+                        label = recipeData.label
+                        print("labvel "..label)
+                    end
+                end
+                
                 local itemData = {
-                    Label = exports.ox_inventory:Items()[item].label,
+                    Label = label, --exports.ox_inventory:Items()[item].label,
                     price = menu.price
                 }
                 table.insert(categoryItems, itemData)
@@ -217,19 +224,51 @@ function lauchMenu(cfg, key)
     })
 end
 
+-- Prépare et lance la caisse (uniquement disponible pour les employés)
 function launchCaisse(indexCaisse,cfg,key)
     print("indexCaisse "..indexCaisse)
     SetNuiFocus(true, true)
     local Menu = {}
-    Menu.items =cfg.Menu
+    Menu.items = {}
     Menu.indexCaisse = indexCaisse
     Menu.key = key
     Menu.theme = "styles_"..cfg.Job..".css"
     Menu.cfg = cfg
-    for item, menu in pairs(Menu.items) do
-      menu.Label = exports.ox_inventory:Items()[item].label
+
+       -- Parcourir les catégories dans l'ordre défini
+   for _, categorie in ipairs(cfg.Categorie) do
+    local categoryItems = {}
+    local Recipe = getRecipe(cfg.Job)
+        -- Parcourir les items et les assigner à leur catégorie
+        for item, menu in pairs(cfg.Menu) do
+            if menu.categorie == categorie.name then
+                local label = item
+                for recipeName, recipeData in pairs(Recipes.List) do
+                    if recipeName == item then
+                        -- Ajouter le couple itemname/label dans le tableau
+                        label = recipeData.label
+                    end
+                end
+                
+                local itemData = {
+                    Label = label, --exports.ox_inventory:Items()[item].label,
+                    name = item,
+                    price = menu.price
+                }
+                table.insert(categoryItems, itemData)
+            end
+        end
+
+        -- Ajouter la catégorie seulement si elle contient des items
+        if #categoryItems > 0 then
+            table.insert(Menu.items, {
+                label = categorie.label,
+                name = categorie.name,
+                items = categoryItems
+            })
+        end
     end
-  
+
     SendNUIMessage({
         action = 'openOrder',
         toggle = true,
@@ -255,13 +294,13 @@ end
 
 -- Retour du js, permet de récuépérer les informations nécessaire à la facture
 function order(data)
-    print("order indexCaisse "..data.indexCaisse)
+    print("order indexCaisse "..data.indexCaisse..' key '..data.key)
     local player = source
     local items = {}
 
     for _, item in ipairs(data.items) do
         table.insert(items, {
-            name = exports.ox_inventory:Items()[item.name].label,
+            name = item.label,
             amount = item.quantity
         })
     end
@@ -297,6 +336,8 @@ function order(data)
 
     
     bill.indexCaisse = data.indexCaisse
+    -- Clé de config
+    bill.key = data.key
     bill.referance = createReference()
     bill.title = data.cfg.invoiceWording
     bill.description = description
@@ -313,20 +354,19 @@ end
 -- Met à jour la caisse la plus proche pour ajouter l'option payer 
 RegisterNetEvent('gm-restaurant:client:updateCarte')
 AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
-    print("updateCarte")
     local idCaisse = nil
     local index 
 
     for i, v in ipairs(idCaisses) do
-        if(v.index == bill.indexCaisse)then
+        if((v.index == bill.indexCaisse) and (v.key == bill.key))then
             index = i
             idCaisse = v.id 
         end
     end
 
-    table.remove(idCaisses, index)
+    table.remove(idCaisses, index)    
     exports.ox_target:removeZone(idCaisse)
-
+    Wait(10)
 
     for key, caisse in pairs(cfg.Carte) do
         if(key == bill.indexCaisse)then
@@ -346,7 +386,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
                 label = "Payer",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    createBill(bill)
+                    createBill(bill,cfg)
                 end,
             });
 
@@ -378,7 +418,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
                 debug = cfg.DebugMode,
                 options = options   })    
 
-            table.insert(idCaisses,{id=lidCaisse,index = key})  
+            table.insert(idCaisses,{id=lidCaisse,index = key, key = bill.key})  
         end
     end
 

@@ -4,6 +4,8 @@ let currentDiscount = 0.00;
 let IndexCaisse = 0;
 let Theme = "styles.css"
 let Config = {}
+let Key = ""
+
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
     // Rechercher si l'article existe déjà dans la liste
@@ -65,57 +67,6 @@ document.getElementById("subtractButton").addEventListener("click", function(eve
         updateTotalPrice();
 });
 
-/*function generateMenuItems(menuConfig) {
-    document.querySelector('.grid-container').innerHTML = '';
-    let themeLink = document.getElementById("theme-link");
-    themeLink.setAttribute("href", Theme);
-    const container = document.querySelector('.grid-container'); // Conteneur où les items seront ajoutés    
-    for (const key in menuConfig) {
-            const item = menuConfig[key];
-
-            // Créer l'élément div.item
-            const itemDiv = document.createElement('div');
-            itemDiv.classList.add('item');
-
-            // Créer l'élément img
-            const img = document.createElement('img');
-            img.src = `image/${key}.png`; // Suppose que l'image suit le nom de la clé
-            img.alt = key;
-
-            // Ajouter l'image au div item
-            itemDiv.appendChild(img);
-
-            // Créer l'élément div.item-info
-            const itemInfoDiv = document.createElement('div');
-            itemInfoDiv.classList.add('item-info');
-
-            // Créer l'élément p pour le nom de l'item
-            const itemName = document.createElement('p');
-            itemName.textContent = item.Label.charAt(0).toUpperCase() + item.Label.slice(1); // Nom de l'item
-
-            // Ajouter le nom de l'item à item-info
-            itemInfoDiv.appendChild(itemName);
-
-            // Créer l'élément div.price-tag pour le prix
-            const priceTag = document.createElement('div');
-            priceTag.classList.add('price-tag');
-            priceTag.textContent = `$${item.price.toFixed(2)}`; // Prix de l'item
-
-            // Ajouter la price-tag à item-info
-            itemInfoDiv.appendChild(priceTag);
-
-            // Ajouter item-info à l'item
-            itemDiv.appendChild(itemInfoDiv);
-
-            // Ajouter l'item complet au container
-            container.appendChild(itemDiv);
-        
-        document.querySelector('.menu-container').style.display = 'flex';
-        document.querySelector('.footer').style.display = 'none';
-    }
-}
-*/
-
 function generateMenuItems(menuConfig) {
     // Vider les items actuels avant d'ajouter les nouveaux
     document.querySelector('.items-container').innerHTML = '';
@@ -144,6 +95,7 @@ function generateMenuItems(menuConfig) {
         const gridContainer = document.createElement('div');
         gridContainer.classList.add('grid-container');
 
+        console.log("Catégorie :",category.label)
         // Ajouter les items de la catégorie
         category.items.forEach(item => {
             const itemDiv = document.createElement('div');
@@ -188,44 +140,58 @@ function generateMenuItems(menuConfig) {
     document.querySelector('.footer').style.display = 'none';
 }
 
-
 function generateOrderItems(menuConfig) {
-    document.querySelector('.grid-container').innerHTML = '';
+    // Vider les items actuels avant d'ajouter les nouveaux
+    document.querySelector('.items-container').innerHTML = '';
+    
+    let themeLink = document.getElementById("theme-link");
+    themeLink.setAttribute("href", Theme);
+    
+    const container = document.querySelector('.items-container'); // Conteneur avec scroll
 
-    const container = document.querySelector('.grid-container'); // Conteneur où les items seront ajoutés    
-    for (const key in menuConfig) {
+    for (const categoryKey in menuConfig) {
+        const category = menuConfig[categoryKey];
 
-            const item = menuConfig[key];
-                
-            // Créer l'élément div.item
+        // Créer un conteneur pour la catégorie
+        const categoryContainer = document.createElement('div');
+        categoryContainer.classList.add('category-container');
+
+        const categoryDiv = document.createElement('div');
+        categoryDiv.classList.add('category');
+
+        // Ajouter le nom de la catégorie
+        const categoryLabel = document.createElement('h2');
+        categoryLabel.textContent = category.label;        
+        categoryDiv.appendChild(categoryLabel);
+
+        // Créer le grid-container pour les items de cette catégorie
+        const gridContainer = document.createElement('div');
+        gridContainer.classList.add('grid-container');
+
+        console.log("Catégorie :",category.label)
+        // Ajouter les items de la catégorie
+        category.items.forEach(item => {
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('item');
 
-            // Créer l'élément img
             const img = document.createElement('img');
-            img.src = `image/${key}.png`; // Suppose que l'image suit le nom de la clé
-            img.alt = key;
+            img.src = `image/${item.Label.toLowerCase().replace(/\s/g, '')}.png`;
+            img.alt = item.Label;
 
-            // Ajouter l'image au div item
             itemDiv.appendChild(img);
 
-            // Créer l'élément div.item-info
             const itemInfoDiv = document.createElement('div');
             itemInfoDiv.classList.add('item-info');
 
-            // Créer l'élément p pour le nom de l'item
             const itemName = document.createElement('p');
-            itemName.textContent = item.Label.charAt(0).toUpperCase() + item.Label.slice(1); // Nom de l'item
+            itemName.textContent = item.Label.charAt(0).toUpperCase() + item.Label.slice(1);
 
-            // Ajouter le nom de l'item à item-info
             itemInfoDiv.appendChild(itemName);
 
-            // Créer l'élément div.price-tag pour le prix
             const priceTag = document.createElement('div');
             priceTag.classList.add('price-tag');
-            priceTag.textContent = `$${item.price.toFixed(2)}`; // Prix de l'item
+            priceTag.textContent = `$${item.price.toFixed(2)}`;
 
-            // Ajouter la price-tag à item-info
             itemInfoDiv.appendChild(priceTag);
 
             const quantityControlDiv = document.createElement('div');
@@ -238,7 +204,7 @@ function generateOrderItems(menuConfig) {
             minusBtn.classList.add('quantity-btn', 'minus-btn');
             minusBtn.textContent = '-';
             
-            minusBtn.setAttribute('data-key', key);
+            minusBtn.setAttribute('data-key', item.name);
             minusBtn.setAttribute('data-price', item.price);
             minusBtn.setAttribute('data-label', item.Label);
 
@@ -250,21 +216,17 @@ function generateOrderItems(menuConfig) {
             plusBtn.classList.add('quantity-btn', 'plus-btn');
             plusBtn.textContent = '+';
             
-            plusBtn.setAttribute('data-key', key);
+            plusBtn.setAttribute('data-key', item.name);
             plusBtn.setAttribute('data-price', item.price);
             plusBtn.setAttribute('data-label', item.Label);
 
             quantityControlDiv.appendChild(minusBtn);
             quantityControlDiv.appendChild(quantitySpan);
             quantityControlDiv.appendChild(plusBtn);
-            
-            // Ajouter item-info à l'item
+
             itemDiv.appendChild(itemInfoDiv);
 
-            // Ajouter l'item complet au container
-            container.appendChild(itemDiv);
-
-        
+            gridContainer.appendChild(itemDiv);
             plusBtn.addEventListener('click', (event) => {
                 const name = event.target.getAttribute('data-key');
                 const price = event.target.getAttribute('data-price');
@@ -303,11 +265,20 @@ function generateOrderItems(menuConfig) {
 
                 updateItem(name, label, price, quantity)
             });
-           
-        
-        document.querySelector('.menu-container').style.display = 'flex';
-        document.querySelector('.footer').style.display = 'flex';
+        });
+
+        // Ajouter le grid-container des items à la catégorie
+        categoryDiv.appendChild(gridContainer);
+
+        // Ajouter la catégorie au conteneur principal
+        categoryContainer.appendChild(categoryDiv);
+
+        // Ajouter le conteneur de catégorie complet au container global
+        container.appendChild(categoryContainer);
     }
+
+    document.querySelector('.menu-container').style.display = 'flex';
+    document.querySelector('.footer').style.display = 'flex';
 }
 
 function callLuaFunction(data) {
@@ -334,7 +305,7 @@ function closeMenu() {
 
 function order() {
     document.querySelector('.menu-container').style.display = 'none';
-    callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount,cfg:Config} });
+    callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount,cfg:Config,key:Key} });
     itemsList = [];
     currentDiscount = 0.00;
     updateTotalPrice()
@@ -361,6 +332,7 @@ $(document).ready(function () {
         case "openOrder":            
               if (eventData.toggle) {
                 generateOrderItems(eventData.data.items);
+                Key = eventData.data.key;
                 IndexCaisse = eventData.data.indexCaisse;               
               } else {
                 closeMenu();

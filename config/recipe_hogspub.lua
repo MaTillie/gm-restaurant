@@ -1,3 +1,4 @@
+function getRecipe_hogspub()
 Recipes = {}
 
 Recipes.List = {
@@ -172,3 +173,6 @@ Recipes.Compo = {
         },
     },
 }
+
+return Recipes
+end
