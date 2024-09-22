@@ -1,6 +1,8 @@
 IngList = {}
 
-IngList.Base = {
+IngList.Base = {    
+    ['gmr_igd_eau'] = {label = 'Eau', weight = 50, stack = true, close = true},
+
     -- Légumes --
     ['gmr_igd_tomate'] = {label = 'Tomate', weight = 50, stack = true, close = true},
     ['gmr_igd_oignon'] = {label = 'Oignon', weight = 40, stack = true, close = true},
@@ -277,7 +279,7 @@ IngList.Base = {
 
 IngList.Compo = {
     ["gmr_cpigd_bechamel"] = {
-        description = "Sauce béchamel",
+        label = "Sauce béchamel",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_lait"] = {amount = 3},
@@ -290,7 +292,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_pesto"] = {
-        description = "Sauce pesto",
+        label = "Sauce pesto",
         dose = 2,  -- pour 2 portions
         ingredients = {
             ["gmr_igd_basilic"] = {amount = 2},
@@ -303,7 +305,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_mayonnaise"] = {
-        description = "Mayonnaise maison",
+        label = "Mayonnaise maison",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_oeuf"] = {amount = 1},
@@ -316,7 +318,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_tapenade"] = {
-        description = "Tapenade d'olives noires",
+        label = "Tapenade d'olives noires",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_olive_noire"] = {amount = 4},
@@ -327,7 +329,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_pate_sablee"] = {
-        description = "Pâte sablée",
+        label = "Pâte sablée",
         dose = 1,  -- pour 1 tarte
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
@@ -338,7 +340,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_pate_brisee"] = {
-        description = "Pâte brisée",
+        label = "Pâte brisée",
         dose = 1,  -- pour 1 tarte
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
@@ -349,7 +351,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_caramel"] = {
-        description = "Caramel maison",
+        label = "Caramel maison",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_sucre"] = {amount = 3},
@@ -358,7 +360,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_bouillon_viande"] = {
-        description = "Bouillon de viande maison",
+        label = "Bouillon de viande maison",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_boeuf"] = {amount = 3},
@@ -371,7 +373,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_sauce_bolognaise"] = {
-        description = "Sauce bolognaise",
+        label = "Sauce bolognaise",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_boeuf"] = {amount = 3},
@@ -385,10 +387,10 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_fumet_poisson"] = {
-        description = "Fumet de poisson maison",
+        label = "Fumet de poisson maison",
         dose = 4,  -- pour 4 portions
         ingredients = {
-            ["gmr_igd_poisson"] = {amount = 2},
+            ["gmr_igd_cabillaud"] = {amount = 2},
             ["gmr_igd_carotte"] = {amount = 1},
             ["gmr_igd_poivre"] = {amount = 1},
             ["gmr_igd_sel"] = {amount = 1},
@@ -396,7 +398,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_tzatziki"] = {
-        description = "Sauce tzatziki",
+        label = "Sauce tzatziki",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_concombre"] = {amount = 2},
@@ -410,7 +412,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_sauce_teriyaki"] = {
-        description = "Sauce teriyaki",
+        label = "Sauce teriyaki",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_sauce_soja"] = {amount = 2},
@@ -422,7 +424,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_roux"] = {
-        description = "Base pour épaissir les sauces",
+        label = "Base pour épaissir les sauces",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_beurre"] = {amount = 2},
@@ -431,7 +433,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_pate_a_choux"] = {
-        description = "Pâte à choux",
+        label = "Pâte à choux",
         dose = 4,  -- pour 4 portions de choux
         ingredients = {
             ["gmr_igd_farine"] = {amount = 3},
@@ -443,7 +445,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_coulis_fruit"] = {
-        description = "Coulis de fruits rouges",
+        label = "Coulis de fruits rouges",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_framboise"] = {amount = 3},
@@ -453,7 +455,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_fond_de_veau"] = {
-        description = "Fond de veau maison",
+        label = "Fond de veau maison",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_os_veau"] = {amount = 2},  -- nouvel ingrédient de base
@@ -466,7 +468,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_sauce_hollandaise"] = {
-        description = "Sauce hollandaise",
+        label = "Sauce hollandaise",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_beurre"] = {amount = 3},
@@ -478,7 +480,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_ail_confit"] = {
-        description = "Ail confit",
+        label = "Ail confit",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_ail"] = {amount = 10},  -- 10 gousses d'ail
@@ -488,7 +490,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_vinaigrette"] = {
-        description = "Vinaigrette classique",
+        label = "Vinaigrette classique",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_vinaigre"] = {amount = 1},
@@ -500,7 +502,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_coulis_tomate"] = {
-        description = "Coulis de tomate maison",
+        label = "Coulis de tomate maison",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_tomate"] = {amount = 5},
@@ -511,7 +513,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_sauce_au_poivre"] = {
-        description = "Sauce au poivre",
+        label = "Sauce au poivre",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_poivre_noir"] = {amount = 1},
@@ -522,7 +524,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_sauce_aux_champignons"] = {
-        description = "Sauce aux champignons",
+        label = "Sauce aux champignons",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_champignon"] = {amount = 3},
@@ -534,7 +536,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_pate_brisee_sucree"] = {
-        description = "Pâte brisée sucrée",
+        label = "Pâte brisée sucrée",
         dose = 1,  -- pour 1 tarte
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
@@ -545,7 +547,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_sauce_pistou"] = {
-        description = "Sauce au pistou",
+        label = "Sauce au pistou",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_basilic"] = {amount = 2},
@@ -557,7 +559,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_garniture_vegetarienne"] = {
-        description = "Garniture végétarienne pour pizza",
+        label = "Garniture végétarienne pour pizza",
         dose = 4,  -- pour 4 pizzas
         ingredients = {
             ["gmr_igd_tomate"] = {amount = 3},
@@ -570,7 +572,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_puree_de_pomme"] = {
-        description = "Purée de pommes",
+        label = "Purée de pommes",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_pomme"] = {amount = 5},
@@ -581,7 +583,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_sauce_gribiche"] = {
-        description = "Sauce gribiche",
+        label = "Sauce gribiche",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_oeuf"] = {amount = 2},
@@ -595,7 +597,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_creme_patissiere"] = {
-        description = "Crème pâtissière",
+        label = "Crème pâtissière",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_lait"] = {amount = 3},
@@ -607,7 +609,7 @@ IngList.Compo = {
     },
     
     ["gmr_cpigd_tapenade_verte"] = {
-        description = "Tapenade d'olives vertes",
+        label = "Tapenade d'olives vertes",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_olive_verte"] = {amount = 4},  -- nouvel ingrédient de base
@@ -617,7 +619,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_sauce_tartare"] = {
-        description = "Sauce tartare",
+        label = "Sauce tartare",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_cpigd_mayonnaise"] = {amount = 2},  -- ingrédient intermédiaire précédent
@@ -627,6 +629,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_creme_fraiche"] = {
+        label="Crème fraiche",
         ingredients = {
             ["gmr_igd_lait"] = {amount = 2},
             ["gmr_igd_beurre"] = {amount = 1},
@@ -634,18 +637,18 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_glace"] = {
-        description = "Glace vanille maison",
+        label = "Glace vanille maison",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_lait"] = {amount = 3},
-            ["gmr_igd_cream_fraiche"] = {amount = 2},  -- ingrédient intermédiaire
+            ["gmr_cpigd_creme_fraiche"] = {amount = 2},  -- ingrédient intermédiaire
             ["gmr_igd_sucre"] = {amount = 2},
             ["gmr_igd_oeuf"] = {amount = 2},
             ["gmr_igd_vanille"] = {amount = 1},
         },
     },
     ["gmr_cpigd_sauce_barbecue"] = {
-        description = "Sauce barbecue maison",
+        label = "Sauce barbecue maison",
         dose = 4,
         ingredients = {
             ["gmr_igd_sauce_tomate"] = {amount = 2},
@@ -656,7 +659,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_beurre_maitre_hotel"] = {
-        description = "Beurre maître d'hôtel",
+        label = "Beurre maître d'hôtel",
         dose = 4,
         ingredients = {
             ["gmr_igd_beurre"] = {amount = 3},
@@ -666,7 +669,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_marinade_tofu"] = {
-        description = "Marinade pour tofu",
+        label = "Marinade pour tofu",
         dose = 4,
         ingredients = {
             ["gmr_igd_sauce_soja"] = {amount = 2},
@@ -676,7 +679,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_sauce_burger"] = {
-        description = "Sauce burger maison",
+        label = "Sauce burger maison",
         dose = 4,
         ingredients = {
             ["gmr_cpigd_mayonnaise"] = {amount = 2},  -- ingrédient intermédiaire existant
@@ -686,7 +689,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_chips"] = {
-        description = "Chips nature maison, à assaisoner",
+        label = "Chips nature maison, à assaisoner",
         dose = 1,
         ingredients = {
             ["gmr_igd_pomme_de_terre"] = {amount = 3},
@@ -694,7 +697,7 @@ IngList.Compo = {
         },
     },  
     ["gmr_cpigd_pain"] = {
-        description = "Pain classique",
+        label = "Pain classique",
         dose = 1,  -- pour 1 pain
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
@@ -704,7 +707,7 @@ IngList.Compo = {
         },
     },
     ["gmr_cpigd_baguette"] = {
-        description = "Baguette traditionnelle",
+        label = "Baguette traditionnelle",
         dose = 1,  -- pour 1 baguette
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
@@ -712,5 +715,22 @@ IngList.Compo = {
             ["gmr_igd_eau"] = {amount = 3},
             ["gmr_igd_sel"] = {amount = 1},
         },
-    }    
+    },
+    ["gmr_cpigd_frites"] = {
+        label = "Frites croustillantes",
+        ingredients = {
+            ["gmr_igd_pomme_de_terre"] = {amount = 5},
+            ["gmr_igd_huile_tournesol"] = {amount = 2},
+            ["gmr_igd_sel"] = {amount = 1},
+        },
+    },
+    ["gmr_cpigd_pate_feuilletee"] = {
+        label = "Pâte feuilletée maison",
+        ingredients = {
+            ["gmr_igd_farine"] = {amount = 4},
+            ["gmr_igd_beurre"] = {amount = 4},
+            ["gmr_igd_sel"] = {amount = 1},
+            ["gmr_igd_eau"] = {amount = 2},
+        },
+    },
 }

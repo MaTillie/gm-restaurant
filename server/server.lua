@@ -6,7 +6,7 @@ AddEventHandler('onServerResourceStart', function(resourceName)
             for i, stash in ipairs(restaurant.Carte) do
                 exports.ox_inventory:RegisterStash(restaurant.Job.."plateau"..i, Config.TrayLabel, 20,2000)
             end
-            exports.ox_inventory:RegisterStash(restaurant.Job.."virtualfridge", restaurant.TrayLabel, 100,2000000)
+            exports.ox_inventory:RegisterStash(restaurant.Job.."virtualfridge", restaurant.TrayLabel, 100,2000000,vec3(-586.15, -277.09, 41.69))
             exports.ox_inventory:RegisterStash(restaurant.Job.."fridge","Frigo", 50, 200000, false,{[restaurant.Job] = 0})
         end        
         
@@ -43,7 +43,7 @@ function VirtualFridgeName()
 end
 
 RegisterNetEvent('gm-restaurant:server:craft')
-AddEventHandler('gm-restaurant:server:craft', function(ingredients,item)	
+AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,cfg,itemLabel,image)	
     local src = source
     if(ingredients) then
         print("pas null")
@@ -51,19 +51,31 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item)
         print("null")
     end
 
+    print("craft "..item)
+
     local requis = true
-    for ingredient, amount in pairs(ingredients) do
-        if (exports.ox_inventory:GetItemCount(VirtualFridgeName(), ingredient)< amount) then
-            TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = "Il n'y a pas "..amount.." x "..exports.ox_inventory:Items()[item].label.." dans la réserve"})
+    for ingredient, details  in pairs(ingredients) do
+        local metadata = {
+            label = details.label ,
+            --imageurl = 'nui://gm-restaurant/web/image/'..item..'.png',       
+        }
+
+        if (exports.ox_inventory:GetItemCount(VirtualFridgeName(), "leap_ingredient",metadata)< details.amount) then
+            TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
             requis = false
+            exports.ox_inventory:AddItem(VirtualFridgeName(), "leap_ingredient",details.amount,metadata)
         end    
     end
 
     if requis then
-        for ingredient, amount in pairs(ingredients) do
-            exports.ox_inventory:RemoveItem(VirtualFridgeName(), ingredient, amount)
+        for ingredient, details in pairs(ingredients) do
+            exports.ox_inventory:RemoveItem(VirtualFridgeName(), "leap_ingredient",details.amount,metadata)
         end
-        exports.ox_inventory:AddItem(src, item, 1)
+        local metadata = {
+            label = itemLabel ,
+            imageurl = 'nui://gm-restaurant/web/image/'..item..'.png',       
+        }
+        exports.ox_inventory:AddItem(src, 'gmr_plat', 1,metadata)
     end
 end)	
 

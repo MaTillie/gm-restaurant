@@ -74,7 +74,7 @@ Config.Menu = {
 }
 
 Config.Kitchen = {
-    [1] ={
+   /* [1] ={
         -- Cuisson vec3(-586.97, -277.55, 41.69)
         coords = vec3(-587.51, -276.82, 41.69),
         size = 0.5,
@@ -86,6 +86,19 @@ Config.Kitchen = {
             "hogspub_eggcooked",
         }
         -- Animation plus tard
+    },*/
+    [1] ={
+        -- Cuisson vec3(-587.63, -278.46, 41.69)
+        coords = vec3(-587.03, -279.30, 41.69),
+        size = 0.5,
+        title = "Préparer",
+        duration = 5000,
+        items = {
+            "gmr_dsh_hogspub_fishnchips",
+            "gmr_dsh_hogspub_bubblensqueak",
+            "gmr_dsh_hogspub_chickenpie",
+            "gmr_dsh_hogspub_chocogrenouille",
+        }
     },
     [2] ={
         -- Tonneau rez de chaussée
@@ -94,9 +107,9 @@ Config.Kitchen = {
         title = "Verser",
         duration = 2000,
         items = {
-            "bierreobeurre",
-            "polynectar",
-            "jusdecitrouille",
+            "gmr_dsh_hogspub_bierraubeurre",
+            "gmr_dsh_hogspub_polynectar",
+            "gmr_dsh_hogspub_jus_de_citrouille",
         }
         -- Animation plus tard
     },   
@@ -107,13 +120,13 @@ Config.Kitchen = {
         title = "Verser",
         duration = 2000,
         items = {
-            "bierreobeurre",
-            "polynectar",
-            "jusdecitrouille",
+            "gmr_dsh_hogspub_bierraubeurre",
+            "gmr_dsh_hogspub_polynectar",
+            "gmr_dsh_hogspub_jus_de_citrouille",
         }
         -- Animation plus tard
     },
-    [4] ={
+    /*[4] ={
         -- Plance à découper
         coords = vec3(-586.15, -281.03, 41.50),
         size = 0.5,
@@ -131,13 +144,13 @@ Config.Kitchen = {
         title = "Préparer",
         duration = 5000,
         items = {
-            "fishnchips",
-            "bubblensqueak",
-            "chickenpie",
-            "chocolapin",
+            "gmr_dsh_hogspub_fishnchips",
+            "gmr_dsh_hogspub_bubblensqueak",
+            "gmr_dsh_hogspub_chickenpie",
+            "gmr_dsh_hogspub_chocogrenouille",
         }
         -- Animation plus tard
-    },
+    },*/
 }
 
 --# Fridge #--
@@ -174,6 +187,15 @@ Config.Carte ={
         title = "Afficher la carte",
     },
 }
+
+Config.RecipeBook ={
+    [1] ={
+        coords = vec3(-586.19, -276.94, 41.69),
+        size = 0.7,
+        title = "Afficher les recettes",
+    },
+}
+
 
 --## Delivery ##--
 

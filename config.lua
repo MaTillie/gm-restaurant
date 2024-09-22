@@ -1,7 +1,7 @@
 Config = {
     Restaurants = {
         [1] = getConfig_hogspub(),
-        [2] = getConfig_towngrill(),        
+       -- [2] = getConfig_towngrill(),        
     },
     Recipes ={
         ["hogspub"] = getRecipe_hogspub(),
@@ -9,6 +9,7 @@ Config = {
 }
 
 function getRecipe(job)
+    print("getRecipe "..job)
     if(job == "hogspub") then
         return getRecipe_hogspub()
     end
