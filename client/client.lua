@@ -156,16 +156,44 @@ function initFidge(cfg,key)
     end 
 end
 
-function getRecipe(item,cfg)
+function initConfig.RecipeBook(cfg,key)
+    
+
+    for index, caisse in pairs(cfg.RecipeBook) do
+        local options = {}
+        for item, menu in pairs(cfg.Menu) do
+            table.insert(options,{
+                name = "carte",  -- Nom de l'option, unique pour chaque interaction
+                label = caisse.title,  -- Texte affiché à l'utilisateur
+                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                onSelect = function()                    
+                    getRecipeItem(item,cfg)
+                end,
+            });
+        end        
+        
+
+        local idCaisse = exports.ox_target:addSphereZone({ 
+            coords = caisse.coords,
+            radius = caisse.size,
+            debug = cfg.DebugMode,
+            options = options   })    
+
+        table.insert(idCaisses,{id=idCaisse,index = index, key=key})  
+    end
+
+end
+
+function getRecipeItem(item,cfg)
     local result = {}
     local lkItem = cfg.Menu[item]
     if (not lkItem) then
-        lrec = getRecipe(cfg.Job)
+        local lrec = getRecipe(cfg.Job)
         lkItem = lrec.List[item]
     end
 
     if (not lkItem) then
-        lrec = getRecipe(cfg.Job)
+        local lrec = getRecipe(cfg.Job)
         lkItem = lrec.Compo[item]
     end
 
@@ -194,7 +222,7 @@ function getRecipe(item,cfg)
 
             
         end
-        
+
         for key, element in pairs(result) do
             TriggerClientEvent('ox_lib:notify', src, {type = 'info', description = element.amount.."x "..element.label,duration=5000,position='center-right'})
         end
@@ -203,49 +231,6 @@ function getRecipe(item,cfg)
     
    
     return result
-
-/*
-   local localRecipes = {}
-    local Recipes = {}
-    localRecipes = getRecipe(cfg.Job)
-    Recipes = IngList.Compo
-    for key, kitchen in pairs(cfg.Kitchen) do
-        local options = {}        
-        for _, item in ipairs(kitchen.items) do
-            
-            local formattedIngredients = {}
-            local recipeLabel = item
-
-            local rcp = localRecipes.List[item]
-            local rcpCompo = IngList.Compo[item]
-            local rcpCompoLocal = localRecipes.Compo[item]
-
-            if rcp then
-                recipeLabel = rcp.label
-            elseif rcpCompo then
-                recipeLabel = rcpCompo.label
-            elseif rcpCompoLocal then
-                recipeLabel = rcpCompoLocal.label
-            end
-
-            if(cfg.DebugMode) then
-                print("initKitchen item: "..item)
-            end          
-
-            for ingredient, details in pairs(localRecipes.List[item].ingredients) do
-                local ingredientLabel = ingredient
-                local igd = IngList.Base[ingredient]
-                local igdCompo = IngList.Compo[ingredient]
-                local igdCompoLocal = localRecipes.Compo[ingredient]
-
-                if igd then
-                    ingredientLabel = igd.label
-                elseif igdCompo then
-                    ingredientLabel = igdCompo.label
-                elseif igdCompoLocal then
-                    ingredientLabel = igdCompoLocal.label
-                end
-                */
 end
 
 local function init()
