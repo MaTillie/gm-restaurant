@@ -260,13 +260,30 @@ IngList.Base = {
     ['gmr_igd_marsala'] = {label = 'Marsala', weight = 55, stack = true, close = true},
     ['gmr_igd_cidre'] = {label = 'Cidre', weight = 45, stack = true, close = true},
 
+    -- Alcool bière -- 
+    ["gmr_igd_biere"] = {label = 'Bière', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_blonde"] = {label = 'Bière blonde', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_brune"] = {label = 'Bière brune', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_ambree"] = {label = 'Bière ambree', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_ipa"] = {label = 'Bière IPA', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_stout"] = {label = 'Bière stout', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_lager"] = {label = 'Bière lager', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_pilsner"] = {label = 'Bière pilsner', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_triple"] = {label = 'Bière triple', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_saison"] = {label = 'Bière saison', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_weizen"] = {label = 'Bière weizen', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_porter"] = {label = 'Bière porter', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_gueuze"] = {label = 'Bière gueuze', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_blanche"] = {label = 'Bière blanche', weight = 50, stack = true, close = true},
+    ["gmr_igd_biere_fruitee"] = {label = 'Bière fruitée', weight = 50, stack = true, close = true},
+
+
     ["gmr_igd_os_veau"] = {label = 'Os de veau', weight = 60, stack = true, close = true},
     ["gmr_igd_jus_de_citron"] = {label = 'Jus de citron', weight = 10, stack = true, close = true},
     ["gmr_igd_olive_noire"] = {label = 'Olives noires', weight = 40, stack = true, close = true},
     ["gmr_igd_cornichon"] = {label = 'Cornichons', weight = 20, stack = true, close = true},
     ["gmr_igd_olive_verte"] = {label = 'Olives vertes', weight = 40, stack = true, close = true},
 
-    ["gmr_igd_biere"] = {label = 'Bière', weight = 60, stack = true, close = true},
     ["gmr_igd_herbes_magiques"] = {label = 'Herbes magiques', weight = 10, stack = true, close = true},
     ["gmr_igd_citrouille"] = {label = 'Citrouille', weight = 100, stack = true, close = true},
     ["gmr_igd_glace"] = {label = 'Glace', weight = 50, stack = true, close = true},
