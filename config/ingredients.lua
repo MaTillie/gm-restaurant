@@ -718,6 +718,7 @@ IngList.Compo = {
     },
     ["gmr_cpigd_frites"] = {
         label = "Frites croustillantes",
+        dose = 1,
         ingredients = {
             ["gmr_igd_pomme_de_terre"] = {amount = 5},
             ["gmr_igd_huile_tournesol"] = {amount = 2},
@@ -726,6 +727,7 @@ IngList.Compo = {
     },
     ["gmr_cpigd_pate_feuilletee"] = {
         label = "Pâte feuilletée maison",
+        dose = 1,
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
             ["gmr_igd_beurre"] = {amount = 4},

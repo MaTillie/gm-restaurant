@@ -156,7 +156,7 @@ function initFidge(cfg,key)
     end 
 end
 
-function initConfig.RecipeBook(cfg,key)
+function RecipeBook(cfg,key)
     
 
     for index, caisse in pairs(cfg.RecipeBook) do
@@ -202,13 +202,13 @@ function getRecipeItem(item,cfg)
     end
 
     if (lkItem) then
-        
+        print("lkItem "..lkItem.label)
         for ingredient, details in pairs(lkItem.ingredients) do    
             if(details.base)then                
                 table.insert(ingredient,{label=IngList.Base[ingredient].label,amount=details.amount})  
             end
 
-            if(!details.base)then   
+            if(not details.base)then   
                 local lkIgd = lrec.Compo[item]
                 if (not lkItem) then
                     lkItem = IngList.Compo[item]

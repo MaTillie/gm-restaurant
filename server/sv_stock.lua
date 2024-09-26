@@ -54,7 +54,7 @@ function getIngredients(name,cfg,base,amount)
                 --table.insert(result,{label=IngList.Base[ingredient].label,amount=details.amount})  
             end
 
-            if(!details.base)then   
+            if(not details.base)then   
                 local resIgd = {}
                 resIgd = getIngredients(ingredient,cfg,false,details.amount)
                 
