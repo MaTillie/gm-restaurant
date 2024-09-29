@@ -196,6 +196,14 @@ Config.RecipeBook ={
     },
 }
 
+Config.Management={
+    [1] ={
+        coords = vec3(-584.81, -285.24, 41.71),
+        size = 0.7,
+        title = "Gestion du restaurant",
+    },    
+}
+
 
 --## Delivery ##--
 

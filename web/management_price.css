@@ -1,0 +1,54 @@
+body {
+    background-color: transparent;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/*#mng_prix {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none;
+}*/
+
+#mng_prix {
+    display: none;
+    flex-direction: column;
+    width: 800px;
+    height: 800px;
+    background-color: #221301;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    margin: auto;
+    position: relative;
+    overflow: hidden; 
+}
+
+
+h1 {
+    text-align: center;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+input {
+    width: 80px;
+    padding: 5px;
+}

@@ -281,6 +281,36 @@ function generateOrderItems(menuConfig) {
     document.querySelector('.footer').style.display = 'flex';
 }
 
+function manage_price(menuItems) {
+    console.log("manage_price count",menuItems.length)
+    const tableBody = document.getElementById('menu-items');
+    tableBody.innerHTML = ''; // Clear previous data
+
+   
+    for (let i = 0; i < menuItems.length; i++) {
+        const item = menuItems[i];
+        const row = document.createElement('tr');
+        console.log('price ',item.price);
+        console.log('label ',item.label);
+        
+        const itemNameCell = document.createElement('td');
+        itemNameCell.textContent = item.label.charAt(0).toUpperCase() + item.label.slice(1);
+        row.appendChild(itemNameCell);
+
+        const priceCell = document.createElement('td');
+        const priceInput = document.createElement('input');
+        priceInput.type = 'number';
+        priceInput.value = item.price;
+        priceInput.id = `price-${item}`;
+        priceCell.appendChild(priceInput);
+        row.appendChild(priceCell);
+
+        tableBody.appendChild(row);
+    }
+
+    document.getElementById('mng_prix').style.display = 'flex';
+}
+
 function callLuaFunction(data) {
     fetch(`https://${GetParentResourceName()}/nuiCallback`, {
         method: 'POST',
@@ -292,6 +322,28 @@ function callLuaFunction(data) {
         console.log('Réponse Lua:', resp);
     }).catch(error => {
         console.error('Erreur lors de l\'appel Lua:', error);
+    });
+}
+
+function savePrices() {
+    const tableBody = document.getElementById('menu-items').children;
+    const updatedMenu = {};
+
+    for (let row of tableBody) {
+        const itemName = row.children[0].textContent;
+        const newPrice = parseFloat(row.children[1].children[0].value);
+
+        updatedMenu[itemName] = newPrice;
+    }
+
+    fetch('https://gmr/savePrices', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedMenu),
+    }).then(() => {
+        console.log('Prices updated');
     });
 }
 
@@ -311,6 +363,8 @@ function order() {
     updateTotalPrice()
     closeMenu()
 }
+
+
 
 $(document).ready(function () {
     window.addEventListener("message", (event) => {
@@ -337,6 +391,12 @@ $(document).ready(function () {
               } else {
                 closeMenu();
               }
+              break;
+        case "managePrice":
+            console.log("managePrice",eventData.data)
+            const menuItems = eventData.data.menu;
+            console.log("managePrice1",menuItems)
+            manage_price(menuItems)
               break;
         case "openTicket":
         console.log("openTicket :" )

@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu des Articles</title>
    <!-- <link rel="stylesheet" href="styles.css"> -->
+   
    <link id="theme-link" rel="stylesheet" href="styles.css">
+   <link id="theme-link" rel="stylesheet" href="management_price.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js" integrity="sha256-hlKLmzaRlE8SCJC1Kw8zoUbU8BxA+8kR3gseuKfMjxA=" crossorigin="anonymous"></script>
     <link href="https://fonts.cdnfonts.com/css/harry-p" rel="stylesheet">
@@ -41,6 +43,7 @@
                 <button id="payButton" onclick="order()">Valider la commande</button>
             </div>
         </div>
+
         <div id="ticket" class="notepad">
             <h1>Ticket de Commande</h1>
             <ul id="orderList">
@@ -49,6 +52,23 @@
             <button class="close-button" onclick="closeMenu()">×</button>
         </div>
         
+        <div id="mng_prix">
+            <h1>Changement des prix</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Prix</th>
+                    </tr>
+                </thead>
+                <tbody id="menu-items">
+                    <!-- Les items seront injectés ici via JS -->
+                </tbody>
+            </table>
+            <button onclick="savePrices()">Sauvegarder</button>
+        </div>
+    
+        <script src="mng_prix.js"></script>
 
     <script src="main.js"></script>
 </body>

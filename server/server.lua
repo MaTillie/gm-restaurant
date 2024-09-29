@@ -242,3 +242,46 @@ AddEventHandler('gm-restaurant:server:payment', function(bill,cfg)
     end  
 end)
 
+-- Gestion des prix - Début --
+
+-- Fonction pour sauvegarder les modifications dans config.lua
+local function saveConfig(data)    
+    local src = source
+    local player = exports.qbx_core:GetPlayer(src)
+    local cfg = {}
+    for index, restaurant in ipairs(Config.Restaurants) do
+        if(restaurant.job == player.PlayerData.job.name)then
+            cfg = restaurant
+            for item, price in ipairs(data)do
+                if cfg.Menu[item] then
+                    cfg.Menu[item].price = price
+                end
+            end
+        end
+    end
+    local configFile = LoadResourceFile(GetCurrentResourceName(), "config/config_"..player.PlayerData.job.name..".lua")
+
+    -- Mise à jour de la section Menu uniquement
+    local menuStart = configFile:find("Config.Menu = {")
+    local menuEnd = configFile:find("}\n", menuStart) + 1
+
+    local newMenu = "Config.Menu = {\n"
+    for k, v in pairs(cfg.Menu) do
+        newMenu = newMenu .. string.format('    ["%s"] = { price = %.2f, categorie = "%s" },\n', k, v.price, v.categorie)
+    end
+    newMenu = newMenu .. "}"
+
+    -- Remplacer uniquement la section Menu dans le fichier de config
+    local updatedConfig = configFile:sub(1, menuStart - 1) .. newMenu .. configFile:sub(menuEnd + 1)
+
+    -- Sauvegarder dans config.lua
+    SaveResourceFile(GetCurrentResourceName(), "config/config_"..player.PlayerData.job.name..".lua", updatedConfig, -1)
+end
+
+
+-- Fonction pour mettre à jour le prix
+RegisterNetEvent('gm-restaurant:server:updatePrice', function(data)
+    saveConfig(data)
+end)
+
+-- Gestion des prix - Fin --

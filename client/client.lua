@@ -81,7 +81,7 @@ function initKitchen(cfg,key)
             table.insert(options,{
                 name = item, 
                 label = recipeLabel,  -- Texte affiché à l'utilisateur
-                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                icon = 'fas fa-caret-right ',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()          
                     local success = true          
                    /* local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
@@ -239,7 +239,31 @@ local function init()
         initFidge(restaurant,index)
         initKitchen(restaurant,index)
         initCarte(restaurant,index)
+        initManagement(restaurant,index)
     end
+end
+
+function initManagement(cfg,key)
+
+    for index, caisse in pairs(cfg.Management) do
+        local options = {}
+        table.insert(options,{
+            name = "Management",  -- Nom de l'option, unique pour chaque interaction
+            label = caisse.title,  -- Texte affiché à l'utilisateur
+            icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            onSelect = function()                    
+                managePrice(cfg.Menu,cfg)
+            end,
+        });
+        local idCaisse = exports.ox_target:addSphereZone({ 
+            coords = caisse.coords,
+            radius = caisse.size,
+            debug = cfg.DebugMode,
+            options = options   })  
+    end
+
+     
+
 end
 
 function initCarte(cfg,key)
@@ -250,7 +274,7 @@ function initCarte(cfg,key)
         table.insert(options,{
             name = "carte",  -- Nom de l'option, unique pour chaque interaction
             label = caisse.title,  -- Texte affiché à l'utilisateur
-            icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            icon = 'fas fa-window-restore',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()                    
                 lauchMenu(cfg,key)
             end,
@@ -259,31 +283,33 @@ function initCarte(cfg,key)
         table.insert(options,{
             name = "order",  -- Nom de l'option, unique pour chaque interaction
             label = "Caisse",  -- Texte affiché à l'utilisateur
-            icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            icon = 'fas fa-money-check',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()     
                 print("key launchCaisse "..index)               
                 launchCaisse(index,cfg,key)
             end,
             groups = cfg.Job,
         });
-
+        
         table.insert(options,{
             name = "plateau",  -- Nom de l'option, unique pour chaque interaction
             label = "Plateau",  -- Texte affiché à l'utilisateur
-            icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            icon = 'fas fa-archive',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()                    
                 exports.ox_inventory:openInventory('stash', cfg.Job.."plateau"..index)
             end,
         });
-
-        table.insert(options,{
-            name = "virtualfridge",  -- Nom de l'option, unique pour chaque interaction
-            label = "virtualfridge",  -- Texte affiché à l'utilisateur
-            icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-            onSelect = function()                    
-                exports.ox_inventory:openInventory('stash', cfg.Job.."virtualfridge")
-            end,
-        });
+        
+        if(cfg.DebugMode) then
+            table.insert(options,{
+                name = "virtualfridge",  -- Nom de l'option, unique pour chaque interaction
+                label = "virtualfridge",  -- Texte affiché à l'utilisateur
+                icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                onSelect = function()                    
+                    exports.ox_inventory:openInventory('stash', cfg.Job.."virtualfridge")
+                end,
+            });
+        end
 
         
 
@@ -517,7 +543,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
             table.insert(options,{
                 name = "payment",  -- Nom de l'option, unique pour chaque interaction
                 label = "Payer",  -- Texte affiché à l'utilisateur
-                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                icon = 'fas fa-money-check',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
                     createBill(bill,cfg)
                 end,
@@ -710,4 +736,35 @@ CreateThread(function()
     end
 end)
 
--- ouvrir le plateau exports.ox_inventory:openInventory('stash', Config.job.."plateau")
+
+-- Pour les changements de prix
+function managePrice(menu,cfg)
+
+
+    local lrec = getRecipe(cfg.Job)
+
+    local dataMenu = {}
+    print("Pouette 1 ")
+    PrintTable(menu)
+    for key, item in pairs(menu) do
+        print("Pouette 1.5 ")
+        local lkItem = lrec.List[key]
+        print(lkItem.label)
+        table.insert(dataMenu,{label=lkItem.label,price=item.price,name=key})  
+    end
+    print("Pouette 2 ")
+    PrintTable(dataMenu)
+    SetNuiFocus(true, true)
+    local data = {}
+    data.theme = "management_price.css"
+    data.menu = dataMenu
+    SendNUIMessage({
+        action = 'managePrice',
+        data = data, 
+    })
+end
+
+-- Écoute les réponses NUI pour sauvegarder les prix
+RegisterNUICallback('savePrices', function(data, cb)
+    TriggerServerEvent('gm-restaurant:server:updatePrice', data)
+end)
