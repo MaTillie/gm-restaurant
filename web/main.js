@@ -309,6 +309,8 @@ function manage_price(menuItems) {
     }
 
     document.getElementById('mng_prix').style.display = 'flex';
+    document.querySelector('.menu-container').style.display = 'none';
+    document.querySelector('.footer').style.display = 'none';
 }
 
 function callLuaFunction(data) {
@@ -350,6 +352,7 @@ function savePrices() {
 function closeMenu() {
     document.querySelector('.menu-container').style.display = 'none';
     document.getElementById('ticket').style.display = 'none';
+    document.getElementById('mng_prix').style.display = 'none';
     callLuaFunction({ action: 'closeMenu', param: 'someValue' });
     itemsList = [];
     currentDiscount = 0.00;

@@ -1,38 +1,64 @@
 body {
     background-color: transparent;
-    color: #fff;
+    color: #D7E0FF;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    font-family: "Merriweather Sans", sans-serif;
 }
-
-/*#mng_prix {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: none;
-}*/
 
 #mng_prix {
     display: none;
     flex-direction: column;
     width: 800px;
     height: 800px;
-    background-color: #221301;
+    background-color: #17191A;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     margin: auto;
     position: relative;
-    overflow: hidden; 
+    overflow: hidden;     
 }
 
+.items-container {
+    flex: 1; /* Permet de prendre tout l'espace disponible */
+    overflow-y: auto; /* Activer le défilement uniquement sur cette zone */
+    padding-right: 10px; /* Espacement pour que la barre de défilement n'empiète pas sur le contenu */
+    margin-top: 20px; /* Espacement par rapport au titre */
+
+    /*width: 100%;*/
+    margin-bottom: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #690101;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+
+
+.close-button:hover {
+    background-color: #9e0f0f;
+}
 
 h1 {
     text-align: center;
@@ -41,6 +67,7 @@ h1 {
 table {
     width: 100%;
     border-collapse: collapse;
+    border-radius: 10px;
 }
 
 th, td {
@@ -51,4 +78,63 @@ th, td {
 input {
     width: 80px;
     padding: 5px;
+}
+
+.menu-container{
+    display: none;
+}
+
+.footer{
+    display: none;
+}
+
+#ticket{
+    display: none;
+}
+
+input[type="number"] {
+    width: 80px; /* Ajuste la largeur pour être cohérent */
+    padding: 5px 10px; /* Espace interne */
+    font-size: 14px; /* Taille de la police */
+    border: 2px solid #ccc; /* Bordure de base */
+    border-radius: 5px; /* Coins arrondis */
+    background-color: #a6c7cf; /* Couleur de fond */
+    color: #333; /* Couleur du texte */
+    transition: all 0.3s ease; /* Animation pour les transitions */
+}
+
+/* Style lorsque l'input est survolé */
+input[type="number"]:hover {
+    border-color: #888; /* Change la couleur de bordure */
+    background-color: #a6c7cf; /* Change la couleur de fond */
+}
+
+/* Style lorsque l'input est en focus */
+input[type="number"]:focus {
+    border-color: #3498db; /* Couleur de la bordure au focus */
+    background-color: #a6c7cf; /* Change la couleur de fond au focus */
+    outline: none; /* Supprime le contour bleu par défaut */
+}
+
+/* Optionnel: Style pour rendre les champs désactivés visuellement distincts */
+input[type="number"]:disabled {
+    background-color: #e9ecef; /* Fond gris pour champs désactivés */
+    border-color: #ced4da; /* Bordure plus claire pour les champs désactivés */
+    color: #6c757d; /* Texte gris pour les champs désactivés */
+    cursor: not-allowed; /* Icône de curseur non autorisé */
+}
+
+#saveButton {
+    padding: 10px 20px;
+    font-size: 24px;
+    background-color: #272A2C;
+    color: #D7E0FF;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#saveButton:hover {
+    background-color: #D7E0FF;
+    color: #272A2C;
 }

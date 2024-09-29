@@ -739,8 +739,6 @@ end)
 
 -- Pour les changements de prix
 function managePrice(menu,cfg)
-
-
     local lrec = getRecipe(cfg.Job)
 
     local dataMenu = {}
