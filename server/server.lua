@@ -36,7 +36,7 @@ function FridgeName()
     return player.PlayerData.job.name.."fridge" 
 end
 
-function VirtualFridgeName()
+function VirtualFridgeName(source)
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
     return player.PlayerData.job.name.."virtualfridge" 
@@ -51,7 +51,7 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,cfg,item
         print("null")
     end
 
-    print("craft "..item)
+    print("craft "..itemLabel)
 
     local requis = true
     for ingredient, details  in pairs(ingredients) do
@@ -60,22 +60,27 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,cfg,item
             --imageurl = 'nui://gm-restaurant/web/image/'..item..'.png',       
         }
 
-        if (exports.ox_inventory:GetItemCount(VirtualFridgeName(), "leap_ingredient",metadata)< details.amount) then
+        if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "leap_ingredient",metadata)< details.amount) then
             TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
             requis = false
-            exports.ox_inventory:AddItem(VirtualFridgeName(), "leap_ingredient",details.amount,metadata)
+            exports.ox_inventory:AddItem(VirtualFridgeName(src), "leap_ingredient",details.amount,metadata)
         end    
     end
 
-    if requis then
+    if requis then        
         for ingredient, details in pairs(ingredients) do
-            exports.ox_inventory:RemoveItem(VirtualFridgeName(), "leap_ingredient",details.amount,metadata)
+            exports.ox_inventory:RemoveItem(VirtualFridgeName(src), "leap_ingredient",details.amount,metadata)
         end
+
+        local player = exports.qbx_core:GetPlayer(src)
+        local lrec = getRecipe(player.PlayerData.job.name)
+        local lkItem = lrec.List[item]
+
         local metadata = {
             label = itemLabel ,
-            imageurl = 'nui://gm-restaurant/web/image/'..item..'.png',       
+            imageurl = lkItem.image,        
         }
-        exports.ox_inventory:AddItem(src, 'gmr_plat', 1,metadata)
+        exports.ox_inventory:AddItem(src, lkItem.categorie, 1,metadata)
     end
 end)	
 
@@ -150,20 +155,30 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
     local items = {}
 
     local hasAllItems = true
-    for _, item in ipairs(metadata) do
-        local itemCount = exports.ox_inventory:GetItemCount(src, item.name)
+
+    local player = exports.qbx_core:GetPlayer(src)
+    local lrec = getRecipe(player.PlayerData.job.name)
+
+    for _, item in ipairs(metadata) do       
+        local lkItem = lrec.List[item.name]
+        local mtdt = {
+            label = item.label ,
+          --  imageurl = lkItem.image,       
+        }
+
+        local itemCount = exports.ox_inventory:GetItemCount(src, lkItem.categorie,mtdt)
         print("itemname "..item.name.." amount "..item.amount )
 
         if itemCount < item.amount then
             hasAllItems = false
             table.insert(items, {
-                name = item.name,
+                name = item.label,
                 amount = itemCount.."/"..item.amount,
                 cl = notCompleted,
             })
         else
             table.insert(items, {
-                name = item.name,
+                name = item.label,
                 amount = item.amount.."/"..item.amount,
                 cl = completed,
             })
@@ -171,11 +186,21 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
     end
     
     if hasAllItems then
+        -- Retirer le ticket
+        exports.ox_inventory:RemoveItem(src, "hogspub_ticket", 1, metadata,slot)
+
         -- Retirer les items de la commande de l'inventaire du joueur
         for _, item in ipairs(metadata) do
-            exports.ox_inventory:RemoveItem(src, item.name, item.amount)
+            local lkItem = lrec.List[item.name]
+            local mtdt = {
+                label = item.label ,
+                imageurl = lkItem.image,       
+            }
+            item.imageurl = lkItem.image
+            item.categorie = lkItem.categorie
+            exports.ox_inventory:RemoveItem(src, lkItem.categorie, item.amount, mtdt)
         end
-        exports.ox_inventory:RemoveItem(src, "hogspub_ticket", 1, metadata,slot)
+        
         -- Ajouter l'item "repas_empaquete" avec les mêmes métadonnées
         exports.ox_inventory:AddItem(src, 'hogspub_repas', 1, metadata)
         TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = 'Vous avez empaqueté le repas !'})
@@ -190,7 +215,11 @@ end)
 RegisterNetEvent('gm-restaurant:server:useBoite', function(source,metadata,slot)
     local src = source
     for _, item in ipairs(metadata) do
-        exports.ox_inventory:AddItem(src, item.name, item.amount)
+        local mtdt = {
+            label = item.label ,
+            imageurl = item.imageurl,       
+        }
+        exports.ox_inventory:AddItem(src, item.categorie , item.amount,mtdt)
     end 
     exports.ox_inventory:RemoveItem(src, "hogspub_repas", 1,metadata, slot)
 end)

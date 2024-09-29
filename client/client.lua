@@ -314,12 +314,14 @@ function lauchMenu(cfg, key)
         for item, menu in pairs(cfg.Menu) do
             if menu.categorie == categorie.name then
                 local label = item
+                local limage = ""
                 print("### item ### "..item)
                 for recipeName, recipeData in pairs(Recipe.List) do
                     print('recipeName '..recipeName)
                     if recipeName == item then
                         -- Ajouter le couple itemname/label dans le tableau
                         label = recipeData.label
+                        limage = recipeData.image
                         print("labvel "..label)
                     end
                 end
@@ -327,7 +329,8 @@ function lauchMenu(cfg, key)
                 local itemData = {
                     Label = label, --exports.ox_inventory:Items()[item].label,
                     name = item,
-                    price = menu.price
+                    price = menu.price,
+                    image = limage
                 }
                 table.insert(categoryItems, itemData)
             end
@@ -369,17 +372,20 @@ function launchCaisse(indexCaisse,cfg,key)
         for item, menu in pairs(cfg.Menu) do
             if menu.categorie == categorie.name then
                 local label = item
+                local limage = ""
                 for recipeName, recipeData in pairs(Recipe.List) do
                     if recipeName == item then
                         -- Ajouter le couple itemname/label dans le tableau
                         label = recipeData.label
+                        limage = recipeData.image
                     end
                 end
                 
                 local itemData = {
                     Label = label, --exports.ox_inventory:Items()[item].label,
                     name = item,
-                    price = menu.price
+                    price = menu.price,
+                    image = limage
                 }
                 table.insert(categoryItems, itemData)
             end
@@ -426,7 +432,8 @@ function order(data)
 
     for _, item in ipairs(data.items) do
         table.insert(items, {
-            name = item.label,
+            name = item.name,
+            label = item.label,
             amount = item.quantity
         })
     end

@@ -102,7 +102,7 @@ function generateMenuItems(menuConfig) {
             itemDiv.classList.add('item');
 
             const img = document.createElement('img');
-            img.src = `image/${item.name.toLowerCase().replace(/\s/g, '')}.png`;
+            img.src = item.image;
             img.alt = item.Label;
 
             itemDiv.appendChild(img);
@@ -175,7 +175,7 @@ function generateOrderItems(menuConfig) {
             itemDiv.classList.add('item');
 
             const img = document.createElement('img');
-            img.src = `image/${item.name.toLowerCase().replace(/\s/g, '')}.png`;
+            img.src = item.image;
             img.alt = item.Label;
 
             itemDiv.appendChild(img);
