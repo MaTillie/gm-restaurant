@@ -250,8 +250,11 @@ local function saveConfig(data)
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
     local cfg = {}
+    print(player.PlayerData.job.name)
     for index, restaurant in ipairs(Config.Restaurants) do
-        if(restaurant.job == player.PlayerData.job.name)then
+        print(restaurant.Job)
+        if(restaurant.Job == player.PlayerData.job.name)then
+            print(restaurant.job)
             cfg = restaurant
             for item, price in ipairs(data)do
                 if cfg.Menu[item] then
@@ -271,9 +274,13 @@ local function saveConfig(data)
     -- Mise à jour de la section Menu uniquement
     local menuStart = configFile:find("Config.Menu = {")
     print("menuStart: "..menuStart)
-    local menuEnd = configFile:find("}\n", menuStart) 
-    print("menuEnd: "..menuEnd)
-    menuEnd = menuEnd +1
+    local menuEnd = configFile:find("%s*}%s*[^\n,]", menuStart)
+    if not menuEnd then
+        print("Erreur: Impossible de trouver la fin de 'Config.Menu'")
+        return
+    end
+
+    menuEnd = menuEnd +2
     local newMenu = "Config.Menu = {\n"
     for k, v in pairs(cfg.Menu) do
         newMenu = newMenu .. string.format('    ["%s"] = { price = %.2f, categorie = "%s" },\n', k, v.price, v.categorie)
