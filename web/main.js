@@ -337,16 +337,8 @@ function savePrices() {
 
         updatedMenu[itemName] = newPrice;
     }
-
-    fetch('https://gmr/savePrices', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedMenu),
-    }).then(() => {
-        console.log('Prices updated');
-    });
+    callLuaFunction({ action: 'savePrices', param: {menu :updatedMenu }});
+    closeMenu()
 }
 
 function closeMenu() {

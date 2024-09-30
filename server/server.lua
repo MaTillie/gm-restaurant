@@ -246,6 +246,7 @@ end)
 
 -- Fonction pour sauvegarder les modifications dans config.lua
 local function saveConfig(data)    
+    print("saveConfig")
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
     local cfg = {}
@@ -260,16 +261,24 @@ local function saveConfig(data)
         end
     end
     local configFile = LoadResourceFile(GetCurrentResourceName(), "config/config_"..player.PlayerData.job.name..".lua")
+    
+    if(configFile)then
+        print("configFile ok")
+    else
+        print("configFile pas ok")
+    end
 
     -- Mise à jour de la section Menu uniquement
     local menuStart = configFile:find("Config.Menu = {")
-    local menuEnd = configFile:find("}\n", menuStart) + 1
-
+    print("menuStart: "..menuStart)
+    local menuEnd = configFile:find("}\n", menuStart) 
+    print("menuEnd: "..menuEnd)
+    menuEnd = menuEnd +1
     local newMenu = "Config.Menu = {\n"
     for k, v in pairs(cfg.Menu) do
         newMenu = newMenu .. string.format('    ["%s"] = { price = %.2f, categorie = "%s" },\n', k, v.price, v.categorie)
     end
-    newMenu = newMenu .. "}"
+    newMenu = newMenu .. "}\n"
 
     -- Remplacer uniquement la section Menu dans le fichier de config
     local updatedConfig = configFile:sub(1, menuStart - 1) .. newMenu .. configFile:sub(menuEnd + 1)

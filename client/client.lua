@@ -606,9 +606,12 @@ end
 RegisterNUICallback('nuiCallback', function(data, cb)
     if data.action == 'closeMenu' then
         closeMenu()  -- Appelle la fonction Lua avec le paramètre envoyé depuis JS
-    else if(data.action == 'order')then
     end
+    if(data.action == 'order')then
         order(data.param,data.cfg)
+    end
+    if (data.action == 'savePrices') then
+        TriggerServerEvent('gm-restaurant:server:updatePrice', data)
     end
 
     cb('ok')  -- Réponse à envoyer au JS
@@ -762,7 +765,3 @@ function managePrice(menu,cfg)
     })
 end
 
--- Écoute les réponses NUI pour sauvegarder les prix
-RegisterNUICallback('savePrices', function(data, cb)
-    TriggerServerEvent('gm-restaurant:server:updatePrice', data)
-end)

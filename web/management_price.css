@@ -1,6 +1,6 @@
 body {
     background-color: transparent;
-    color: #D7E0FF;
+    color: #FEEAA1;
     margin: 0;
     padding: 0;
     display: flex;
@@ -15,7 +15,7 @@ body {
     flex-direction: column;
     width: 800px;
     height: 800px;
-    background-color: #17191A;
+    background-color: #18534F;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
@@ -52,8 +52,6 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-
-
 
 
 .close-button:hover {
@@ -127,14 +125,16 @@ input[type="number"]:disabled {
 #saveButton {
     padding: 10px 20px;
     font-size: 24px;
-    background-color: #272A2C;
-    color: #D7E0FF;
+    background-color: #226D68;
+    color: #D6955B;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    position: relative;
+    padding: 20px;
 }
 
 #saveButton:hover {
-    background-color: #D7E0FF;
-    color: #272A2C;
+    background-color: #226D68;
+    color: #FEEAA1;
 }
