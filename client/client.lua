@@ -611,7 +611,7 @@ RegisterNUICallback('nuiCallback', function(data, cb)
         order(data.param,data.cfg)
     end
     if (data.action == 'savePrices') then
-        TriggerServerEvent('gm-restaurant:server:updatePrice', data)
+        TriggerServerEvent('gm-restaurant:server:updatePrice', data.param.menu)
     end
 
     cb('ok')  -- Réponse à envoyer au JS
