@@ -295,6 +295,7 @@ function manage_price(menuItems) {
         
         const itemNameCell = document.createElement('td');
         itemNameCell.textContent = item.label.charAt(0).toUpperCase() + item.label.slice(1);
+        itemNameCell.id = item.name;
         row.appendChild(itemNameCell);
 
         const priceCell = document.createElement('td');
@@ -332,7 +333,7 @@ function savePrices() {
     const updatedMenu = {};
 
     for (let row of tableBody) {
-        const itemName = row.children[0].textContent;
+        const itemName = row.children[0].id;
         const newPrice = parseFloat(row.children[1].children[0].value);
 
         updatedMenu[itemName] = newPrice;
@@ -393,6 +394,10 @@ $(document).ready(function () {
             console.log("managePrice1",menuItems)
             manage_price(menuItems)
               break;
+        case "managePRecipe":      
+        console.log("managePRecipe",eventData.data)
+        
+              break
         case "openTicket":
         console.log("openTicket :" )
        

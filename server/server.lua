@@ -250,15 +250,20 @@ local function saveConfig(data)
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
     local cfg = {}
-    print(player.PlayerData.job.name)
+    
+    print("###### "..player.PlayerData.job.name)
+    PrintTable(data,0)
     for index, restaurant in ipairs(Config.Restaurants) do
+        print("#1")
         print(restaurant.Job)
         if(restaurant.Job == player.PlayerData.job.name)then
-            print(restaurant.job)
+            print("#2")
+            print(restaurant.Job)
             cfg = restaurant
-            for item, price in ipairs(data)do
-                if cfg.Menu[item] then
-                    cfg.Menu[item].price = price
+            for itemName, newPrice in pairs(data) do
+                print(itemName.." / "..newPrice)
+                if cfg.Menu[itemName] then
+                    cfg.Menu[itemName].price = newPrice
                 end
             end
         end
