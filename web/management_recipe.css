@@ -53,6 +53,21 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.newRecipe-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #01694a;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
 
 .close-button:hover {
     background-color: #9e0f0f;

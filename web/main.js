@@ -5,6 +5,9 @@ let IndexCaisse = 0;
 let Theme = "styles.css"
 let Config = {}
 let Key = ""
+let ingredientList = [];
+let recipeList = [];
+let currentRecipe = {};
 
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
@@ -314,6 +317,15 @@ function manage_price(menuItems) {
     document.querySelector('.footer').style.display = 'none';
 }
 
+function manage_recipe(){
+    // Vider les items actuels avant d'ajouter les nouveaux
+    document.querySelector('.items-container').innerHTML = '';
+
+    let themeLink = document.getElementById("theme-link");
+    themeLink.setAttribute("href", Theme);
+}
+
+// Retour au client lua
 function callLuaFunction(data) {
     fetch(`https://${GetParentResourceName()}/nuiCallback`, {
         method: 'POST',
