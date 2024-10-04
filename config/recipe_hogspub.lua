@@ -2,93 +2,13 @@ function getRecipe_hogspub()
 Recipes = {}
 
 Recipes.List = {
-    ["gmr_dsh_hogspub_fishnchips"] = {
-        categorie = "gmr_plat",
-        label = "Fish and chips",
-        image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_fishnchips.png",
-        ingredients = {
-            ["gmr_igd_cabillaud"] = {amount = 1, base = true},
-            ["gmr_cpigd_frites"] = {amount = 1, base = false},  -- ingrédient intermédiaire
-            ["gmr_cpigd_bechamel"] = {amount = 1, base = false},  -- ingrédient intermédiaire
-            ["gmr_igd_sel"] = {amount = 1, base = true},
-            ["gmr_igd_poivre"] = {amount = 1, base = true},
-        },
-    },
-    
-    ["gmr_dsh_hogspub_chocogrenouille"] = {
-        categorie = "gmr_petitplat",
-        label = "Chocogrenouille",
-        image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_chocogrenouille.png",
-        ingredients = {
-            ["gmr_igd_chocolat"] = {amount = 3, base = true},
-            ["gmr_igd_beurre"] = {amount = 1, base = true},
-            ["gmr_igd_sucre"] = {amount = 1, base = true},
-            ["gmr_igd_oeuf"] = {amount = 1, base = true},
-        },
-    },
-    
-    ["gmr_dsh_hogspub_bubblensqueak"] = {
-        categorie = "gmr_plat",
-        label = "Bubble and squeak",
-        image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_bubblensqueak.png",
-        ingredients = {
-            ["gmr_cpigd_puree_de_pomme"] = {amount = 1, base = false},  -- ingrédient intermédiaire
-            ["gmr_igd_chou"] = {amount = 1, base = true},
-            ["gmr_igd_oignon"] = {amount = 1, base = true},
-            ["gmr_igd_bacon"] = {amount = 2, base = true},
-            ["gmr_igd_beurre"] = {amount = 1, base = true},
-        },
-    },
-    
-    ["gmr_dsh_hogspub_chickenpie"] = {
-        categorie = "gmr_plat",
-        label = "Chiken pie",
-        image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_chickenpie.png",
-        ingredients = {
-            ["gmr_cpigd_pate_feuilletee"] = {amount = 1, base = false},  -- ingrédient intermédiaire
-            ["gmr_igd_poulet"] = {amount = 2, base = true},
-            ["gmr_cpigd_sauce_bolognaise"] = {amount = 1, base = false},  -- ingrédient intermédiaire
-            ["gmr_igd_oeuf"] = {amount = 1, base = true},
-            ["gmr_igd_sel"] = {amount = 1, base = true},
-            ["gmr_igd_poivre"] = {amount = 1, base = true},
-        },
-    },
-    
-    ["gmr_dsh_hogspub_bierraubeurre"] = {
-        categorie = "gmr_alcoolbiere",
-        label = "Bierraubeure",
-        image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_bierraubeurre.png",
-        ingredients = {
-            ["gmr_igd_biere"] = {amount = 1, base = false},  -- nouvel ingrédient de base
-            ["gmr_igd_beurre"] = {amount = 1, base = true},
-            ["gmr_igd_sucre"] = {amount = 1, base = true},
-            ["gmr_igd_vanille"] = {amount = 1, base = true},
-        },
-    },
-    
-    ["gmr_dsh_hogspub_polynectar"] = {
-        categorie = "gmr_boisson",
-        label = "Polynectar",
-        image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_polynectar.png",
-        ingredients = {
-            ["gmr_igd_herbes_magiques"] = {amount = 1, base = false},  -- nouvel ingrédient de base
-            ["gmr_igd_eau"] = {amount = 1, base = true},
-            ["gmr_igd_poivre"] = {amount = 1, base = true},
-            ["gmr_igd_sel"] = {amount = 1, base = true},
-        },
-    },
-    
-    ["gmr_dsh_hogspub_jus_de_citrouille"] = {
-        categorie = "gmr_boisson",
-        label = "Jus de citrouille",
-        image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_jus_de_citrouille.png",
-        ingredients = {
-            ["gmr_igd_citrouille"] = {amount = 2, base = false},  -- nouvel ingrédient de base
-            ["gmr_igd_sucre"] = {amount = 1, base = true},
-            ["gmr_igd_eau"] = {amount = 1, base = true},
-        },
-    },
-    
+    ["gmr_dsh_hogspub_fishnchips"] = {categorie = "gmr_plat", label = "Fish and chips", image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_fishnchips.png", ingredients = {["gmr_igd_cabillaud"] = {amount = 1, base = true}, ["gmr_cpigd_frites"] = {amount = 1, base = false}, ["gmr_cpigd_bechamel"] = {amount = 1, base = false}, ["gmr_igd_sel"] = {amount = 1, base = true}, ["gmr_igd_poivre"] = {amount = 1, base = true}}},    
+    ["gmr_dsh_hogspub_chocogrenouille"] = {categorie = "gmr_petitplat", label = "Chocogrenouille", image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_chocogrenouille.png", ingredients = {["gmr_igd_chocolat"] = {amount = 3, base = true}, ["gmr_igd_beurre"] = {amount = 1, base = true}, ["gmr_igd_sucre"] = {amount = 1, base = true}, ["gmr_igd_oeuf"] = {amount = 1, base = true}}},    
+    ["gmr_dsh_hogspub_bubblensqueak"] = {categorie = "gmr_plat", label = "Bubble and squeak", image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_bubblensqueak.png", ingredients = {["gmr_cpigd_puree_de_pomme"] = {amount = 1, base = false}, ["gmr_igd_chou"] = {amount = 1, base = true}, ["gmr_igd_oignon"] = {amount = 1, base = true}, ["gmr_igd_bacon"] = {amount = 2, base = true}, ["gmr_igd_beurre"] = {amount = 1, base = true}}},    
+    ["gmr_dsh_hogspub_chickenpie"] = {categorie = "gmr_plat", label = "Chiken pie", image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_chickenpie.png", ingredients = {["gmr_cpigd_pate_feuilletee"] = {amount = 1, base = false}, ["gmr_igd_poulet"] = {amount = 2, base = true}, ["gmr_cpigd_sauce_bolognaise"] = {amount = 1, base = false}, ["gmr_igd_oeuf"] = {amount = 1, base = true}, ["gmr_igd_sel"] = {amount = 1, base = true}, ["gmr_igd_poivre"] = {amount = 1, base = true}}},    
+    ["gmr_dsh_hogspub_bierraubeurre"] = {categorie = "gmr_alcoolbiere", label = "Bierraubeure", image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_bierraubeurre.png", ingredients = {["gmr_igd_biere"] = {amount = 1, base = false}, ["gmr_igd_beurre"] = {amount = 1, base = true}, ["gmr_igd_sucre"] = {amount = 1, base = true}, ["gmr_igd_vanille"] = {amount = 1, base = true}}},    
+    ["gmr_dsh_hogspub_polynectar"] = {categorie = "gmr_boisson", label = "Polynectar", image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_polynectar.png", ingredients = {["gmr_igd_herbes_magiques"] = {amount = 1, base = false}, ["gmr_igd_eau"] = {amount = 1, base = true}, ["gmr_igd_poivre"] = {amount = 1, base = true}, ["gmr_igd_sel"] = {amount = 1, base = true}}},    
+    ["gmr_dsh_hogspub_jus_de_citrouille"] = {categorie = "gmr_boisson", label = "Jus de citrouille", image = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/gmr_dsh_hogspub_jus_de_citrouille.png", ingredients = {["gmr_igd_citrouille"] = {amount = 2, base = false}, ["gmr_igd_sucre"] = {amount = 1, base = true}, ["gmr_igd_eau"] = {amount = 1, base = true}}},
     -- New --
     ["gmr_dsh_hogspub_felix_felicis"] = {
         categorie = "gmr_boisson",

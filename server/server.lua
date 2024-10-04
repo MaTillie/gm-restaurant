@@ -297,6 +297,8 @@ local function saveConfig(data)
 
     -- Sauvegarder dans config.lua
     SaveResourceFile(GetCurrentResourceName(), "config/config_"..player.PlayerData.job.name..".lua", updatedConfig, -1)
+
+    reloadRecipes(player.PlayerData.job.name)
 end
 
 
@@ -306,3 +308,8 @@ RegisterNetEvent('gm-restaurant:server:updatePrice', function(data)
 end)
 
 -- Gestion des prix - Fin --
+
+function reloadRecipes(job)
+    dofile(GetCurrentResourceName()..'/config/config_'..job..'.lua')
+    print("Menu rechargé.")
+end
