@@ -42,14 +42,15 @@ Config.Categorie ={
 }
 
 Config.Menu = {
-    ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_polynectar"] = { price = 10.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
-    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 15.00, categorie = "alcool" },
     ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 10.00, categorie = "soft" },
+    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
+    ["gmr_dsh_hogspub_bierraubeurre"] = { price = -10.00, categorie = "alcool" },
+    ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_polynectar"] = { price = 15.00, categorie = "alcool" },
 }
+
 
 
 

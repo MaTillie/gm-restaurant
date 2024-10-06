@@ -84,12 +84,12 @@ function initKitchen(cfg,key)
                 icon = 'fas fa-caret-right ',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()          
                     local success = true          
-                   /* local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
+                   --[[ local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
                         move = true,
                         car = true,
                         mouse = false,
                         combat = true,
-                    }})*/
+                    }})]]
                     if success then                                          
                         TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item,cfg,recipeLabel,img)
                         if(cfg.DebugMode) then  
@@ -248,13 +248,23 @@ function initManagement(cfg,key)
     for index, caisse in pairs(cfg.Management) do
         local options = {}
         table.insert(options,{
-            name = "Management",  -- Nom de l'option, unique pour chaque interaction
-            label = caisse.title,  -- Texte affiché à l'utilisateur
+            name = "ManagementPrice",  -- Nom de l'option, unique pour chaque interaction
+            label = "Gestion des prix",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()                    
                 managePrice(cfg.Menu,cfg)
             end,
         });
+
+        table.insert(options,{
+            name = "ManagementRecipe",  -- Nom de l'option, unique pour chaque interaction
+            label = "Gestion des recettes",  -- Texte affiché à l'utilisateur
+            icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            onSelect = function()                    
+                manageRecipe(cfg)
+            end,
+        });
+
         local idCaisse = exports.ox_target:addSphereZone({ 
             coords = caisse.coords,
             radius = caisse.size,
@@ -287,6 +297,16 @@ function initCarte(cfg,key)
             onSelect = function()     
                 print("key launchCaisse "..index)               
                 launchCaisse(index,cfg,key)
+            end,
+            groups = cfg.Job,
+        });
+
+        table.insert(options,{
+            name = "Pointeuse",  -- Nom de l'option, unique pour chaque interaction
+            label = "Pointeuse",  -- Texte affiché à l'utilisateur
+            icon = 'fas fa-clock',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            onSelect = function()                 
+                clock(cfg.Job)
             end,
             groups = cfg.Job,
         });
@@ -506,10 +526,17 @@ function order(data)
     bill.type = "compagny"
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
     bill.date = year.."-"..month.."-"..day
-    
     TriggerServerEvent('gm-restaurant:server:order',bill,items,data.cfg)   
 end
 
+
+function clock(job)
+    local playerData = QBCore.Functions.GetPlayerData()
+    if(playerData.job.name==job) then
+        TriggerServerEvent('QBCore:ToggleDuty')
+       -- QBCore.Functions.GetPlayerData().job.onduty
+    end
+end
 -- Met à jour la caisse la plus proche pour ajouter l'option payer 
 RegisterNetEvent('gm-restaurant:client:updateCarte')
 AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
@@ -567,9 +594,6 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
                     exports.ox_inventory:openInventory('stash', cfg.Job.."plateau"..key)
                 end,
             });
-
-            
-
 
             local lidCaisse = exports.ox_target:addSphereZone({ 
                 coords = caisse.coords,
@@ -745,15 +769,12 @@ function managePrice(menu,cfg)
     local lrec = getRecipe(cfg.Job)
 
     local dataMenu = {}
-    print("Pouette 1 ")
     PrintTable(menu)
     for key, item in pairs(menu) do
-        print("Pouette 1.5 ")
         local lkItem = lrec.List[key]
         print(lkItem.label)
         table.insert(dataMenu,{label=lkItem.label,price=item.price,name=key})  
     end
-    print("Pouette 2 ")
     PrintTable(dataMenu)
     SetNuiFocus(true, true)
     local data = {}
@@ -764,4 +785,40 @@ function managePrice(menu,cfg)
         data = data, 
     })
 end
+
+-- Pour les recettes --
+function genIngredientsCategory()
+    local categories = {}
+    local categoriesSet = {} -- Table pour stocker les catégories uniques
+
+    for _, item in pairs(IngList.Base) do
+        local cat = item.cat
+        if cat and not categoriesSet[cat] then
+            table.insert(categories, cat)  -- Ajouter la catégorie si elle n'est pas déjà présente
+            categoriesSet[cat] = true      -- Marquer la catégorie comme ajoutée
+        end
+    end
+
+    return categories
+end
+
+function manageRecipe(cfg)
+    local Data = {}
+    Data.recipe = {}
+    Data.categoryIngredient = {}
+    Data.categoryDish = {}
+    Data.ingredient = {}
+    Data.compo = {}
+
+    Data.recipe = getRecipe(cfg.Job).List
+    Data.ingredient = IngList.Base
+    Data.categoryIngredient = genIngredientsCategory()
+    Data.theme = "management_recipe.css"
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = 'manageRecipe',
+        data = Data, 
+    })
+end
+
 

@@ -78,23 +78,93 @@
             <button id="saveButton" onclick="savePrices()">Sauvegarder</button>
       </div>
 
+      <!--
       <div id="mng_recipe">
-        <button class="close-button" onclick="closeMenu()">×</button>
-        <button class="newRecipe-button" onclick="newRecipe()">+</button>
-
-        <h1>Gestion des recettes</h1>
-
-        <div class="items-container"> <!-- Container de gauche -->
-            <div class="grid-container">
-                    <!-- Les catégories et les items seront ajoutés ici -->
-            </div>             
+        <div id="header">
+            <button class="close-button" onclick="closeMenu()">×</button>
         </div>
-        <div class="detail-container"> <!-- Container de droite -->
-                        
+        <div id="recipe-list">
+            <button class="btn-add" onclick="addNewRecipe()">Ajouter une nouvelle recette</button>
+            <h2>Liste des Recettes</h2>
         </div>
-
-      </div>
+        <div id="recipe-details">
+            <h2>Modifier la Recette</h2>
+            <img id="recipe-image" src="" alt="Image de la recette" />
+            
+            <div class="inline-input">
+                <input type="text" id="image-url" placeholder="URL de l'image" />
+                <button class="btn-small" onclick="updateRecipeImage()">V</button>
+            </div>
     
+            <h3>Nom du plat :</h3>
+            <input type="text" id="recipe-label" placeholder="Nom du plat" />
+            
+            <h3>Ingrédients :</h3>
+            <ul id="ingredients-list"></ul>
+    
+            <h3>Ajouter un ingrédient :</h3>
+            <select id="ingredient-category" onchange="updateIngredientDropdown()">
+                <option value="">Sélectionner une catégorie</option>
+            </select>
+    
+            <select id="ingredient-select">
+                <option value="">Sélectionner un ingrédient</option>
+            </select>
+    
+            <button class="btn" onclick="addIngredientToRecipe()">Ajouter l'ingrédient</button>
+    
+            <button class="btn" onclick="saveRecipe()">Enregistrer la recette</button>
+        </div>
+
+
+       -->
+    
+      <div id="mng_recipe">
+        <div id="header">
+            <button class="close-button" onclick="closeMenu()">×</button>
+        </div>
+    
+        <div id="content">
+            <div id="recipe-list">
+                <button class="btn-add" onclick="addNewRecipe()">Ajouter une nouvelle recette</button>
+                <h2>Liste des Recettes</h2>
+            </div>
+    
+            <div id="recipe-details">
+                <h2>Modifier la Recette</h2>
+                <img id="recipe-image" src="" alt="Image de la recette" />
+                
+                <div class="inline-input">
+                    <input type="text" id="image-url" placeholder="URL de l'image" />
+                    <button class="btn-small" onclick="updateRecipeImage()">V</button>
+                </div>
+    
+                <h3>Nom du plat :</h3>
+                <input type="text" id="recipe-label" placeholder="Nom du plat" />
+                
+                <h3>Ingrédients :</h3>
+                <ul id="ingredients-list"></ul>
+    
+                <h3>Ajouter un ingrédient :</h3>
+                <select id="ingredient-category" onchange="updateIngredientDropdown()">
+                    <option value="">Sélectionner une catégorie</option>
+                </select>
+    
+                <select id="ingredient-select">
+                    <option value="">Sélectionner un ingrédient</option>
+                </select>
+    
+                <button class="btn" onclick="addIngredientToRecipe()">Ajouter l'ingrédient</button>
+    
+                <button class="btn" onclick="saveRecipe()">Enregistrer la recette</button>
+            </div>
+        </div>
+    </div>
+    
+    
+    </div>
+
+
 
     <script src="main.js"></script>
 </body>

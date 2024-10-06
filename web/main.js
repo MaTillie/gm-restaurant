@@ -5,9 +5,6 @@ let IndexCaisse = 0;
 let Theme = "styles.css"
 let Config = {}
 let Key = ""
-let ingredientList = [];
-let recipeList = [];
-let currentRecipe = {};
 
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
@@ -141,6 +138,7 @@ function generateMenuItems(menuConfig) {
 
     document.querySelector('.menu-container').style.display = 'flex';
     document.querySelector('.footer').style.display = 'none';
+    document.querySelector('.mng_recipe').style.display = 'none';
 }
 
 function generateOrderItems(menuConfig) {
@@ -315,14 +313,41 @@ function manage_price(menuItems) {
     document.getElementById('mng_prix').style.display = 'flex';
     document.querySelector('.menu-container').style.display = 'none';
     document.querySelector('.footer').style.display = 'none';
+    document.querySelector('.mng_recipe').style.display = 'none';
+    
 }
 
-function manage_recipe(){
+function manage_recipe(menuItems){
     // Vider les items actuels avant d'ajouter les nouveaux
     document.querySelector('.items-container').innerHTML = '';
 
     let themeLink = document.getElementById("theme-link");
     themeLink.setAttribute("href", Theme);
+
+    for (let i = 0; i < menuItems.length; i++) {
+        const item = menuItems[i];
+        const row = document.createElement('tr');
+        console.log('price ',item.price);
+        console.log('label ',item.label);
+        
+        const itemNameCell = document.createElement('td');
+        itemNameCell.textContent = item.label.charAt(0).toUpperCase() + item.label.slice(1);
+        itemNameCell.id = item.name;
+        row.appendChild(itemNameCell);
+
+        const priceCell = document.createElement('td');
+        const priceInput = document.createElement('input');
+        priceInput.type = 'number';
+        priceInput.value = item.price;
+        priceInput.id = `price-${item}`;
+        priceCell.appendChild(priceInput);
+        row.appendChild(priceCell);
+
+        tableBody.appendChild(row);
+    }
+    
+
+
 }
 
 // Retour au client lua
@@ -358,6 +383,7 @@ function closeMenu() {
     document.querySelector('.menu-container').style.display = 'none';
     document.getElementById('ticket').style.display = 'none';
     document.getElementById('mng_prix').style.display = 'none';
+    document.getElementById('mng_recipe').style.display = 'none';    
     callLuaFunction({ action: 'closeMenu', param: 'someValue' });
     itemsList = [];
     currentDiscount = 0.00;
@@ -373,6 +399,10 @@ function order() {
 }
 
 
+let ingredientList = [];
+let currentRecipe = {};
+let ingredientCategories = {};
+let recipes = {};
 
 $(document).ready(function () {
     window.addEventListener("message", (event) => {
@@ -406,9 +436,13 @@ $(document).ready(function () {
             console.log("managePrice1",menuItems)
             manage_price(menuItems)
               break;
-        case "managePRecipe":      
+        case "manageRecipe":      
         console.log("managePRecipe",eventData.data)
-        
+            recipes = eventData.data.recipe
+            ingredientList = eventData.data.ingredient
+            ingredientCategories = eventData.data.categoryIngredient
+            loadRecipeList();
+            populateCategoryDropdown();
               break
         case "openTicket":
         console.log("openTicket :" )
@@ -435,3 +469,212 @@ $(document).ready(function () {
       }
     });
   });
+
+
+
+  // Liste des recettes récupérées depuis Lua
+
+
+let currentRecipeKey = null;
+
+// Fonction pour afficher la liste des recettes
+function loadRecipeList() {
+    const recipeListDiv = document.getElementById('recipe-list');
+    recipeListDiv.innerHTML = ''; // Vider la liste avant de la recharger
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'btn-add';
+    addBtn.textContent = 'Ajouter une nouvelle recette';
+    addBtn.onclick = addNewRecipe;
+    recipeListDiv.appendChild(addBtn);
+
+    const title = document.createElement('h2');
+    title.textContent = 'Liste des Recettes';
+    recipeListDiv.appendChild(title);
+    console.log(recipes)
+    for (let key in recipes) {
+        console.log("loadRecipe",key)
+        let recipe = recipes[key];
+
+        let div = document.createElement('div');
+        div.className = 'recipe-item';
+
+        let label = document.createElement('span');
+        label.textContent = recipe.label;
+        label.onclick = () => loadRecipeDetails(key);
+
+        let trashBtn = document.createElement('button');
+        trashBtn.className = 'trash-button';
+        trashBtn.textContent = '🗑️';
+        trashBtn.onclick = () => deleteRecipe(key);
+
+        div.appendChild(label);
+        div.appendChild(trashBtn);
+
+        recipeListDiv.appendChild(div);
+    }   
+    document.getElementById('mng_prix').style.display = 'none';
+    document.querySelector('.menu-container').style.display = 'none';
+    document.querySelector('.footer').style.display = 'none';
+    document.getElementById('mng_recipe').style.display = 'block';
+    document.getElementById('ticket').style.display = 'none';
+}
+
+// Fonction pour afficher les détails d'une recette
+function loadRecipeDetails(recipeKey) {
+    currentRecipeKey = recipeKey;
+    const recipe = recipes[recipeKey];
+
+    document.getElementById('recipe-label').value = recipe.label;
+    document.getElementById('recipe-label').key = recipeKey;
+    document.getElementById('recipe-image').src = recipe.image;
+    document.getElementById('image-url').value = recipe.image;
+
+    const ingredientsList = document.getElementById('ingredients-list');
+    ingredientsList.innerHTML = ''; // Vider la liste précédente
+    for (let ingredientKey in recipe.ingredients) {
+        let ingredient = recipe.ingredients[ingredientKey];
+        
+        let li = document.createElement('li');
+        li.innerHTML = `
+            <span class="ingredient-label">${ingredientList[ingredientKey].label}</span>
+            <button class="btn btn-small" onclick="changeAmount('${ingredientKey}', -1)">-</button>
+            <span class="ingredient-amount">${ingredient.amount}</span>
+            <button class="btn btn-small" onclick="changeAmount('${ingredientKey}', 1)">+</button>
+        `;
+        ingredientsList.appendChild(li);
+    }
+}
+
+function changeAmount(ingredientKey, change) {
+    const recipe = recipes[currentRecipeKey];
+    const ingredient = recipe.ingredients[ingredientKey];
+
+    // Modifier la quantité de l'ingrédient
+    ingredient.amount += change;
+
+    // Ne pas autoriser des quantités négatives
+    if (ingredient.amount < 0) {
+        ingredient.amount = 0;
+    }
+
+    // Recharger les détails de la recette pour mettre à jour l'affichage
+    loadRecipeDetails(currentRecipeKey);
+}
+
+// Fonction pour ajouter une nouvelle recette
+function addNewRecipe() {
+    const newRecipeKey = `gmr_dsh_new_recipe_${Date.now()}`;
+    recipes[newRecipeKey] = {
+        categorie: "gmr_plat",
+        label: "Nouvelle Recette",
+        image: "",
+        ingredients: {}
+    };
+    loadRecipeList();
+    loadRecipeDetails(newRecipeKey);
+}
+
+// Fonction pour supprimer une recette
+function deleteRecipe(recipeKey) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
+        delete recipes[recipeKey]; // Supprimer la recette de la liste
+        loadRecipeList(); // Recharger la liste des recettes après la suppression
+    }
+}
+
+// Fonction pour mettre à jour l'image de la recette
+function updateRecipeImage() {
+    const newImageUrl = document.getElementById('image-url').value;
+
+    if (newImageUrl) {
+        document.getElementById('recipe-image').src = newImageUrl;
+        const recipe = recipes[currentRecipeKey];
+        recipe.image = newImageUrl;
+    } else {
+        alert("Veuillez entrer une URL valide pour l'image.");
+    }
+}
+
+// Fonction pour enregistrer les modifications apportées à la recette
+function saveRecipe() {
+    const recipe = recipes[currentRecipeKey];
+
+    recipe.label = document.getElementById('recipe-label').value;
+
+    fetch('https://votre-url-de-serveur/recette/modifier', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipe),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Recette mise à jour:', data);
+        alert('Recette enregistrée avec succès !');
+    })
+    .catch(error => {
+        console.error('Erreur lors de la mise à jour:', error);
+    });
+}
+
+// Fonction pour remplir la dropdown des catégories
+function populateCategoryDropdown() {
+    
+    const categoryDropdown = document.getElementById('ingredient-category');
+    categoryDropdown.innerHTML = '<option value="">Sélectionner une catégorie</option>';
+    console.log("populateCategoryDropdown1 ",ingredientCategories)
+    for (let category in ingredientCategories) {
+        console.log("populateCategoryDropdown2 ",ingredientCategories[category])
+        let option = document.createElement('option');
+        option.value = ingredientCategories[category];
+        option.textContent = ingredientCategories[category];
+        categoryDropdown.appendChild(option);
+    }
+}
+
+// Fonction pour mettre à jour la dropdown des ingrédients en fonction de la catégorie choisie
+function updateIngredientDropdown() {
+    
+    const category = document.getElementById('ingredient-category').value;
+    const ingredientDropdown = document.getElementById('ingredient-select');
+    ingredientDropdown.innerHTML = '<option value="">Sélectionner un ingrédient</option>';
+    console.log("updateIngredientDropdown ",category)
+
+
+    // Boucle sur les ingrédients de la liste de base
+    for (const key in ingredientList) {
+        console.log("updateIngredientDropdown detail ",key)
+        if(ingredientList[key].cat==category) {
+            // Récupère le label de chaque ingrédient
+            const ingredient = ingredientList[key];
+            
+            // Crée un nouvel élément option
+            const option = document.createElement('option');
+            option.value = key; // la valeur de l'option est la clé de l'ingrédient
+            option.textContent = ingredient.label; // le texte affiché est le label de l'ingrédient
+
+            // Ajoute l'option à la dropdown list
+            ingredientDropdown.appendChild(option);
+        }
+    }
+}
+
+// Fonction pour ajouter un ingrédient à la recette
+function addIngredientToRecipe() {
+    const ingredientKey = document.getElementById('ingredient-select').value;
+
+    if (ingredientKey) {
+        const recipe = recipes[currentRecipeKey];
+        if (!recipe.ingredients[ingredientKey]) {
+            // Si l'ingrédient n'existe pas déjà dans la recette, on l'ajoute
+            recipe.ingredients[ingredientKey] = { amount: 1, base: true };
+            loadRecipeDetails(currentRecipeKey); // Recharger la vue des détails de la recette
+        } else {
+            alert('Cet ingrédient est déjà présent dans la recette.');
+        }
+    } else {
+        alert('Veuillez sélectionner un ingrédient.');
+    }
+}

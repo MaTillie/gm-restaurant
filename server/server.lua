@@ -310,6 +310,6 @@ end)
 -- Gestion des prix - Fin --
 
 function reloadRecipes(job)
-    dofile(GetCurrentResourceName()..'/config/config_'..job..'.lua')
+    dofile('./config/config_'..job..'.lua')
     print("Menu rechargé.")
 end

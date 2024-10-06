@@ -1,155 +1,187 @@
 body {
-    background-color: transparent;
-    color: #FEEAA1;
+    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    height: 100vh;
+    background-color: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    font-family: "Merriweather Sans", sans-serif;
 }
 
-#mng_prix {
-    display: none;
-    flex-direction: column;
+#mng_recipe {
     width: 1600px;
     height: 800px;
     background-color: #18534F;
-    padding: 20px;
+    display: flex;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    margin: auto;
-    position: relative;
-    overflow: hidden;     
+    flex-direction: column; /* Affiche le header en haut et le contenu en dessous */
+    border: 1px solid #ccc;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    overflow: hidden;  
 }
 
-.items-container {
-    flex: 1; /* Permet de prendre tout l'espace disponible */
-    overflow-y: auto; /* Activer le défilement uniquement sur cette zone */
-    padding-right: 10px; /* Espacement pour que la barre de défilement n'empiète pas sur le contenu */
-    margin-top: 20px; /* Espacement par rapport au titre */
-
-    /*width: 100%;*/
-    margin-bottom: 30px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+#header {
+    width: 100%;
+    height: 50px;
+    background-color: #333;
+    color: #18534F;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
 }
 
 .close-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: #690101;
-    color: white;
+    background-color: transparent;
     border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.newRecipe-button {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background-color: #01694a;
     color: white;
-    border: none;
-    border-radius: 10px;
-    width: 30px;
-    height: 30px;
-    font-size: 20px;
+    font-size: 24px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
 }
-
 
 .close-button:hover {
-    background-color: #9e0f0f;
+    color: red;
 }
 
-h1 {
-    text-align: center;
-}
-
-table {
+/* Nouveau conteneur pour la liste et les détails */
+#content {
+    display: flex;
     width: 100%;
-    border-collapse: collapse;
-    border-radius: 10px;
+    flex-grow: 1; /* Prend tout l'espace disponible sous le header */
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-th, td {
-    padding: 10px;
-    border: 1px solid #ddd;
-}
-
-input {
-    width: 80px;
-    padding: 5px;
-}
-
-.menu-container{
-    display: none;
-}
-
-.footer{
-    display: none;
-}
-
-#ticket{
-    display: none;
-}
-
-input[type="number"] {
-    width: 80px; /* Ajuste la largeur pour être cohérent */
-    padding: 5px 10px; /* Espace interne */
-    font-size: 14px; /* Taille de la police */
-    border: 2px solid #ccc; /* Bordure de base */
-    border-radius: 5px; /* Coins arrondis */
-    background-color: #a6c7cf; /* Couleur de fond */
-    color: #333; /* Couleur du texte */
-    transition: all 0.3s ease; /* Animation pour les transitions */
-}
-
-/* Style lorsque l'input est survolé */
-input[type="number"]:hover {
-    border-color: #888; /* Change la couleur de bordure */
-    background-color: #a6c7cf; /* Change la couleur de fond */
-}
-
-/* Style lorsque l'input est en focus */
-input[type="number"]:focus {
-    border-color: #3498db; /* Couleur de la bordure au focus */
-    background-color: #a6c7cf; /* Change la couleur de fond au focus */
-    outline: none; /* Supprime le contour bleu par défaut */
-}
-
-/* Optionnel: Style pour rendre les champs désactivés visuellement distincts */
-input[type="number"]:disabled {
-    background-color: #e9ecef; /* Fond gris pour champs désactivés */
-    border-color: #ced4da; /* Bordure plus claire pour les champs désactivés */
-    color: #6c757d; /* Texte gris pour les champs désactivés */
-    cursor: not-allowed; /* Icône de curseur non autorisé */
-}
-
-#saveButton {
-    padding: 10px 20px;
-    font-size: 24px;
-    background-color: #226D68;
-    color: #D6955B;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    position: relative;
+#recipe-list {
+    width: 30%;
+    background-color: transparent;
+    color: white;
     padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
-#saveButton:hover {
-    background-color: #226D68;
-    color: #FEEAA1;
+#recipe-list h2 {
+    text-align: center;
+    margin-top: 0;
+}
+
+.recipe-item {
+    position: relative;
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #555;
+    display: flex;
+    justify-content: space-between;
+}
+
+.recipe-item:hover {
+    background-color: #555;
+}
+
+.trash-button {
+    display: none;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.recipe-item:hover .trash-button {
+    display: inline;
+}
+
+#recipe-details {
+    width: 70%;
+    background-color: transparent;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#recipe-details img {
+    max-width: 100%;
+    height: auto;
+}
+
+.inline-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.inline-input input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-small:hover {
+    background-color: #218838;
+}
+
+.btn-add {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-add:hover {
+    background-color: #0056b3;
+}
+
+ul#ingredients-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul#ingredients-list li {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+}
+
+.ingredient-label {
+    flex: 1;
+}
+
+.ingredient-amount {
+    margin: 0 10px;
+}
+
+.btn {
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-small {
+    padding: 2px 5px;
+}
+
+#recipe-details img {
+    max-width: 128px;
+    max-height: 128px;
+    width: auto;  /* Maintient les proportions */
+    height: auto; /* Maintient les proportions */
 }
