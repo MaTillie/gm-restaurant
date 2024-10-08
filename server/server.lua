@@ -313,3 +313,8 @@ function reloadRecipes(job)
     dofile('./config/config_'..job..'.lua')
     print("Menu rechargé.")
 end
+local Menu{}
+
+function getMenu(job){
+    for 
+}
