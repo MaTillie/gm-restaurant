@@ -25,6 +25,14 @@ local function coordsEqual(a, b)
     return a.x == b.x and a.y == b.y and a.z == b.z
 end
 
+function getMenu(job)
+    return TriggerServerEvent('gm-restaurant:server:getMenu', job)
+end
+
+function getRecipe(job)
+    return TriggerServerEvent('gm-restaurant:server:getRecipe', job)
+end
+
 function initKitchen(cfg,key)
     local localRecipes = {}
     local Recipes = {}
@@ -252,7 +260,7 @@ function initManagement(cfg,key)
             label = "Gestion des prix",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             onSelect = function()                    
-                managePrice(cfg.Menu,cfg)
+                managePrice(cfg)
             end,
         });
 
@@ -765,7 +773,8 @@ end)
 
 
 -- Pour les changements de prix
-function managePrice(menu,cfg)
+function managePrice(cfg)
+    local menu = getMenu(cfg.Job)
     local lrec = getRecipe(cfg.Job)
 
     local dataMenu = {}

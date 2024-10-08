@@ -3,6 +3,7 @@ local QBCore = exports['qb-core']:GetCoreObject()
 AddEventHandler('onServerResourceStart', function(resourceName)
     if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
         for index, restaurant in ipairs(Config.Restaurants) do
+            -- ToDo -- Charger les compo intermédiaires généraux
             setMenu(restaurant.Job,restaurant.Menu)
             setRecipe(restaurant.Job,getRecipe(restaurant.Job))
             
