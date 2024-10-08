@@ -3,6 +3,9 @@ local QBCore = exports['qb-core']:GetCoreObject()
 AddEventHandler('onServerResourceStart', function(resourceName)
     if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
         for index, restaurant in ipairs(Config.Restaurants) do
+            setMenu(restaurant.Job,restaurant.Menu)
+            setRecipe(restaurant.Job,getRecipe(restaurant.Job))
+            
             for i, stash in ipairs(restaurant.Carte) do
                 exports.ox_inventory:RegisterStash(restaurant.Job.."plateau"..i, Config.TrayLabel, 20,2000)
             end
@@ -313,8 +316,42 @@ function reloadRecipes(job)
     dofile('./config/config_'..job..'.lua')
     print("Menu rechargé.")
 end
-local Menu{}
 
-function getMenu(job){
-    for 
-}
+local Menu = {}
+local Recipe = {}
+
+RegisterNetEvent('gm-restaurant:server:getMenu')
+AddEventHandler('gm-restaurant:server:getMenu', function(job)
+    return getMenu(job)
+end)
+
+RegisterNetEvent('gm-restaurant:server:setMenu')
+AddEventHandler('gm-restaurant:server:setMenu', function(job,menu)
+    setMenu(job,menu)
+end)
+
+RegisterNetEvent('gm-restaurant:server:getRecipe')
+AddEventHandler('gm-restaurant:server:getRecipe', function(job)
+    return getRecipe(job)
+end)
+
+RegisterNetEvent('gm-restaurant:server:setRecipe')
+AddEventHandler('gm-restaurant:server:setRecipe', function(job,recipe)
+    setRecipe(job,recipe)
+end)
+
+function getMenu(job)
+    return Menu[job] 
+end
+
+function setMenu(job,menu)
+    Menu[job] = menu
+end
+
+function getRecipe(job)
+    return Recipe[job]
+end
+
+function setRecipe(job,recipe)
+    Recipe[job] = recipe
+end
