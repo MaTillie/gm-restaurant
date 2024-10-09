@@ -534,14 +534,16 @@ function loadRecipeDetails(recipeKey) {
     ingredientsList.innerHTML = ''; // Vider la liste précédente
     for (let ingredientKey in recipe.ingredients) {
         let ingredient = recipe.ingredients[ingredientKey];
-        
-        let li = document.createElement('li');
+
+        let li = document.createElement('li');  
         li.innerHTML = `
-            <span class="ingredient-label">${ingredientList[ingredientKey].label}</span>
+            <span class="ingredient-label">${ingredientList[ingredientKey].label}</span> 
             <button class="btn btn-small" onclick="changeAmount('${ingredientKey}', -1)">-</button>
             <span class="ingredient-amount">${ingredient.amount}</span>
             <button class="btn btn-small" onclick="changeAmount('${ingredientKey}', 1)">+</button>
         `;
+
+        
         ingredientsList.appendChild(li);
     }
 }
@@ -601,6 +603,7 @@ function saveRecipe() {
     const recipe = recipes[currentRecipeKey];
 
     recipe.label = document.getElementById('recipe-label').value;
+    // Todo sauvegarder image et ingrédients
 
     fetch('https://votre-url-de-serveur/recette/modifier', {
         method: 'POST',

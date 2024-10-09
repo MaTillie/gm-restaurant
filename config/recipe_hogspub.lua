@@ -97,7 +97,7 @@ Recipes.List = {
 
 Recipes.Compo = {
     ["gmr_cpigd_caramel_magique"] = {
-        description = "Caramel magique",
+        label = "Caramel magique",
         dose = 4,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_sucre"] = {amount = 3, base = true},

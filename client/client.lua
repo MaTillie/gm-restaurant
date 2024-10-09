@@ -4,6 +4,9 @@ local config = require 'config'
 local idCaisses = {}
 local orderDisplayOpen = false
 
+local Menu = {}
+local Recipe = {}
+
 function PrintTable(t, indent)
     indent = indent or 0
     local prefix = string.rep(" ", indent)
@@ -25,18 +28,49 @@ local function coordsEqual(a, b)
     return a.x == b.x and a.y == b.y and a.z == b.z
 end
 
-function getMenu(job)
+local flg_ServerMenu = false
+function getServerMenu(job)
+    flg_ServerMenu = false
     return TriggerServerEvent('gm-restaurant:server:getMenu', job)
 end
 
-function getRecipe(job)
-    return TriggerServerEvent('gm-restaurant:server:getRecipe', job)
+RegisterNetEvent('gm-restaurant:client:receiveMenu', function(job,menu)
+    if menu then
+        Menu[job] = menu
+        flg_ServerMenu = true
+    end
+end)
+
+local flg_ServerRecipe = false
+-- Appel getRecipe du serveur qui va répondre avec un appel receiveRecipe du client 
+function getServerRecipe(job)
+    flg_ServerRecipe = false
+    TriggerServerEvent('gm-restaurant:server:getRecipe', job)
 end
+
+-- Evènement appelé par le serveur permettant de mettre à jour les recettes côté client (c'est pour que le changement des recettes soient opérationnels instatnément et pas devoir attendre le reboot)
+RegisterNetEvent('gm-restaurant:client:receiveRecipe', function(job,recipe)
+    if recipe then
+        Recipe[job] = recipe
+        flg_ServerRecipe = true
+    end
+end)
 
 function initKitchen(cfg,key)
     local localRecipes = {}
     local Recipes = {}
-    localRecipes = getRecipe(cfg.Job)
+    local job = cfg.Job
+    -- Lance la demande de recette au serveur
+    flg_ServerRecipe = false
+    getServerRecipe(job)
+
+    -- Boucle pour être certain d'avoir reçu les recettes avant de continuer
+    repeat
+        Wait(10)
+    until(flg_ServerRecipe)
+
+
+    localRecipes = Recipe[job]
     Recipes = IngList.Compo
     for key, kitchen in pairs(cfg.Kitchen) do
         local options = {}        
@@ -354,23 +388,31 @@ end
 -- Prépare et lance le menu
 function lauchMenu(cfg, key)
     SetNuiFocus(true, true)
-    local Menu = {}
-    Menu.items = {}
-    Menu.key = key
-    Menu.theme = "styles_" .. cfg.Job .. ".css"
-    Menu.cfg = cfg
+    local Menus = {}
+    Menus.items = {}
+    Menus.key = key
+    Menus.theme = "styles_" .. cfg.Job .. ".css"
+    Menus.cfg = cfg
+
+    getServerMenu(cfg.Job)
+    getServerRecipe(cfg.Job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerMenu)
+
 
    -- Parcourir les catégories dans l'ordre défini
    for _, categorie in ipairs(cfg.Categorie) do
     local categoryItems = {}
-    local Recipe = getRecipe(cfg.Job)
+    local Recipes = Recipe[cfg.Job]
         -- Parcourir les items et les assigner à leur catégorie
-        for item, menu in pairs(cfg.Menu) do
+        for item, menu in pairs(Menu[cfg.Job]) do
             if menu.categorie == categorie.name then
                 local label = item
                 local limage = ""
                 print("### item ### "..item)
-                for recipeName, recipeData in pairs(Recipe.List) do
+                for recipeName, recipeData in pairs(Recipes.List) do
                     print('recipeName '..recipeName)
                     if recipeName == item then
                         -- Ajouter le couple itemname/label dans le tableau
@@ -392,7 +434,7 @@ function lauchMenu(cfg, key)
 
         -- Ajouter la catégorie seulement si elle contient des items
         if #categoryItems > 0 then
-            table.insert(Menu.items, {
+            table.insert(Menus.items, {
                 label = categorie.label,
                 name = categorie.name,
                 items = categoryItems
@@ -403,7 +445,7 @@ function lauchMenu(cfg, key)
     SendNUIMessage({
         action = 'openMenu',
         toggle = true,
-        data = Menu
+        data = Menus
     })
 end
 
@@ -411,19 +453,26 @@ end
 function launchCaisse(indexCaisse,cfg,key)
     print("indexCaisse "..indexCaisse)
     SetNuiFocus(true, true)
-    local Menu = {}
-    Menu.items = {}
-    Menu.indexCaisse = indexCaisse
-    Menu.key = key
-    Menu.theme = "styles_"..cfg.Job..".css"
-    Menu.cfg = cfg
+    local Menus = {}
+    Menus.items = {}
+    Menus.indexCaisse = indexCaisse
+    Menus.key = key
+    Menus.theme = "styles_"..cfg.Job..".css"
+    Menus.cfg = cfg
+
+    getServerMenu(cfg.Job)
+    getServerRecipe(cfg.Job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerMenu)
 
        -- Parcourir les catégories dans l'ordre défini
    for _, categorie in ipairs(cfg.Categorie) do
     local categoryItems = {}
-    local Recipe = getRecipe(cfg.Job)
+    local Recipe = Recipe[cfg.Job]
         -- Parcourir les items et les assigner à leur catégorie
-        for item, menu in pairs(cfg.Menu) do
+        for item, menu in pairs(Menu[cfg.Job]) do
             if menu.categorie == categorie.name then
                 local label = item
                 local limage = ""
@@ -447,7 +496,7 @@ function launchCaisse(indexCaisse,cfg,key)
 
         -- Ajouter la catégorie seulement si elle contient des items
         if #categoryItems > 0 then
-            table.insert(Menu.items, {
+            table.insert(Menus.items, {
                 label = categorie.label,
                 name = categorie.name,
                 items = categoryItems
@@ -458,7 +507,7 @@ function launchCaisse(indexCaisse,cfg,key)
     SendNUIMessage({
         action = 'openOrder',
         toggle = true,
-        data = Menu
+        data = Menus
     })
   
 end
@@ -774,8 +823,19 @@ end)
 
 -- Pour les changements de prix
 function managePrice(cfg)
-    local menu = getMenu(cfg.Job)
-    local lrec = getRecipe(cfg.Job)
+    getServerMenu(cfg.Job)
+    getServerRecipe(cfg.Job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerMenu)
+
+    repeat
+        Wait(10)
+    until(flg_ServerRecipe)
+
+    local menu = Menu[cfg.Job]
+    local lrec = Recipe[cfg.Job]
 
     local dataMenu = {}
     PrintTable(menu)
@@ -799,7 +859,8 @@ end
 function genIngredientsCategory()
     local categories = {}
     local categoriesSet = {} -- Table pour stocker les catégories uniques
-
+    table.insert(categories, "Compo")
+    categoriesSet["Compo"] = true
     for _, item in pairs(IngList.Base) do
         local cat = item.cat
         if cat and not categoriesSet[cat] then
@@ -819,8 +880,24 @@ function manageRecipe(cfg)
     Data.ingredient = {}
     Data.compo = {}
 
-    Data.recipe = getRecipe(cfg.Job).List
+    getServerRecipe(cfg.Job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerRecipe)
+
     Data.ingredient = IngList.Base
+    
+     for key, value in pairs(Recipe[cfg.Job].Compo)  do
+        Data.ingredient[key] = {label = value.label,cat="Compo"}      
+     end
+
+    for key, value in pairs(IngList.Compo)  do
+        Data.ingredient[key] = {label = value.label,cat="Compo"}  
+     end
+
+    Data.recipe = Recipe[cfg.Job].List
+    
     Data.categoryIngredient = genIngredientsCategory()
     Data.theme = "management_recipe.css"
     SetNuiFocus(true, true)

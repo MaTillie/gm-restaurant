@@ -4,8 +4,9 @@ AddEventHandler('onServerResourceStart', function(resourceName)
     if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
         for index, restaurant in ipairs(Config.Restaurants) do
             -- ToDo -- Charger les compo intermédiaires généraux
-            setMenu(restaurant.Job,restaurant.Menu)
-            setRecipe(restaurant.Job,getRecipe(restaurant.Job))
+            print("onServerResourceStart")
+            setLocalMenu(restaurant.Job,restaurant.Menu)
+            setLocalRecipe(restaurant.Job,getRecipe(restaurant.Job))
             
             for i, stash in ipairs(restaurant.Carte) do
                 exports.ox_inventory:RegisterStash(restaurant.Job.."plateau"..i, Config.TrayLabel, 20,2000)
@@ -301,8 +302,7 @@ local function saveConfig(data)
 
     -- Sauvegarder dans config.lua
     SaveResourceFile(GetCurrentResourceName(), "config/config_"..player.PlayerData.job.name..".lua", updatedConfig, -1)
-
-    reloadRecipes(player.PlayerData.job.name)
+    setLocalMenu(player.PlayerData.job.name,cfg.Menu)
 end
 
 
@@ -311,29 +311,26 @@ RegisterNetEvent('gm-restaurant:server:updatePrice', function(data)
     saveConfig(data)
 end)
 
--- Gestion des prix - Fin --
 
-function reloadRecipes(job)
-    dofile('./config/config_'..job..'.lua')
-    print("Menu rechargé.")
-end
 
 local Menu = {}
 local Recipe = {}
 
 RegisterNetEvent('gm-restaurant:server:getMenu')
 AddEventHandler('gm-restaurant:server:getMenu', function(job)
-    return getMenu(job)
+    local src = source
+    TriggerClientEvent('gm-restaurant:client:receiveMenu', src,job, getLocalMenu(job))
 end)
 
 RegisterNetEvent('gm-restaurant:server:setMenu')
 AddEventHandler('gm-restaurant:server:setMenu', function(job,menu)
-    setMenu(job,menu)
+    setLocalMenu(job,menu)
 end)
 
 RegisterNetEvent('gm-restaurant:server:getRecipe')
 AddEventHandler('gm-restaurant:server:getRecipe', function(job)
-    return getRecipe(job)
+    local src = source
+    TriggerClientEvent('gm-restaurant:client:receiveRecipe', src,job, getLocalRecipe(job))
 end)
 
 RegisterNetEvent('gm-restaurant:server:setRecipe')
@@ -341,18 +338,18 @@ AddEventHandler('gm-restaurant:server:setRecipe', function(job,recipe)
     setRecipe(job,recipe)
 end)
 
-function getMenu(job)
+function getLocalMenu(job)
     return Menu[job] 
 end
 
-function setMenu(job,menu)
+function setLocalMenu(job,menu)
     Menu[job] = menu
 end
 
-function getRecipe(job)
+function getLocalRecipe(job)
     return Recipe[job]
 end
 
-function setRecipe(job,recipe)
+function setLocalRecipe(job,recipe)
     Recipe[job] = recipe
 end
