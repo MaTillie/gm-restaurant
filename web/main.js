@@ -601,9 +601,8 @@ function updateRecipeImage() {
 // Fonction pour enregistrer les modifications apportées à la recette
 function saveRecipe() {
     const recipe = recipes[currentRecipeKey];
-
     recipe.label = document.getElementById('recipe-label').value;
-    // Todo sauvegarder image et ingrédients
+    // Todo sauvegarder la recette (server)
 
     fetch('https://votre-url-de-serveur/recette/modifier', {
         method: 'POST',
