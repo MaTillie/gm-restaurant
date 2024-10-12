@@ -695,6 +695,10 @@ RegisterNUICallback('nuiCallback', function(data, cb)
         TriggerServerEvent('gm-restaurant:server:updatePrice', data.param.menu)
     end
 
+    if(data.action == 'saveRecipe')then
+        TriggerServerEvent('gm-restaurant:server:updateRecipe', data.param.recipes)        
+    end
+
     cb('ok')  -- Réponse à envoyer au JS
 end)
 
@@ -875,11 +879,19 @@ end
 function manageRecipe(cfg)
     local Data = {}
     Data.recipe = {}
-    Data.categoryIngredient = {}
-    Data.categoryDish = {}
+    Data.categoryIngredient = {}    
     Data.ingredient = {}
     Data.compo = {}
 
+    Data.categoryDish = {
+        ["gmr_plat"] = {label = "Plat"},
+        ["gmr_petitplat"] = {label = "Entrée/Dessert/Side"},
+        ["gmr_boisson"] = {label = "Soft"},
+        ["gmr_alcoolbiere"] = {label = "Alcool type bière"},
+        ["gmr_alcoolverrevin"] = {label = "Alcool type verre de vin"},
+        ["gmr_alcoolfort"] = {label = "Alcool fort"}
+    }
+    
     getServerRecipe(cfg.Job)
 
     repeat
@@ -888,7 +900,9 @@ function manageRecipe(cfg)
 
     Data.ingredient = IngList.Base
     
-     for key, value in pairs(Recipe[cfg.Job].Compo)  do
+    PrintTable(Recipe[cfg.Job].List)
+    
+     for key, value in pairs(Recipe[cfg.Job].List)  do
         Data.ingredient[key] = {label = value.label,cat="Compo"}      
      end
 

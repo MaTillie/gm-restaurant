@@ -250,8 +250,8 @@ end)
 -- Gestion des prix - Début --
 
 -- Fonction pour sauvegarder les modifications dans config.lua
-local function saveConfig(data)    
-    print("saveConfig")
+local function savePriceFile(data)    
+    print("savePriceFile")
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
     local cfg = {}
@@ -305,12 +305,62 @@ local function saveConfig(data)
     setLocalMenu(player.PlayerData.job.name,cfg.Menu)
 end
 
+local function saveRecipeFile(data)
+    local src = source
+    local player = exports.qbx_core:GetPlayer(src)
+    local cfg = {}
+
+    local configFile = LoadResourceFile(GetCurrentResourceName(), "config/recipe_"..player.PlayerData.job.name..".lua")
+
+    -- Mise à jour de la section Recipe uniquement
+    local menuStart = configFile:find("Recipes.List = {")
+    print("menuStart: "..menuStart)
+    local menuEnd = configFile:find("%s*}%s*[^\n,]", menuStart)
+
+    if not menuEnd then
+        print("Erreur: Impossible de trouver la fin de 'Recipes.List'")
+        return
+    end
+
+   -- menuEnd = menuEnd +2
+
+    local newRecipe = "Recipes.List = {\n"
+    for recipe, detail in pairs(data)do
+        newRecipe = newRecipe .. string.format('    ["%s"] = { \n', recipe)
+        newRecipe = newRecipe .. string.format('              categorie = "%s",\n', detail.categorie)
+        newRecipe = newRecipe .. string.format('              label = "%s",\n', detail.label)
+        newRecipe = newRecipe .. string.format('              image = "%s",\n',  detail.image)
+        newRecipe = newRecipe .. string.format('              ingredients = {\n')
+        PrintTable(detail.ingredients)
+        for igd, igdDetail in pairs(detail.ingredients) do
+            if type(igdDetail) == "table" then
+                if(igdDetail.amount>0)then
+                    newRecipe = newRecipe .. string.format('                        ["%s"] = {amount = %s},\n', igd, igdDetail.amount)
+                end
+            else
+                print("Attention : " .. igd .. " contient une valeur inattendue de type " .. type(igdDetail))
+            end
+        end
+        newRecipe = newRecipe .. string.format('              },\n')
+        newRecipe = newRecipe .. string.format('    },\n')
+    end
+
+    -- Remplacer uniquement la section Menu dans le fichier de config
+    local updatedConfig = configFile:sub(1, menuStart - 1) .. newRecipe .. configFile:sub(menuEnd + 1)
+
+    SaveResourceFile(GetCurrentResourceName(), "config/recipe_"..player.PlayerData.job.name..".lua", updatedConfig, -1)
+    setLocalRecipe(player.PlayerData.job.name,data)
+end
+
 
 -- Fonction pour mettre à jour le prix
 RegisterNetEvent('gm-restaurant:server:updatePrice', function(data)
-    saveConfig(data)
+    savePriceFile(data)
 end)
 
+RegisterNetEvent('gm-restaurant:server:updateRecipe', function(data)
+    saveRecipeFile(data)
+end)
 
 
 local Menu = {}

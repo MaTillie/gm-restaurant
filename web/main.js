@@ -403,6 +403,7 @@ let ingredientList = [];
 let currentRecipe = {};
 let ingredientCategories = {};
 let recipes = {};
+let recipesCategories = {};
 
 $(document).ready(function () {
     window.addEventListener("message", (event) => {
@@ -441,8 +442,10 @@ $(document).ready(function () {
             recipes = eventData.data.recipe
             ingredientList = eventData.data.ingredient
             ingredientCategories = eventData.data.categoryIngredient
+            recipesCategories = eventData.data.categoryDish 
             loadRecipeList();
             populateCategoryDropdown();
+            populateDishCategoryDropdown();
               break
         case "openTicket":
         console.log("openTicket :" )
@@ -498,7 +501,7 @@ function loadRecipeList() {
 
         let div = document.createElement('div');
         div.className = 'recipe-item';
-
+        div.onclick = () => loadRecipeDetails(key);
         let label = document.createElement('span');
         label.textContent = recipe.label;
         label.onclick = () => loadRecipeDetails(key);
@@ -524,7 +527,8 @@ function loadRecipeList() {
 function loadRecipeDetails(recipeKey) {
     currentRecipeKey = recipeKey;
     const recipe = recipes[recipeKey];
-
+    
+    document.getElementById('category-select').value = recipe.categorie;
     document.getElementById('recipe-label').value = recipe.label;
     document.getElementById('recipe-label').key = recipeKey;
     document.getElementById('recipe-image').src = recipe.image;
@@ -602,66 +606,88 @@ function updateRecipeImage() {
 function saveRecipe() {
     const recipe = recipes[currentRecipeKey];
     recipe.label = document.getElementById('recipe-label').value;
-    // Todo sauvegarder la recette (server)
-
-    fetch('https://votre-url-de-serveur/recette/modifier', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(recipe),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Recette mise à jour:', data);
-        alert('Recette enregistrée avec succès !');
-    })
-    .catch(error => {
-        console.error('Erreur lors de la mise à jour:', error);
-    });
+    const category = document.getElementById('category-select').value;
+    recipe.categorie = category;
+    callLuaFunction({ action: 'saveRecipe', param: {recipes :recipes }});
 }
 
 // Fonction pour remplir la dropdown des catégories
 function populateCategoryDropdown() {
-    
     const categoryDropdown = document.getElementById('ingredient-category');
     categoryDropdown.innerHTML = '<option value="">Sélectionner une catégorie</option>';
-    console.log("populateCategoryDropdown1 ",ingredientCategories)
-    for (let category in ingredientCategories) {
-        console.log("populateCategoryDropdown2 ",ingredientCategories[category])
+    
+    // Extraire les catégories et les trier par ordre alphabétique
+    const sortedCategories = Object.keys(ingredientCategories).sort((a, b) => {
+        return ingredientCategories[a].localeCompare(ingredientCategories[b]);
+    });
+
+    // Remplir la dropdown avec les catégories triées
+    sortedCategories.forEach(category => {
         let option = document.createElement('option');
         option.value = ingredientCategories[category];
         option.textContent = ingredientCategories[category];
         categoryDropdown.appendChild(option);
-    }
+    });
 }
+
+function populateDishCategoryDropdown() {
+    const categoryDropdown = document.getElementById('category-select');
+    categoryDropdown.innerHTML = '<option value="">Sélectionner un type</option>';
+    
+    // Itérer sur les clés de l'objet recipesCategories
+    Object.keys(recipesCategories).forEach(category => {
+        let option = document.createElement('option');
+        option.value = category; // La valeur est la clé (ex: "gmr_plat")
+        option.textContent = recipesCategories[category].label; // Le texte est le label (ex: "Plat")
+        categoryDropdown.appendChild(option);
+    });
+}
+
+
+function changeDishCategory(ingredientKey, change) {
+    const recipe = recipes[currentRecipeKey];
+    const ingredient = recipe.ingredients[ingredientKey];
+
+    // Modifier la quantité de l'ingrédient
+    ingredient.amount += change;
+
+    // Ne pas autoriser des quantités négatives
+    if (ingredient.amount < 0) {
+        ingredient.amount = 0;
+    }
+
+    // Recharger les détails de la recette pour mettre à jour l'affichage
+    loadRecipeDetails(currentRecipeKey);
+}
+
 
 // Fonction pour mettre à jour la dropdown des ingrédients en fonction de la catégorie choisie
 function updateIngredientDropdown() {
-    
     const category = document.getElementById('ingredient-category').value;
     const ingredientDropdown = document.getElementById('ingredient-select');
     ingredientDropdown.innerHTML = '<option value="">Sélectionner un ingrédient</option>';
-    console.log("updateIngredientDropdown ",category)
+    console.log("updateIngredientDropdown ", category);
 
-
-    // Boucle sur les ingrédients de la liste de base
+    // Récupérer tous les ingrédients appartenant à la catégorie sélectionnée
+    const filteredIngredients = [];
     for (const key in ingredientList) {
-        console.log("updateIngredientDropdown detail ",key)
-        if(ingredientList[key].cat==category) {
-            // Récupère le label de chaque ingrédient
-            const ingredient = ingredientList[key];
-            
-            // Crée un nouvel élément option
-            const option = document.createElement('option');
-            option.value = key; // la valeur de l'option est la clé de l'ingrédient
-            option.textContent = ingredient.label; // le texte affiché est le label de l'ingrédient
-
-            // Ajoute l'option à la dropdown list
-            ingredientDropdown.appendChild(option);
+        if (ingredientList[key].cat === category) {
+            filteredIngredients.push({ key: key, label: ingredientList[key].label });
         }
     }
+
+    // Trier les ingrédients par label
+    filteredIngredients.sort((a, b) => a.label.localeCompare(b.label));
+
+    // Ajouter les ingrédients triés à la dropdown
+    filteredIngredients.forEach(ingredient => {
+        const option = document.createElement('option');
+        option.value = ingredient.key; // la valeur de l'option est la clé de l'ingrédient
+        option.textContent = ingredient.label; // le texte affiché est le label de l'ingrédient
+        ingredientDropdown.appendChild(option);
+    });
 }
+
 
 // Fonction pour ajouter un ingrédient à la recette
 function addIngredientToRecipe() {
