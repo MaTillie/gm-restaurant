@@ -307,6 +307,17 @@ function initManagement(cfg,key)
             end,
         });
 
+        table.insert(options,{
+            name = "ManagementOrder",  -- Nom de l'option, unique pour chaque interaction
+            label = "Commender ingrédients",  -- Texte affiché à l'utilisateur
+            icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            onSelect = function()                    
+                orderIngredient(cfg)
+            end,
+        });
+
+        
+
         local idCaisse = exports.ox_target:addSphereZone({ 
             coords = caisse.coords,
             radius = caisse.size,
@@ -699,6 +710,11 @@ RegisterNUICallback('nuiCallback', function(data, cb)
         TriggerServerEvent('gm-restaurant:server:updateRecipe', data.param.recipes)        
     end
 
+    if(data.action == 'saveIngredientOrder')then
+        TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.recipes)        
+    end
+    
+
     cb('ok')  -- Réponse à envoyer au JS
 end)
 
@@ -917,6 +933,20 @@ function manageRecipe(cfg)
     SetNuiFocus(true, true)
     SendNUIMessage({
         action = 'manageRecipe',
+        data = Data, 
+    })
+end
+
+function orderIngredient(cfg)
+    local Data = {}
+    Data.ingredient = {}
+
+    Data.ingredient = IngList.Base
+    
+    Data.theme = "management_orderIngredient.css"
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = 'orderIngredient',
         data = Data, 
     })
 end

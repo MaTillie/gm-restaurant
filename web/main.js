@@ -384,6 +384,7 @@ function closeMenu() {
     document.getElementById('ticket').style.display = 'none';
     document.getElementById('mng_prix').style.display = 'none';
     document.getElementById('mng_recipe').style.display = 'none';    
+    document.querySelector('.container').style.display = 'none';    
     callLuaFunction({ action: 'closeMenu', param: 'someValue' });
     itemsList = [];
     currentDiscount = 0.00;
@@ -446,7 +447,17 @@ $(document).ready(function () {
             loadRecipeList();
             populateCategoryDropdown();
             populateDishCategoryDropdown();
-              break
+              break;
+        case "orderIngredient":  
+            ingredientList = eventData.data.ingredient
+            console.log("orderIngredient",ingredientList)
+            document.querySelector('.menu-container').style.display = 'none';
+            document.getElementById('ticket').style.display = 'none';
+            document.getElementById('mng_prix').style.display = 'none';
+            document.getElementById('mng_recipe').style.display = 'none';    
+            document.querySelector('.container').style.display = 'block';    
+            populateIngredientOrderDropdown();
+            
         case "openTicket":
         console.log("openTicket :" )
        
@@ -706,3 +717,112 @@ function addIngredientToRecipe() {
         alert('Veuillez sélectionner un ingrédient.');
     }
 }
+
+
+let orderIgd = {};
+let totalPrice = 0;
+
+function populateIngredientOrderDropdown() {
+    
+    console.log("populateIngredientOrderDropdown",JSON.stringify(ingredientList))
+    // Injecter les ingrédients dans la liste déroulante
+    let ingredientSelect = document.getElementById("ingredientOrder");
+
+    let ingredientKeys = Object.keys(ingredientList).sort((a, b) => {
+        let labelA = ingredientList[a].label.toLowerCase();
+        let labelB = ingredientList[b].label.toLowerCase();
+        return labelA.localeCompare(labelB);
+    });
+    
+    // Injecter les ingrédients triés dans la liste déroulante
+
+    ingredientKeys.forEach(key => {
+        let option = document.createElement("option");
+        option.value = key;
+        option.textContent = ingredientList[key].label;
+        ingredientSelect.appendChild(option);
+    });
+        
+  /*  for (let key in ingredientList) {
+        console.log(key);
+        let option = document.createElement("option");
+        option.value = key;
+        option.textContent = ingredientList[key].label;
+        ingredientSelect.appendChild(option);
+    }*/
+}
+
+// Ajouter un ingrédient à la commande
+document.getElementById("add-ingredient").addEventListener("click", function() {
+    let ingredientSelect = document.getElementById("ingredientOrder");
+    let selectedIngredient = ingredientSelect.value;
+    if (!orderIgd[selectedIngredient]) {
+        orderIgd[selectedIngredient] = {quantity: 1, price: ingredientList[selectedIngredient].price};
+    } else {
+        orderIgd[selectedIngredient].quantity += 1;
+    }
+    updateOrderTable();
+});
+
+// Mettre à jour le tableau des commandes
+function updateOrderTable() {
+    let orderTableBody = document.querySelector("#order-table tbody");
+    orderTableBody.innerHTML = "";
+
+    totalPrice = 0;
+
+    for (let key in orderIgd) {
+        let row = document.createElement("tr");
+
+        // Nom de l'ingrédient
+        let nameCell = document.createElement("td");
+        nameCell.textContent = ingredientList[key].label;
+        row.appendChild(nameCell);
+
+        // Quantité avec boutons + et -
+        let quantityCell = document.createElement("td");
+        let minusBtn = document.createElement("button");
+        minusBtn.textContent = "-";
+        minusBtn.addEventListener("click", function() {
+            if (orderIgd[key].quantity > 1) {
+                orderIgd[key].quantity -= 1;
+            } else {
+                delete orderIgd[key];
+            }
+            updateOrderTable();
+        });
+        let plusBtn = document.createElement("button");
+        plusBtn.textContent = "+";
+        plusBtn.addEventListener("click", function() {
+            orderIgd[key].quantity += 1;
+            updateOrderTable();
+        });
+        quantityCell.appendChild(minusBtn);
+        quantityCell.appendChild(document.createTextNode(` ${orderIgd[key].quantity} `));
+        quantityCell.appendChild(plusBtn);
+        row.appendChild(quantityCell);
+
+        // Coût
+        let costCell = document.createElement("td");
+        let itemCost = orderIgd[key].quantity * ingredientList[key].price;
+        costCell.textContent = `$${itemCost}`;
+        row.appendChild(costCell);
+
+        let infoCell = document.createElement("td");
+        infoCell.textContent = `$${ingredientList[key].amount}`;
+        row.appendChild(infoCell);
+
+        totalPrice += itemCost;
+
+        orderTableBody.appendChild(row);
+    }
+
+    document.getElementById("total-price").textContent = `$${totalPrice}`;
+}
+
+// Valider la commande
+document.getElementById("validate-order").addEventListener("click", function() {
+    callLuaFunction({ action: 'saveIngredientOrder', param: {order :orderIgd }});
+    closeMenu()
+});
+

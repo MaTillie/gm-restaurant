@@ -403,3 +403,8 @@ end
 function setLocalRecipe(job,recipe)
     Recipe[job] = recipe
 end
+
+RegisterNetEvent('gm-restaurant:server:setIngredientOrder')
+AddEventHandler('gm-restaurant:server:setIngredientOrder', function(order)
+    PrintTable(order)
+end)

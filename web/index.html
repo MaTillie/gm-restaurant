@@ -169,6 +169,35 @@
     
     
     
+    <div class="container">
+        <h1>Commander des Ingrédients</h1>
+
+        <div class="ingredient-selector">
+            <select id="ingredientOrder">
+                <!-- Les ingrédients seront injectés ici par le script JS -->
+            </select>
+            <button id="add-ingredient">+</button>
+        </div>
+
+        <table id="order-table">
+            <thead>
+                <tr>
+                    <th>Ingrédient</th>
+                    <th>Quantité</th>
+                    <th>Coût</th>
+                    <th>Qté/lot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Les commandes seront ajoutées ici -->
+            </tbody>
+        </table>
+
+        <div class="total">
+            <p>Total: <span id="total-price">$0</span></p>
+        </div>
+
+        <button id="validate-order">Valider la commande</button>
     </div>
 
 
