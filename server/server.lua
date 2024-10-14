@@ -247,7 +247,9 @@ AddEventHandler('gm-restaurant:server:payment', function(bill,cfg)
     end  
 end)
 
--- Gestion des prix - Début --
+-- #################################################################################################### --
+-- ## Début de Section - Gestion dynamique du menu et des recettes ## --
+-- #################################################################################################### --
 
 -- Fonction pour sauvegarder les modifications dans config.lua
 local function savePriceFile(data)    
@@ -349,7 +351,9 @@ local function saveRecipeFile(data)
     local updatedConfig = configFile:sub(1, menuStart - 1) .. newRecipe .. configFile:sub(menuEnd + 1)
 
     SaveResourceFile(GetCurrentResourceName(), "config/recipe_"..player.PlayerData.job.name..".lua", updatedConfig, -1)
-    setLocalRecipe(player.PlayerData.job.name,data)
+    local lRcp = getLocalRecipe(player.PlayerData.job.name)
+    lRcp.List = data
+    setLocalRecipe(player.PlayerData.job.name,lRcp)
 end
 
 
@@ -397,14 +401,81 @@ function setLocalMenu(job,menu)
 end
 
 function getLocalRecipe(job)
+    print("getLocalRecipe "..job)
+    PrintTable(Recipe[job])
     return Recipe[job]
 end
 
 function setLocalRecipe(job,recipe)
+    print("setLocalRecipe "..job)
+    PrintTable(recipe)
     Recipe[job] = recipe
 end
 
+-- #################################################################################################### --
+-- ## Fin de Section - Gestion dynamique du menu et des recettes ## --
+-- #################################################################################################### --
+
+-- #################################################################################################### --
+-- ## Début de Section - Gestion de la commande d'ingrédients ## --
+-- #################################################################################################### --
+
+local IngredientOrder = {}
+-- Retour des commandes d'ingrédients
 RegisterNetEvent('gm-restaurant:server:setIngredientOrder')
 AddEventHandler('gm-restaurant:server:setIngredientOrder', function(order)
-    PrintTable(order)
+    local src = source
+    local player = exports.qbx_core:GetPlayer(src)
+    
+    IngredientOrder[player.PlayerData.job.name] = order
 end)
+
+RegisterNetEvent('gm-restaurant:server:getIngredientOrder')
+AddEventHandler('gm-restaurant:server:getIngredientOrder', function(job)
+    local src = source
+    TriggerClientEvent('gm-restaurant:client:getIngredientOrder', src,IngredientOrder[job])  
+end)
+
+-- #################################################################################################### --
+-- ## Fin de Section - Gestion de la commande d'ingrédients ## --
+-- #################################################################################################### --
+
+-- #################################################################################################### --
+-- ## Début de Section - Ajout des ingrédients farmable par les joueurs ## --
+-- #################################################################################################### --
+
+-- Récupère la liste des items de farm que possède le joueur pour qu'il puisse les ajouter au stockage virtuel
+RegisterNetEvent('gm-restaurant:server:getPlayerIngredients')
+AddEventHandler('gm-restaurant:server:getPlayerIngredients', function()
+    local src = source
+    local retour = {}
+    for item,detail in ipairs(IngList.Player) do
+        local nb = exports.ox_inventory:GetItemCount(src, item)
+        if (nb>0) then
+            table.insert(retour, {item=item, amount=nb}) 
+        end
+    end
+    TriggerClientEvent('gm-restaurant:client:getPlayerIngredients', src,retour)  
+end)
+
+-- Retire les items de farm de l'inventaire du joueur pour les convertir en ingrédients dans le stockage virtuel
+RegisterNetEvent('gm-restaurant:server:getPlayerIngredient')
+AddEventHandler('gm-restaurant:server:getPlayerIngredient', function(data)
+    local src = source
+    local nb = exports.ox_inventory:GetItemCount(src, data.itemPlayer)
+        if (nb>=data.amountPlayer) then
+            local total = data.amountPlayer*data.amount
+            
+            local metadata = {
+                label = IngList.Base[data.item].label ,
+                imageurl = IngList.Base[data.item].image,       
+            }
+
+            exports.ox_inventory:RemoveItem(src, data.itemPlayer,data.amountPlayer)
+            exports.ox_inventory:AddItem(VirtualFridgeName(src), "leap_ingredient",total,metadata)
+        end
+end)
+
+-- #################################################################################################### --
+-- ## Fin de Section - Ajout des ingrédients farmable par les joueurs ## --
+-- #################################################################################################### --

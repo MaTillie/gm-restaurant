@@ -50,10 +50,13 @@ end
 
 -- Evènement appelé par le serveur permettant de mettre à jour les recettes côté client (c'est pour que le changement des recettes soient opérationnels instatnément et pas devoir attendre le reboot)
 RegisterNetEvent('gm-restaurant:client:receiveRecipe', function(job,recipe)
+    print("receiveRecipe "..job)
     if recipe then
+        PrintTable(recipe)
         Recipe[job] = recipe
         flg_ServerRecipe = true
     end
+    print("receiveRecipe Fin "..job)
 end)
 
 function initKitchen(cfg,key)
@@ -711,7 +714,7 @@ RegisterNUICallback('nuiCallback', function(data, cb)
     end
 
     if(data.action == 'saveIngredientOrder')then
-        TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.recipes)        
+        TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.order)        
     end
     
 
@@ -915,7 +918,7 @@ function manageRecipe(cfg)
     until(flg_ServerRecipe)
 
     Data.ingredient = IngList.Base
-    
+    print("manageRecipe "..cfg.Job)
     PrintTable(Recipe[cfg.Job].List)
     
      for key, value in pairs(Recipe[cfg.Job].List)  do
@@ -951,4 +954,33 @@ function orderIngredient(cfg)
     })
 end
 
+function getIngredientOrder()
+    -- chk job -- Vous n'etes pas authorisé à prendre les commandes
+    -- chk commande
+    -- faire payer et valider au retour
+end
 
+-- Création du PNJ de commande d'ingrédients
+Citizen.CreateThread(function()
+    -- Charger le modèle du PNJ
+    loadPedModel(Config.NPC.model)
+    local pnjCoords = Config.NPC.pos
+    local ped = CreatePed(4, pedModel, pnjCoords.x, pnjCoords.y, pnjCoords.z - 1.0, 1.0, false, true)
+    SetEntityHeading(ped, Config.NPC.heading) -- Orienter le PNJ
+    FreezeEntityPosition(ped, true)
+    SetEntityInvincible(ped, true)
+    SetBlockingOfNonTemporaryEvents(ped, true)
+
+    exports.ox_target:addLocalEntity(ped, {
+        {
+            name = 'delivery:start',
+            label = "Régler et prendre la commande",
+            icon = 'fa-solid fa-box',
+            onSelect = function()                    
+                getIngredientOrder()
+            end,
+            
+        },
+    })
+
+end)

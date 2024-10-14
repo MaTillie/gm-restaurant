@@ -549,7 +549,7 @@ function loadRecipeDetails(recipeKey) {
     ingredientsList.innerHTML = ''; // Vider la liste précédente
     for (let ingredientKey in recipe.ingredients) {
         let ingredient = recipe.ingredients[ingredientKey];
-
+        console.log("loadRecipeDetails",ingredientKey);
         let li = document.createElement('li');  
         li.innerHTML = `
             <span class="ingredient-label">${ingredientList[ingredientKey].label}</span> 
@@ -809,7 +809,7 @@ function updateOrderTable() {
         row.appendChild(costCell);
 
         let infoCell = document.createElement("td");
-        infoCell.textContent = `$${ingredientList[key].amount}`;
+        infoCell.textContent = `${ingredientList[key].amount}`;
         row.appendChild(infoCell);
 
         totalPrice += itemCost;

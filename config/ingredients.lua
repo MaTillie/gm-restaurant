@@ -69,6 +69,7 @@ IngList.Base = {
     -- Viandes --
     ['gmr_igd_jambon'] = {label = 'Jambon', weight = 45, stack = true, close = true, cat = 'Viande', amount = 2, price = 5},
     ['gmr_igd_poulet'] = {label = 'Poulet', weight = 60, stack = true, close = true, cat = 'Viande', amount = 2, price = 5},
+    ['gmr_igd_porc'] = {label = 'Porc', weight = 70, stack = true, close = true, cat = 'Viande', amount = 2, price = 5},
     ['gmr_igd_boeuf'] = {label = 'Bœuf', weight = 70, stack = true, close = true, cat = 'Viande', amount = 2, price = 5},
     ['gmr_igd_saucisse'] = {label = 'Saucisse', weight = 50, stack = true, close = true, cat = 'Viande', amount = 2, price = 5},
     ['gmr_igd_merguez'] = {label = 'Merguez', weight = 45, stack = true, close = true, cat = 'Viande', amount = 2, price = 5},
@@ -180,6 +181,7 @@ IngList.Base = {
 
     -- Céréales, farines et graines --
     ['gmr_igd_farine'] = {label = 'Farine', weight = 50, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
+    ['gmr_igd_ble'] = {label = 'Blé', weight = 50, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
     ['gmr_igd_sucre'] = {label = 'Sucre', weight = 40, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
     ['gmr_igd_farine_de_mais'] = {label = 'Farine de maïs', weight = 40, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
     ['gmr_igd_quinoa'] = {label = 'Quinoa', weight = 35, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
@@ -294,9 +296,90 @@ IngList.Base = {
     ["gmr_igd_herbes_provence"] = {label = 'Herbes de Provence', weight = 10, stack = true, close = true, cat = 'Herbe', amount = 50, price = 5},
     ["gmr_igd_piment_doux"] = {label = 'Piment doux', weight = 5, stack = true, close = true, cat = 'Épice', amount = 50, price = 5},
 
+    -- #################################################################################################### --
+    -- ## Début de Section - Produits issus du vignoble Mancini ## --
+    -- #################################################################################################### --
+
+    -- Vins d'exception --
+    ["gmwine_rouge1"] = {label = "Don Gaïus",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_rose1"] = {label = "Coeur de Bianca",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_blanc1"] = {label = "Bianco di Mancini",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_champ1"] = {label = "Cuvée Gaïus",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+
+    -- Vins remarquables --
+    ["gmwine_rouge2"] = {label = "Terra di Sicilia",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_rose2"] = {label = "Val di Noto Rosa",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_blanc2"] = {label = "Sole di Palermo",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_champ2"] = {label = "Blanc de Blancs Mancini",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+
+    -- Vins standards --
+    ["gmwine_rouge3"] = {label = "Vinewood Velour",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_rose3"] = {label = "Los Santos Sunset",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_blanc3"] = {label = "Grapeseed Sensation",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_champ3"] = {label = "Vespucci Glamour Gold",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+
+    -- Soft --
+    ["gmwine_jusderaisin"] = {label = "Jus de raisin",weight = 250,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_jusderaisinpetillant"] = {label = "Jus de raisin pétillant",weight = 250,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+
+    -- #################################################################################################### --
+    -- ## Fin de Section - Produits issus du vignoble Mancini ## --
+    -- #################################################################################################### --
+
+    -- #################################################################################################### --
+    -- ## Début de Section - Produits issus de la ferme ## --
+    -- #################################################################################################### --
+
+    ["gmr_igd_jus_de_pomme"] = {label = "Jus de pomme",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1000, price = 1},
+    ["gmr_igd_jus_d_orange"] = {label = "Jus d'orange",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1000, price = 1},
+    ["gmr_igd_jus_de_citrouille"] = {label = "Jus de citrouille",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1000, price = 1},
+
+    -- #################################################################################################### --
+    -- ## Début de Section - Produits issus de la ferme ## --
+    -- #################################################################################################### --    
 
 }
 
+
+IngList.Player = {
+    -- ['apple'] = {item = "gmr_igd_pomme",amount = 10},
+    -- Veut dire 1*apple = 10*gmr_igd_pomme
+    -- Item de la ferme --
+    ['apple'] = {item = "gmr_igd_pomme",amount = 10},
+    ['orange'] = {item = "gmr_igd_orange",amount = 10},
+    ['mushroom'] = {item = "gmr_igd_champignon",amount = 10},
+    ['pumpkin'] = {item = "gmr_igd_citrouille",amount = 10},
+    ['cabbage'] = {item = "gmr_igd_chou",amount = 10},
+    ['tomato'] = {item = "gmr_igd_tomate",amount = 10},
+    ['pig'] = {item = "gmr_igd_porc",amount = 10},
+    ['cow'] = {item = "gmr_igd_boeuf",amount = 10},
+    ['hen'] = {item = "gmr_igd_poulet",amount = 10},
+    ['milk'] = {item = "gmr_igd_lait",amount = 10},
+    ['wheat'] = {item = "gmr_igd_ble",amount = 10},
+
+    -- Item du Domaine Mancini --
+    -- Vins d'exception --
+    ["gmwine_rouge1"] = {item = "gmwine_rouge1", amount = 1},
+    ["gmwine_rose1"] = {item = "gmwine_rose1", amount = 1},
+    ["gmwine_blanc1"] = {item = "gmwine_blanc1", amount = 1},
+    ["gmwine_champ1"] = {item = "gmwine_champ1", amount = 1},
+
+    -- Vins remarquables --
+    ["gmwine_rouge2"] = {item = "gmwine_rouge2", amount = 1},
+    ["gmwine_rose2"] = {item = "gmwine_rose2", amount = 1},
+    ["gmwine_blanc2"] = {item = "gmwine_blanc2", amount = 1},
+    ["gmwine_champ2"] = {item = "gmwine_champ2", amount = 1},
+
+    -- Vins standards --
+    ["gmwine_rouge3"] = {item = "gmwine_rouge3", amount = 1},
+    ["gmwine_rose3"] = {item = "gmwine_rose3", amount = 1},
+    ["gmwine_blanc3"] = {item = "gmwine_blanc3", amount = 1},
+    ["gmwine_champ3"] = {item = "gmwine_champ3", amount = 1},
+
+    -- Soft --
+    ["gmwine_jusderaisin"] = {item = "gmwine_jusderaisin", amount = 1},
+    ["gmwine_jusderaisinpetillant"] = {item = "gmwine_jusderaisinpetillant", amount = 1},
+}
 
 IngList.Compo = {
     ["gmr_cpigd_bechamel"] = {
@@ -453,7 +536,7 @@ IngList.Compo = {
     
     ["gmr_cpigd_coulis_fruit"] = {
         label = "Coulis de fruits rouges",
-        dose = 4,  -- pour 4 portions
+        dose = 2,  -- pour 4 portions
         ingredients = {
             ["gmr_igd_framboise"] = {amount = 3},
             ["gmr_igd_sucre"] = {amount = 1},
@@ -544,7 +627,7 @@ IngList.Compo = {
     
     ["gmr_cpigd_pate_brisee_sucree"] = {
         label = "Pâte brisée sucrée",
-        dose = 1,  -- pour 1 tarte
+        dose = 4,  -- pour 1 tarte
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
             ["gmr_igd_beurre"] = {amount = 2},
@@ -665,7 +748,7 @@ IngList.Compo = {
         label = "Marinade pour tofu",
         dose = 4,
         ingredients = {
-            ["gmr_igd_sauce_soja"] = {amount = 2},
+            ["gmr_igd_sauce_soja"] = {amount = 4},
             ["gmr_igd_huile_olive"] = {amount = 1},
             ["gmr_igd_ail"] = {amount = 1},
             ["gmr_igd_poivre"] = {amount = 1},
@@ -683,9 +766,9 @@ IngList.Compo = {
     },
     ["gmr_cpigd_chips"] = {
         label = "Chips nature maison, à assaisoner",
-        dose = 1,
+        dose = 2,
         ingredients = {
-            ["gmr_igd_pomme_de_terre"] = {amount = 3},
+            ["gmr_igd_pomme_de_terre"] = {amount = 4},
             ["gmr_igd_huile_tournesol"] = {amount = 2},
         },
     },  
@@ -703,15 +786,15 @@ IngList.Compo = {
         label = "Baguette traditionnelle",
         dose = 1,  -- pour 1 baguette
         ingredients = {
-            ["gmr_igd_farine"] = {amount = 4},
+            ["gmr_igd_farine"] = {amount = 2},
             ["gmr_igd_levure"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 3},
+            ["gmr_igd_eau"] = {amount = 1},
             ["gmr_igd_sel"] = {amount = 1},
         },
     },
     ["gmr_cpigd_frites"] = {
         label = "Frites croustillantes",
-        dose = 1,
+        dose = 4,
         ingredients = {
             ["gmr_igd_pomme_de_terre"] = {amount = 5},
             ["gmr_igd_huile_tournesol"] = {amount = 2},
@@ -720,7 +803,7 @@ IngList.Compo = {
     },
     ["gmr_cpigd_pate_feuilletee"] = {
         label = "Pâte feuilletée maison",
-        dose = 1,
+        dose = 4,
         ingredients = {
             ["gmr_igd_farine"] = {amount = 4},
             ["gmr_igd_beurre"] = {amount = 4},
@@ -728,4 +811,20 @@ IngList.Compo = {
             ["gmr_igd_eau"] = {amount = 2},
         },
     },
+    ["gmr_cpigd_fond_soupe"] = {
+        label = "Fond de soupe",
+        dose = 4,
+        ingredients = {
+            ["gmr_igd_carotte"] = {amount = 2},
+            ["gmr_igd_oignon"] = {amount = 1},
+            ["gmr_igd_celeri"] = {amount = 1},
+            ["gmr_igd_poireau"] = {amount = 1},
+            ["gmr_igd_eau"] = {amount = 4},
+            ["gmr_igd_sel"] = {amount = 1},
+            ["gmr_igd_poivre"] = {amount = 1},
+            ["gmr_igd_thym"] = {amount = 1},
+            ["gmr_igd_feuille_de_laurier"] = {amount = 1},
+        },
+    }
+    
 }
