@@ -301,26 +301,26 @@ IngList.Base = {
     -- #################################################################################################### --
 
     -- Vins d'exception --
-    ["gmwine_rouge1"] = {label = "Don Gaïus",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_rose1"] = {label = "Coeur de Bianca",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_blanc1"] = {label = "Bianco di Mancini",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_champ1"] = {label = "Cuvée Gaïus",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_rouge1"] = {label = "Don Gaïus",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_rose1"] = {label = "Coeur de Bianca",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_blanc1"] = {label = "Bianco di Mancini",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_champ1"] = {label = "Cuvée Gaïus",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
 
     -- Vins remarquables --
-    ["gmwine_rouge2"] = {label = "Terra di Sicilia",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_rose2"] = {label = "Val di Noto Rosa",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_blanc2"] = {label = "Sole di Palermo",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_champ2"] = {label = "Blanc de Blancs Mancini",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_rouge2"] = {label = "Terra di Sicilia",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_rose2"] = {label = "Val di Noto Rosa",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_blanc2"] = {label = "Sole di Palermo",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_champ2"] = {label = "Blanc de Blancs Mancini",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
 
     -- Vins standards --
-    ["gmwine_rouge3"] = {label = "Vinewood Velour",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_rose3"] = {label = "Los Santos Sunset",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_blanc3"] = {label = "Grapeseed Sensation",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_champ3"] = {label = "Vespucci Glamour Gold",weight = 500,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_rouge3"] = {label = "Vinewood Velour",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_rose3"] = {label = "Los Santos Sunset",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_blanc3"] = {label = "Grapeseed Sensation",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_champ3"] = {label = "Vespucci Glamour Gold",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
 
     -- Soft --
-    ["gmwine_jusderaisin"] = {label = "Jus de raisin",weight = 250,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
-    ["gmwine_jusderaisinpetillant"] = {label = "Jus de raisin pétillant",weight = 250,stack = true,close = true,cat = 'Produit Mancini', amount = 1000, price = 1},
+    ["gmwine_jusderaisin"] = {label = "Jus de raisin",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_jusderaisinpetillant"] = {label = "Jus de raisin pétillant",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
 
     -- #################################################################################################### --
     -- ## Fin de Section - Produits issus du vignoble Mancini ## --
@@ -330,9 +330,9 @@ IngList.Base = {
     -- ## Début de Section - Produits issus de la ferme ## --
     -- #################################################################################################### --
 
-    ["gmr_igd_jus_de_pomme"] = {label = "Jus de pomme",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1000, price = 1},
-    ["gmr_igd_jus_d_orange"] = {label = "Jus d'orange",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1000, price = 1},
-    ["gmr_igd_jus_de_citrouille"] = {label = "Jus de citrouille",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1000, price = 1},
+    ["gmr_igd_jus_de_pomme"] = {label = "Jus de pomme",weight = 500,stack = true,close = true,cat = 'Produit de la ferme',  amount = 1, price = 1000},
+    ["gmr_igd_jus_d_orange"] = {label = "Jus d'orange",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1, price = 1000},
+    ["gmr_igd_jus_de_citrouille"] = {label = "Jus de citrouille",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1, price = 1000},
 
     -- #################################################################################################### --
     -- ## Début de Section - Produits issus de la ferme ## --
