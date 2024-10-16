@@ -335,7 +335,7 @@ IngList.Base = {
     ["gmr_igd_jus_de_citrouille"] = {label = "Jus de citrouille",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1, price = 1000},
 
     -- #################################################################################################### --
-    -- ## Début de Section - Produits issus de la ferme ## --
+    -- ## Fin de Section - Produits issus de la ferme ## --
     -- #################################################################################################### --    
 
 }

@@ -127,6 +127,7 @@ function initKitchen(cfg,key)
                 name = item, 
                 label = recipeLabel,  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-caret-right ',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                groups = cfg.Job,
                 onSelect = function()          
                     local success = true          
                    --[[ local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
@@ -145,8 +146,7 @@ function initKitchen(cfg,key)
                             print("Progress cancelled for: " .. item)
                         end
                     end                    
-                end,
-                groups = cfg.job,
+                end,                
             });
         end
 
@@ -187,7 +187,7 @@ function initFidge(cfg,key)
                         end
                     end
                 end,
-                groups = cfg.job,
+                groups = cfg.Job,
             });
 
                     
@@ -865,13 +865,15 @@ function managePrice(cfg)
     for key, item in pairs(menu) do
         local lkItem = lrec.List[key]
         print(lkItem.label)
-        table.insert(dataMenu,{label=lkItem.label,price=item.price,name=key})  
+        table.insert(dataMenu,{label=lkItem.label,price=item.price,name=key,categorie=item.categorie})  
     end
     PrintTable(dataMenu)
     SetNuiFocus(true, true)
     local data = {}
     data.theme = "management_price.css"
     data.menu = dataMenu
+    data.categorie = cfg.Categorie
+    data.recipe = lrec.List
     SendNUIMessage({
         action = 'managePrice',
         data = data, 

@@ -426,7 +426,7 @@ RegisterNetEvent('gm-restaurant:server:setIngredientOrder')
 AddEventHandler('gm-restaurant:server:setIngredientOrder', function(order)
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
-    
+    order.done = false
     IngredientOrder[player.PlayerData.job.name] = order
 end)
 

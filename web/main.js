@@ -4,6 +4,8 @@ let currentDiscount = 0.00;
 let IndexCaisse = 0;
 let Theme = "styles.css"
 let Config = {}
+let MenuCategorie = {}
+let MenuRecipe = {}
 let Key = ""
 
 // Fonction pour ajouter ou mettre à jour un article
@@ -282,6 +284,39 @@ function generateOrderItems(menuConfig) {
     document.querySelector('.footer').style.display = 'flex';
 }
 
+function populateProductDropDown() {
+    // Injecter les ingrédients dans la liste déroulante
+   // MenuCategorie = eventData.data.categorie
+     //       MenuRecipe = eventData.data.recipe
+
+    let ingredientSelect = document.getElementById("product-select");
+
+    // Injecter les ingrédients triés dans la liste déroulante
+
+    Object.keys(MenuRecipe).forEach(category => {
+        let option = document.createElement('option');
+        option.value = category; 
+        option.textContent = MenuRecipe[category].label; 
+        ingredientSelect.appendChild(option);})
+}
+
+function addProductToMenu(){
+    const productKey = document.getElementById('product-select').value;
+    // WIP
+    if (productKey) {
+        const recipe = MenuRecipe[productKey];
+        if (!recipe[productKey]) {
+            // Si l'ingrédient n'existe pas déjà dans la recette, on l'ajoute
+            recipe[productKey] = { amount: 1, base: true };
+            loadRecipeDetails(currentRecipeKey); // Recharger la vue des détails de la recette
+        } else {
+            alert('Cet ingrédient est déjà présent dans la recette.');
+        }
+    } else {
+        alert('Veuillez sélectionner un ingrédient.');
+    }
+}
+
 function manage_price(menuItems) {
     console.log("manage_price count",menuItems.length)
     const tableBody = document.getElementById('menu-items');
@@ -436,6 +471,10 @@ $(document).ready(function () {
             console.log("managePrice",eventData.data)
             const menuItems = eventData.data.menu;
             console.log("managePrice1",menuItems)
+
+            MenuCategorie = eventData.data.categorie
+            MenuRecipe = eventData.data.recipe
+            populateProductDropDown();
             manage_price(menuItems)
               break;
         case "manageRecipe":      

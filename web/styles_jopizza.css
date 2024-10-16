@@ -1,0 +1,361 @@
+.merriweather-light {
+    font-family: "Merriweather", serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  .merriweather-regular {
+    font-family: "Merriweather", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .merriweather-bold {
+    font-family: "Merriweather", serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  .merriweather-black {
+    font-family: "Merriweather", serif;
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  .merriweather-light-italic {
+    font-family: "Merriweather", serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  .merriweather-regular-italic {
+    font-family: "Merriweather", serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  .merriweather-bold-italic {
+    font-family: "Merriweather", serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+  
+  .merriweather-black-italic {
+    font-family: "Merriweather", serif;
+    font-weight: 900;
+    font-style: italic;
+  }
+  
+
+* {
+    box-sizing: border-box;
+    font-family: "Merriweather", serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+
+body {
+    background-color: transparent;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #690101;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+
+.close-button:hover {
+    background-color: #9e0f0f;
+}
+
+/* Conteneur principal du menu (fixe, sans scroll) */
+.menu-container {
+    display: none;
+    flex-direction: column;
+    width: 800px;
+    height: 800px;
+    background-color: #2e4b5f;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    margin: auto;
+    position: relative;
+    overflow: hidden; 
+}
+
+/* Conteneur pour les items avec scroll */
+.items-container {
+    flex: 1; /* Permet de prendre tout l'espace disponible */
+    overflow-y: auto; /* Activer le défilement uniquement sur cette zone */
+    padding-right: 10px; /* Espacement pour que la barre de défilement n'empiète pas sur le contenu */
+    margin-top: 20px; /* Espacement par rapport au titre */
+}
+
+h1 {
+    font-size: 30px;
+    color: #dfa300;
+    margin-bottom: 5px;
+}
+
+p {
+    font-size: 20px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Conteneur global pour chaque catégorie */
+.category-container {
+    width: 100%;
+    margin-bottom: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Titre de la catégorie */
+.category h2 {
+    font-size: 28px;
+    color: #dfa300;
+    margin-bottom: 20px;
+    text-align: left;
+    border-bottom: 2px solid #dfa300;
+    padding-bottom: 10px;
+}
+
+/* Ajustements pour la grille des items dans une catégorie */
+.category .grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /*repeat(auto-fill, minmax(150px, 1fr));*/
+    gap: 20px;
+    padding: 15px;
+    width: 100%;
+    overflow: hidden; /* Empêche les items de sortir de la grille */
+}
+
+
+/* Style pour les items */
+.item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+
+
+.grid-container {
+    /*flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;    
+    overflow-y: auto;
+    box-sizing: content-box;
+    padding: 15px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.1);*/
+    justify-items: center;
+}
+
+.item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
+
+.item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.item-info {
+    margin-top: 10px;
+}
+
+.item-info p {
+    margin: 10px 0;
+}
+
+.price-tag {
+    background-color: #353c41;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.quantity-control{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.quantity-btn {
+    background-color: #1f3a4d;
+    border: none;
+    color: white;
+    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background-color: #1f3a4d;
+    color: #466c86;
+}
+
+.quantity {
+    margin: 0 10px;
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 30px;
+    text-align: center;
+}
+
+.menu-container .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 6px;
+    background-color: transparent;    
+}
+
+
+.buttons {
+    display: flex;
+    gap: 5px;
+    font-size: 6px;
+}
+
+#addButton, #subtractButton {
+    padding: 5px 15px;
+    background-color: #1f3a4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 6px;
+}
+
+#addButton:hover, #subtractButton:hover {
+    background-color: #1f3a4d;
+    color: #466c86;
+}
+
+#payButton {
+    padding: 10px 20px;
+    background-color: #1f3a4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#payButton:hover {
+    background-color: #1f3a4d;
+    color: #466c86;
+}
+
+/* Style pour l'ascenseur */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background:  #1f3a4d;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: hsla(205, 43%, 21%, 0.774);
+}
+
+/* Style pour les ascenseurs Firefox */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #ff00d4 #00ff62;
+}
+
+.notepad {
+    width: 300px;
+    background-color: #2e4b5f;
+    /*border: 2px solid #000;*/
+    border-radius: 10 px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    position: relative;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.notepad h1 {
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ffffff;
+    padding-bottom: 10px;
+}
+
+.notepad ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+}
+
+.notepad ul li {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+#ticket{
+    display : none;
+}
+
+#completed{
+    text-decoration:line-through;
+}
