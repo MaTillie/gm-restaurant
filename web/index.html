@@ -180,21 +180,37 @@
             <button class="close-button" onclick="closeMenu()">×</button> 
         </div>
         <div class="goCraft-content">
-            <select id="goCraft-select-product">
+            <select id="goCraft-select-product" onchange="goCraftChangeProduct()">
                 <option value="">Sélectionner un produit</option>
             </select>
 
             <div class="quantity-control">
-                <button class="btn" id="decrease-quantity">-</button>
-                <span id="quantity">1</span>
-                <button class="btn" id="increase-quantity">+</button>
+                <button class="btn" id="goCraft-minus">-</button>
+                <span id="goCraft-quantity">1</span>
+                <button class="btn" id="goCraft-plus">+</button>
             </div>
 
-            <button id="goCraft-validate">Valider</button>
+            
 
-            <div class="goCraft-wip">
-                
+            
+        </div>
+        <div class="goCraft-wip">
+
+            <div class="loading-container">
+                <div class="pot">
+                    <div class="chef-hat"></div>
+                    <div class="face">
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                        <div class="smile"></div>
+                    </div>
+                </div>
+                <p class="loading-text">Préparation en cours...</p>
             </div>
+            
+
+            
+            <button id="goCraft-validate" onclick="goCraftProduct()">Valider</button>
         </div>
     </div>
 

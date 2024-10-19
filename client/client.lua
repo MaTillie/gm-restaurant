@@ -60,95 +60,18 @@ RegisterNetEvent('gm-restaurant:client:receiveRecipe', function(job,recipe)
 end)
 
 function initKitchen(cfg,key)
-    local localRecipes = {}
-    local Recipes = {}
-    local job = cfg.Job
-    -- Lance la demande de recette au serveur
-    flg_ServerRecipe = false
-    getServerRecipe(job)
-
-    -- Boucle pour être certain d'avoir reçu les recettes avant de continuer
-    repeat
-        Wait(10)
-    until(flg_ServerRecipe)
-
-
-    localRecipes = Recipe[job]
-    Recipes = IngList.Compo
     for key, kitchen in pairs(cfg.Kitchen) do
         local options = {}        
-        for _, item in ipairs(kitchen.items) do
-            
-            local formattedIngredients = {}
-            local recipeLabel = item
 
-            local rcp = localRecipes.List[item]
-            local rcpCompo = IngList.Compo[item]
-            local rcpCompoLocal = localRecipes.Compo[item]
-
-            if rcp then
-                recipeLabel = rcp.label
-            elseif rcpCompo then
-                recipeLabel = rcpCompo.label
-            elseif rcpCompoLocal then
-                recipeLabel = rcpCompoLocal.label
-            end
-
-            if(cfg.DebugMode) then
-                print("initKitchen item: "..item)
-            end          
-
-            for ingredient, details in pairs(localRecipes.List[item].ingredients) do
-                local ingredientLabel = ingredient
-                local igd = IngList.Base[ingredient]
-                local igdCompo = IngList.Compo[ingredient]
-                local igdCompoLocal = localRecipes.Compo[ingredient]
-
-                if igd then
-                    ingredientLabel = igd.label
-                elseif igdCompo then
-                    ingredientLabel = igdCompo.label
-                elseif igdCompoLocal then
-                    ingredientLabel = igdCompoLocal.label
-                end
-
-
-                if(cfg.DebugMode) then
-                    print("initKitchen recipe detail : " .. ingredient .." ("..ingredientLabel..") : " .. details.amount)
-                end
-                
-
-                formattedIngredients[ingredient] = {}
-                formattedIngredients[ingredient].amount = details.amount
-                formattedIngredients[ingredient].label = ingredientLabel
-            end
-
-            table.insert(options,{
-                name = item, 
-                label = recipeLabel,  -- Texte affiché à l'utilisateur
-                icon = 'fas fa-caret-right ',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                groups = cfg.Job,
-                onSelect = function()          
-                    local success = true          
-                   --[[ local success = lib.progressBar({duration = kitchen.duration, label = kitchen.title, disable = {
-                        move = true,
-                        car = true,
-                        mouse = false,
-                        combat = true,
-                    }})]]
-                    if success then                                          
-                        TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item,recipeLabel,img)
-                        if(cfg.DebugMode) then  
-                            print("Progress success for: " .. item)    
-                        end
-                    else
-                        if(cfg.DebugMode) then  
-                            print("Progress cancelled for: " .. item)
-                        end
-                    end                    
-                end,                
-            });
-        end
+        table.insert(options,{
+            name = "goCraftLauch", 
+            label = "Préparer",
+            icon = 'fas fa-caret-right ',
+            groups = cfg.Job,
+            onSelect = function()                    
+                launchGoCraft() 
+            end,                 
+        });
 
         exports.ox_target:addSphereZone({ 
             coords = kitchen.coords,
@@ -721,8 +644,7 @@ RegisterNUICallback('nuiCallback', function(data, cb)
     end
 
     if(data.action == 'goCraftProduct')then
-
-        TriggerServerEvent('gm-restaurant:server:canCraftProduct', data.param)     
+        goCraftProduct(data.param)
     end
     
 
@@ -1028,7 +950,76 @@ end)
 -- ## Début de Section - goCraftProduct ## --
 -- #################################################################################################### --
 
+function launchGoCraft() 
+    local Data = {}
+
+    local playerData = QBCore.Functions.GetPlayerData()
+    local job = playerData.job.name
+
+    flg_ServerRecipe = false;
+    getServerRecipe(job)
+    repeat
+        Wait(10)
+    until(flg_ServerRecipe)
+
+    Data.products = Recipe[job].List
+    Data.theme = "styles_goCraft.css"
+
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = 'goCraft',
+        toggle = true,
+        data = Data
+    })
+
+end
+
 function goCraftProduct(order)
+    -- order = {item : item, amount : amount}
+    local item = order.item
+    local playerData = QBCore.Functions.GetPlayerData()
+    local job = playerData.job.name
+
+    flg_ServerRecipe = false;
+    flg_ServerMenu = false;
+
+    getServerRecipe(job)
+    getServerMenu(job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerRecipe)
+
+
+    repeat
+        Wait(10)
+    until(flg_ServerMenu)
+
+    local localRecipes = Recipe[job]
+    local product = localRecipes.List[item]
+
+    local formattedIngredients = {}  
+
+    for ingredient, details in pairs(product.ingredients) do
+
+        local ingredientLabel = ingredient
+
+        local igd = IngList.Base[ingredient]
+        local igdCompo = localRecipes.List[ingredient]
+
+        if igd then
+            ingredientLabel = igd.label
+        elseif igdCompo then
+            ingredientLabel = igdCompo.label
+        end
+
+
+        formattedIngredients[ingredient] = {}
+        formattedIngredients[ingredient].amount = details.amount
+        formattedIngredients[ingredient].label = ingredientLabel               
+    end
+
+    TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,product,product.label,product.categorie,product.image,order.amount)
 
 end
 

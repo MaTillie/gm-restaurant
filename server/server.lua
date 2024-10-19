@@ -450,16 +450,12 @@ AddEventHandler('gm-restaurant:server:canCraftProduct', function(order)
     -- order.item order.amount
 end)
 
-RegisterNetEvent('gm-restaurant:server:craft')
-AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabel,image)	
-    local src = source
-    if(ingredients) then
-        print("pas null")
-    else
-        print("null")
-    end
 
-    print("craft "..itemLabel)
+RegisterNetEvent('gm-restaurant:server:craft')
+AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabel,categorie,image,amount)	
+    local src = source
+
+    print("craft "..itemLabel.." ("..amount..")")
 
     local requis = true
     for ingredient, details  in pairs(ingredients) do
@@ -468,27 +464,23 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabe
             --imageurl = 'nui://gm-restaurant/web/image/'..item..'.png',       
         }
 
-        if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "gmr_ingredient",metadata)< details.amount) then
-            TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
+        if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "gmr_ingredient",metadata)< details.amount*amount) then
+            TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
             requis = false
-            exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount,metadata)
+            exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end    
     end
 
     if requis then        
         for ingredient, details in pairs(ingredients) do
-            exports.ox_inventory:RemoveItem(VirtualFridgeName(src), "gmr_ingredient",details.amount,metadata)
+            exports.ox_inventory:RemoveItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end
-
-        local player = exports.qbx_core:GetPlayer(src)
-        local lrec = getRecipe(player.PlayerData.job.name)
-        local lkItem = lrec.List[item]
 
         local metadata = {
             label = itemLabel ,
-            imageurl = lkItem.image,        
+            imageurl = image,        
         }
-        exports.ox_inventory:AddItem(src, lkItem.categorie, 1,metadata)
+        exports.ox_inventory:AddItem(src, categorie, amount,metadata)
     end
 
 

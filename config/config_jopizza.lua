@@ -48,17 +48,18 @@ function getConfig_jopizza()
     */
 
     Config.Menu = {
-    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_soupe_chicaneur"] = { price = 20.00, categorie = "entree" },
-    ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 161.00, categorie = "soft" },
     ["gmr_dsh_hogspub_polynectar"] = { price = 17.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_tartelette_citrouille"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_soupe_chicaneur"] = { price = 23.00, categorie = "entree" },
+    ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 160.00, categorie = "soft" },
     ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
     ["gmr_cpigd_caramel_magique"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_tartelette_citrouille"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
+    ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
 }
+   }
 
     
     
@@ -68,36 +69,12 @@ function getConfig_jopizza()
     
     Config.Kitchen = {
         [1] ={
-            -- Cuisson vec3(-587.63, -278.46, 41.69)
-            coords = vec3(-587.03, -279.30, 41.69),
+            coords = vec3(-583.7, -289.17, 35.45),
             size = 0.5,
             title = "Préparer",
             duration = 5000,
             items = {
-                "gmr_dsh_hogspub_bubblensqueak",
             }
-        },
-        [2] ={
-            -- Tonneau rez de chaussée
-            coords = vec3(-592.61, -285.44, 36.00),
-            size = 0.5,
-            title = "Verser",
-            duration = 2000,
-            items = {
-                "gmr_dsh_hogspub_bubblensqueak",
-            }
-            -- Animation plus tard
-        },   
-        [3] ={
-            -- Tonneau rooftop
-            coords = vec3(-588.63, -284.09, 50.93),
-            size = 0.5,
-            title = "Verser",
-            duration = 2000,
-            items = {
-                "gmr_dsh_hogspub_bubblensqueak",
-            }
-            -- Animation plus tard
         },
     }
     

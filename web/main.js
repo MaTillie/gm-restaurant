@@ -24,6 +24,10 @@ function showSnackbar(message) {
     
 }
 
+function wait(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
@@ -587,7 +591,8 @@ $(document).ready(function () {
             populateIngredientOrderDropdown();
             break;
         case "goCraft":
-
+            goCraft_product_list = eventData.data.products;
+            populateGoCraftProductDropdown();
             break;
         case "openTicket":
         console.log("openTicket :" )
@@ -1010,14 +1015,14 @@ goCraft - Début
 */
 
 let goCraft_product_list = {}
-let goCraft = false;
+let goCraft_current_craft = {}
 
 function populateGoCraftProductDropdown() {
     const productDropdown = document.getElementById('goCraft-select-product');
     productDropdown.innerHTML = '<option value="">Sélectionner un produit</option>';
+    goCraft_current_craft = {}
 
     for (let key in goCraft_product_list) {
-        console.log("loadRecipe",key)
         let recipe = goCraft_product_list[key];
 
         let option = document.createElement('option');
@@ -1025,12 +1030,67 @@ function populateGoCraftProductDropdown() {
         option.textContent = recipe.label; // Le texte est le label (ex: "Plat")
         productDropdown.appendChild(option);
     }  
+    document.querySelector('.goCraft').style.display = 'flex';
 }
 
-function goCraftProduct(item,amount){
-    callLuaFunction({ action: 'goCraftProduct', param: {item :item,amount:amount }});
-    closeMenu()
+function goCraftChangeProduct(){
+    const productDropdown = document.getElementById('goCraft-select-product');
+    let selectedProduct = productDropdown.value;
+    goCraft_current_craft = {};
+    goCraft_current_craft.item = selectedProduct;
+    goCraft_current_craft.amount = 1;
+    document.getElementById("goCraft-quantity").textContent = goCraft_current_craft.amount
 }
+
+document.getElementById("goCraft-plus").addEventListener("click", function(event) {
+    if (event.ctrlKey) {
+        goCraft_current_craft.amount += 5; 
+    } else {
+        goCraft_current_craft.amount += 1; 
+    }
+
+    if (goCraft_current_craft.amount >10){
+        goCraft_current_craft.amount = 10
+    }
+
+    document.getElementById("goCraft-quantity").textContent = goCraft_current_craft.amount
+});
+
+document.getElementById("goCraft-minus").addEventListener("click", function(event) {
+    if (event.ctrlKey) {
+        goCraft_current_craft.amount -= 5; 
+    } else {
+        goCraft_current_craft.amount -= 1; 
+    }
+
+    if (goCraft_current_craft.amount <1){
+        goCraft_current_craft.amount = 1
+    }
+    document.getElementById("goCraft-quantity").textContent = goCraft_current_craft.amount
+});
+
+
+
+
+async function goCraftProduct(){
+    document.getElementById('goCraft-validate').style.display = 'none';
+    document.querySelector('.loading-container').style.display = 'block';
+
+    setTimeout(() => {
+        document.querySelector('.loading-container').style.display = 'none';
+        document.getElementById('goCraft-validate').style.display = 'block';
+    }, 3000);
+    
+    
+    if(goCraft_current_craft.item){
+        await wait(3000);
+        callLuaFunction({ action: 'goCraftProduct', param: {item :goCraft_current_craft.item,amount:goCraft_current_craft.amount }});
+        closeMenu()
+    }else{
+        showSnackbar("Veuillez sélectionner un produit.")
+    }    
+}
+
 
 /*
 ##############################################
