@@ -137,7 +137,7 @@ function initKitchen(cfg,key)
                         combat = true,
                     }})]]
                     if success then                                          
-                        TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item,cfg,recipeLabel,img)
+                        TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item,recipeLabel,img)
                         if(cfg.DebugMode) then  
                             print("Progress success for: " .. item)    
                         end
@@ -294,8 +294,9 @@ function initManagement(cfg,key)
         local options = {}
         table.insert(options,{
             name = "ManagementPrice",  -- Nom de l'option, unique pour chaque interaction
-            label = "Gestion des prix",  -- Texte affiché à l'utilisateur
+            label = "Gestion du menu",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            groups = cfg.Job,
             onSelect = function()                    
                 managePrice(cfg)
             end,
@@ -305,6 +306,7 @@ function initManagement(cfg,key)
             name = "ManagementRecipe",  -- Nom de l'option, unique pour chaque interaction
             label = "Gestion des recettes",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            groups = cfg.Job,
             onSelect = function()                    
                 manageRecipe(cfg)
             end,
@@ -314,6 +316,7 @@ function initManagement(cfg,key)
             name = "ManagementOrder",  -- Nom de l'option, unique pour chaque interaction
             label = "Commender ingrédients",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+            groups = cfg.Job,
             onSelect = function()                    
                 orderIngredient(cfg)
             end,
@@ -716,6 +719,11 @@ RegisterNUICallback('nuiCallback', function(data, cb)
     if(data.action == 'saveIngredientOrder')then
         TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.order)        
     end
+
+    if(data.action == 'goCraftProduct')then
+
+        TriggerServerEvent('gm-restaurant:server:canCraftProduct', data.param)     
+    end
     
 
     cb('ok')  -- Réponse à envoyer au JS
@@ -904,6 +912,10 @@ function manageRecipe(cfg)
     Data.ingredient = {}
     Data.compo = {}
 
+    local Player = QBCore.Functions.GetPlayerData()
+    print("IsBoss", Player.job.isboss)
+    Data.boss = Player.job.isboss
+    
     Data.categoryDish = {
         ["gmr_plat"] = {label = "Plat"},
         ["gmr_petitplat"] = {label = "Entrée/Dessert/Side"},
@@ -960,19 +972,45 @@ function getIngredientOrder()
     -- chk job -- Vous n'etes pas authorisé à prendre les commandes
     -- chk commande
     -- faire payer et valider au retour
+    TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.order)    
 end
+
+function loadPedModel(model)
+    RequestModel(model)
+    while not HasModelLoaded(model) do
+        Citizen.Wait(100)
+    end
+end
+
+CreateThread(function()
+
+    local blip = AddBlipForCoord(Config.NPC.pos)
+    SetBlipSprite(blip, 473)
+    SetBlipScale(blip, 0.7)
+    SetBlipColour(blip, 30)
+    SetBlipAsShortRange(blip, true)
+
+    BeginTextCommandSetBlipName('STRING')
+    AddTextComponentSubstringPlayerName("Entrepôt de restauration")
+    EndTextCommandSetBlipName(blip)
+
+end)
 
 -- Création du PNJ de commande d'ingrédients
 Citizen.CreateThread(function()
     -- Charger le modèle du PNJ
-    loadPedModel(Config.NPC.model)
+    local pedModel = GetHashKey(Config.NPC.model) -- Récupérer le hash du modèle
+    loadPedModel(pedModel) -- Charger le modèle du PNJ
+
     local pnjCoords = Config.NPC.pos
-    local ped = CreatePed(4, pedModel, pnjCoords.x, pnjCoords.y, pnjCoords.z - 1.0, 1.0, false, true)
-    SetEntityHeading(ped, Config.NPC.heading) -- Orienter le PNJ
+    local ped = CreatePed(4, pedModel, pnjCoords.x, pnjCoords.y, pnjCoords.z - 1.0, Config.NPC.heading, false, true)
+    
+    -- Configurer le PNJ
     FreezeEntityPosition(ped, true)
     SetEntityInvincible(ped, true)
     SetBlockingOfNonTemporaryEvents(ped, true)
 
+    -- Ajouter l'interaction via ox_target
     exports.ox_target:addLocalEntity(ped, {
         {
             name = 'delivery:start',
@@ -981,8 +1019,19 @@ Citizen.CreateThread(function()
             onSelect = function()                    
                 getIngredientOrder()
             end,
-            
         },
     })
-
 end)
+
+
+-- #################################################################################################### --
+-- ## Début de Section - goCraftProduct ## --
+-- #################################################################################################### --
+
+function goCraftProduct(order)
+
+end
+
+-- #################################################################################################### --
+-- ## Fin de Section - goCraftProduct ## --
+-- #################################################################################################### --

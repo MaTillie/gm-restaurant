@@ -1,0 +1,114 @@
+body {
+    background-color: transparent;
+    color: black;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: "Merriweather Sans", sans-serif;
+}
+
+
+.goCraft {
+    width: 800px;
+    height: 800px;
+    background-color: #f4f4f9;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.goCraft h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+}
+
+.goCraft-select-product {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#ingredientOrder {
+    width: 70%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn{
+    padding: 8px 12px;
+    font-size: 18px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer; 
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #d9534f;
+}
+
+
+#goCraft-validate {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#goCraft-validate:hover {
+    background-color: #0056b3;
+}
+
+#ticket {
+    display: none;
+}
+
+#completed {
+    text-decoration: line-through;
+}
+
+#mng_recipe{
+    display : none;
+}
+
+#mng_prix{
+    display : none;
+}
+
+.menu-container{
+    display : none;
+}
+
+.mng_ingredientOrder{
+    display : none;
+}

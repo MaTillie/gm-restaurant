@@ -6,7 +6,24 @@ let Theme = "styles.css"
 let Config = {}
 let MenuCategorie = {}
 let MenuRecipe = {}
+let MenuItems = {}
 let Key = ""
+
+function showSnackbar(message) {
+    // Get the snackbar DIV
+    var snackbar = document.getElementById("snackbar");
+    snackbar.textContent = message;
+    // Add the "show" class to make it visible
+    snackbar.className = "show";
+
+    // After 5 seconds, remove the "show" class to hide the snackbar
+    setTimeout(function() {
+        snackbar.className = snackbar.className.replace("show", "");
+    }, 5000); // Duration set to 5 seconds
+
+    
+}
+
 
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
@@ -284,6 +301,7 @@ function generateOrderItems(menuConfig) {
     document.querySelector('.footer').style.display = 'flex';
 }
 
+// Gestion prix/produit menu
 function populateProductDropDown() {
     // Injecter les ingrédients dans la liste déroulante
    // MenuCategorie = eventData.data.categorie
@@ -291,44 +309,100 @@ function populateProductDropDown() {
 
     let ingredientSelect = document.getElementById("product-select");
 
-    // Injecter les ingrédients triés dans la liste déroulante
+    let sortedCategories = Object.keys(MenuRecipe).sort((a, b) => {
+        let labelA = MenuRecipe[a].label.toLowerCase();
+        let labelB = MenuRecipe[b].label.toLowerCase();
+        return labelA.localeCompare(labelB);
+    });
 
-    Object.keys(MenuRecipe).forEach(category => {
+    sortedCategories.forEach(category => {
         let option = document.createElement('option');
         option.value = category; 
         option.textContent = MenuRecipe[category].label; 
-        ingredientSelect.appendChild(option);})
+        ingredientSelect.appendChild(option);
+    });
+}
+
+function populateMenuCategorieDropDown(){
+
+
+        
+        // Trier les catégories par ordre alphabétique du label
+        MenuCategorie.sort((a, b) => {
+            let labelA = a.label.toLowerCase();
+            let labelB = b.label.toLowerCase();
+            return labelA.localeCompare(labelB);
+        });
+
+        // Injecter les catégories triées dans la liste déroulante
+        let selectElement = document.getElementById('product-category-select');
+        MenuCategorie.forEach(category => {
+            let option = document.createElement('option');
+            option.value = category.name;
+            option.textContent = category.label;
+            selectElement.appendChild(option);
+        });
+
 }
 
 function addProductToMenu(){
     const productKey = document.getElementById('product-select').value;
+
+    const catKey = document.getElementById('product-category-select').value;
+    if(!catKey){
+        catKey= "plat";
+    }
     // WIP
+    console.log("addProductToMenu",productKey)
+
     if (productKey) {
-        const recipe = MenuRecipe[productKey];
-        if (!recipe[productKey]) {
+        if (!MenuItems.some(item => item.name === productKey)) {
             // Si l'ingrédient n'existe pas déjà dans la recette, on l'ajoute
-            recipe[productKey] = { amount: 1, base: true };
-            loadRecipeDetails(currentRecipeKey); // Recharger la vue des détails de la recette
+            MenuItems.push({label : MenuRecipe[productKey].label, price : 20.00,name :productKey, categorie : catKey,  });
+
+            manage_price(); // Recharger la vue des détails de la recette
         } else {
-            alert('Cet ingrédient est déjà présent dans la recette.');
+            showSnackbar('Ce produit est déjà présent dans le menu.');
         }
     } else {
-        alert('Veuillez sélectionner un ingrédient.');
+        showSnackbar('Veuillez sélectionner un produit.');
     }
 }
 
-function manage_price(menuItems) {
-    console.log("manage_price count",menuItems.length)
+function deleteProductMenu(name){
+    let indexToRemove = MenuItems.findIndex(item => item.name === name);
+
+    // Vérifier si l'élément existe dans le tableau
+    if (indexToRemove !== -1) {
+        // Supprimer l'élément à cet index
+        MenuItems.splice(indexToRemove, 1);
+        manage_price(); // Recharger la vue des détails de la recette
+    }
+}
+
+function changeProductPriceMenu(name){
+    let indexToRemove = MenuItems.findIndex(item => item.name === name);
+    
+    // Vérifier si l'élément existe dans le tableau
+    if (indexToRemove !== -1) {
+        MenuItems[i].price = 
+        // Supprimer l'élément à cet index
+        MenuItems.splice(indexToRemove, 1);
+        manage_price(); // Recharger la vue des détails de la recette
+    }
+}
+
+function manage_price() {
+    console.log("manage_price count", MenuItems.length);
     const tableBody = document.getElementById('menu-items');
     tableBody.innerHTML = ''; // Clear previous data
 
-   
-    for (let i = 0; i < menuItems.length; i++) {
-        const item = menuItems[i];
+    for (let i = 0; i < MenuItems.length; i++) {
+        const item = MenuItems[i];
         const row = document.createElement('tr');
-        console.log('price ',item.price);
-        console.log('label ',item.label);
-        
+        console.log('price ', item.price);
+        console.log('label ', item.label);
+
         const itemNameCell = document.createElement('td');
         itemNameCell.textContent = item.label.charAt(0).toUpperCase() + item.label.slice(1);
         itemNameCell.id = item.name;
@@ -338,9 +412,26 @@ function manage_price(menuItems) {
         const priceInput = document.createElement('input');
         priceInput.type = 'number';
         priceInput.value = item.price;
-        priceInput.id = `price-${item}`;
+        priceInput.id = `price-${i}`;
+
+        // Ajoutez un écouteur d'événements pour mettre à jour le prix dans MenuItems
+        priceInput.addEventListener('input', (event) => {
+            const newPrice = parseFloat(event.target.value);
+            if (!isNaN(newPrice)) {
+                MenuItems[i].price = newPrice; // Mettre à jour le prix dans MenuItems
+                console.log(`Updated price for ${item.name}: ${newPrice}`);
+            }
+        });
+
         priceCell.appendChild(priceInput);
+
+        let trashBtn = document.createElement('button');
+        trashBtn.className = 'trash-button';
+        trashBtn.textContent = '🗑️';
+        trashBtn.onclick = () => deleteProductMenu(item.name);
+
         row.appendChild(priceCell);
+        row.appendChild(trashBtn);
 
         tableBody.appendChild(row);
     }
@@ -348,8 +439,6 @@ function manage_price(menuItems) {
     document.getElementById('mng_prix').style.display = 'flex';
     document.querySelector('.menu-container').style.display = 'none';
     document.querySelector('.footer').style.display = 'none';
-    document.querySelector('.mng_recipe').style.display = 'none';
-    
 }
 
 function manage_recipe(menuItems){
@@ -401,16 +490,7 @@ function callLuaFunction(data) {
 }
 
 function savePrices() {
-    const tableBody = document.getElementById('menu-items').children;
-    const updatedMenu = {};
-
-    for (let row of tableBody) {
-        const itemName = row.children[0].id;
-        const newPrice = parseFloat(row.children[1].children[0].value);
-
-        updatedMenu[itemName] = newPrice;
-    }
-    callLuaFunction({ action: 'savePrices', param: {menu :updatedMenu }});
+    callLuaFunction({ action: 'savePrices', param: {menu :MenuItems }});
     closeMenu()
 }
 
@@ -419,7 +499,8 @@ function closeMenu() {
     document.getElementById('ticket').style.display = 'none';
     document.getElementById('mng_prix').style.display = 'none';
     document.getElementById('mng_recipe').style.display = 'none';    
-    document.querySelector('.container').style.display = 'none';    
+    document.querySelector('.mng_ingredientOrder').style.display = 'none';    
+    document.querySelector('.goCraft').style.display = 'none';    
     callLuaFunction({ action: 'closeMenu', param: 'someValue' });
     itemsList = [];
     currentDiscount = 0.00;
@@ -457,25 +538,32 @@ $(document).ready(function () {
           } else {
             closeMenu();
           }
+          
           break;
         case "openOrder":            
               if (eventData.toggle) {
                 generateOrderItems(eventData.data.items);
                 Key = eventData.data.key;
-                IndexCaisse = eventData.data.indexCaisse;               
+                IndexCaisse = eventData.data.indexCaisse;           
               } else {
                 closeMenu();
               }
+             
               break;
         case "managePrice":
             console.log("managePrice",eventData.data)
-            const menuItems = eventData.data.menu;
-            console.log("managePrice1",menuItems)
-
+            MenuItems = eventData.data.menu;
+            console.log("managePrice1",MenuItems)             
             MenuCategorie = eventData.data.categorie
             MenuRecipe = eventData.data.recipe
+            populateMenuCategorieDropDown();
             populateProductDropDown();
-            manage_price(menuItems)
+            manage_price();
+            document.querySelector('.menu-container').style.display = 'none';
+            document.getElementById('ticket').style.display = 'none';
+            document.getElementById('mng_prix').style.display = 'block';
+            document.getElementById('mng_recipe').style.display = 'none';   
+            document.querySelector('.container').style.display = 'none';   
               break;
         case "manageRecipe":      
         console.log("managePRecipe",eventData.data)
@@ -483,20 +571,24 @@ $(document).ready(function () {
             ingredientList = eventData.data.ingredient
             ingredientCategories = eventData.data.categoryIngredient
             recipesCategories = eventData.data.categoryDish 
+            RecipeEditor =  eventData.data.boss
             loadRecipeList();
             populateCategoryDropdown();
             populateDishCategoryDropdown();
+            document.querySelector('.menu-container').style.display = 'none';
+            document.getElementById('ticket').style.display = 'none';
+            document.getElementById('mng_prix').style.display = 'none';
+            document.getElementById('mng_recipe').style.display = 'block';   
+            document.querySelector('.container').style.display = 'none';   
               break;
         case "orderIngredient":  
             ingredientList = eventData.data.ingredient
             console.log("orderIngredient",ingredientList)
-            document.querySelector('.menu-container').style.display = 'none';
-            document.getElementById('ticket').style.display = 'none';
-            document.getElementById('mng_prix').style.display = 'none';
-            document.getElementById('mng_recipe').style.display = 'none';    
-            document.querySelector('.container').style.display = 'block';    
             populateIngredientOrderDropdown();
-            
+            break;
+        case "goCraft":
+
+            break;
         case "openTicket":
         console.log("openTicket :" )
        
@@ -529,6 +621,7 @@ $(document).ready(function () {
 
 
 let currentRecipeKey = null;
+let RecipeEditor = false;
 
 // Fonction pour afficher la liste des recettes
 function loadRecipeList() {
@@ -539,7 +632,10 @@ function loadRecipeList() {
     addBtn.className = 'btn-add';
     addBtn.textContent = 'Ajouter une nouvelle recette';
     addBtn.onclick = addNewRecipe;
-    recipeListDiv.appendChild(addBtn);
+    if(RecipeEditor){
+        recipeListDiv.appendChild(addBtn);
+    }
+    
 
     const title = document.createElement('h2');
     title.textContent = 'Liste des Recettes';
@@ -562,10 +658,16 @@ function loadRecipeList() {
         trashBtn.onclick = () => deleteRecipe(key);
 
         div.appendChild(label);
-        div.appendChild(trashBtn);
+        if(RecipeEditor){
+            div.appendChild(trashBtn);
+        }
 
         recipeListDiv.appendChild(div);
     }   
+
+    if(!RecipeEditor){        
+        document.querySelector('.btn').style.display = 'none';
+    }
     document.getElementById('mng_prix').style.display = 'none';
     document.querySelector('.menu-container').style.display = 'none';
     document.querySelector('.footer').style.display = 'none';
@@ -577,12 +679,16 @@ function loadRecipeList() {
 function loadRecipeDetails(recipeKey) {
     currentRecipeKey = recipeKey;
     const recipe = recipes[recipeKey];
-    
+    document.getElementById('recipe-details').style.display = "block";
     document.getElementById('category-select').value = recipe.categorie;
     document.getElementById('recipe-label').value = recipe.label;
     document.getElementById('recipe-label').key = recipeKey;
     document.getElementById('recipe-image').src = recipe.image;
     document.getElementById('image-url').value = recipe.image;
+
+    if(recipe.image==""){
+        document.getElementById('recipe-image').src = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/coal.png";
+    }
 
     const ingredientsList = document.getElementById('ingredients-list');
     ingredientsList.innerHTML = ''; // Vider la liste précédente
@@ -629,6 +735,7 @@ function addNewRecipe() {
     };
     loadRecipeList();
     loadRecipeDetails(newRecipeKey);
+    document.getElementById('recipe-image').src = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/coal.png";
 }
 
 // Fonction pour supprimer une recette
@@ -646,19 +753,28 @@ function updateRecipeImage() {
     if (newImageUrl) {
         document.getElementById('recipe-image').src = newImageUrl;
         const recipe = recipes[currentRecipeKey];
-        recipe.image = newImageUrl;
+        recipe.image = newImageUrl;        
     } else {
-        alert("Veuillez entrer une URL valide pour l'image.");
+        showSnackbar("Veuillez entrer une URL valide pour l'image.");
     }
 }
 
 // Fonction pour enregistrer les modifications apportées à la recette
 function saveRecipe() {
     const recipe = recipes[currentRecipeKey];
-    recipe.label = document.getElementById('recipe-label').value;
-    const category = document.getElementById('category-select').value;
-    recipe.categorie = category;
-    callLuaFunction({ action: 'saveRecipe', param: {recipes :recipes }});
+
+    // Vérifie si l'objet ingredients est vide
+    if(Object.keys(recipe.ingredients).length === 0){
+        showSnackbar("Veuillez ajouter des ingrédients.");
+    }else{
+        recipe.label = document.getElementById('recipe-label').value;
+        const category = document.getElementById('category-select').value;
+        recipe.categorie = category;
+        if (RecipeEditor){
+            callLuaFunction({ action: 'saveRecipe', param: {recipes :recipes }});
+        }    
+        loadRecipeList();
+    }   
 }
 
 // Fonction pour remplir la dropdown des catégories
@@ -742,18 +858,19 @@ function updateIngredientDropdown() {
 // Fonction pour ajouter un ingrédient à la recette
 function addIngredientToRecipe() {
     const ingredientKey = document.getElementById('ingredient-select').value;
-
+    
     if (ingredientKey) {
         const recipe = recipes[currentRecipeKey];
         if (!recipe.ingredients[ingredientKey]) {
             // Si l'ingrédient n'existe pas déjà dans la recette, on l'ajoute
             recipe.ingredients[ingredientKey] = { amount: 1, base: true };
+            recipe.label = document.getElementById('recipe-label').value;
             loadRecipeDetails(currentRecipeKey); // Recharger la vue des détails de la recette
         } else {
-            alert('Cet ingrédient est déjà présent dans la recette.');
+            showSnackbar('Cet ingrédient est déjà présent dans la recette.');
         }
     } else {
-        alert('Veuillez sélectionner un ingrédient.');
+        showSnackbar('Veuillez sélectionner un ingrédient.');
     }
 }
 
@@ -766,7 +883,7 @@ function populateIngredientOrderDropdown() {
     console.log("populateIngredientOrderDropdown",JSON.stringify(ingredientList))
     // Injecter les ingrédients dans la liste déroulante
     let ingredientSelect = document.getElementById("ingredientOrder");
-
+    ingredientSelect.innerHTML = "<option value=''>Sélectionner un ingrédient</option>";
     let ingredientKeys = Object.keys(ingredientList).sort((a, b) => {
         let labelA = ingredientList[a].label.toLowerCase();
         let labelB = ingredientList[b].label.toLowerCase();
@@ -781,7 +898,8 @@ function populateIngredientOrderDropdown() {
         option.textContent = ingredientList[key].label;
         ingredientSelect.appendChild(option);
     });
-        
+    document.getElementById("mng_ingredientOrder").style.display = 'flex';
+    
   /*  for (let key in ingredientList) {
         console.log(key);
         let option = document.createElement("option");
@@ -818,28 +936,48 @@ function updateOrderTable() {
         nameCell.textContent = ingredientList[key].label;
         row.appendChild(nameCell);
 
-        // Quantité avec boutons + et -
         let quantityCell = document.createElement("td");
-        let minusBtn = document.createElement("button");
-        minusBtn.textContent = "-";
-        minusBtn.addEventListener("click", function() {
-            if (orderIgd[key].quantity > 1) {
-                orderIgd[key].quantity -= 1;
-            } else {
-                delete orderIgd[key];
-            }
-            updateOrderTable();
-        });
-        let plusBtn = document.createElement("button");
-        plusBtn.textContent = "+";
-        plusBtn.addEventListener("click", function() {
-            orderIgd[key].quantity += 1;
-            updateOrderTable();
-        });
-        quantityCell.appendChild(minusBtn);
-        quantityCell.appendChild(document.createTextNode(` ${orderIgd[key].quantity} `));
-        quantityCell.appendChild(plusBtn);
-        row.appendChild(quantityCell);
+quantityCell.classList.add("quantity-cell");
+
+let minusBtn = document.createElement("button");
+minusBtn.textContent = "-";
+minusBtn.classList.add("minus-btn"); // Ajoute une classe pour le CSS
+minusBtn.addEventListener("click", function(event) {
+    let qte = 1;
+    if (event.ctrlKey) {
+        qte += 5;  // Ajoute 5 si "Ctrl" est enfoncé
+    }
+
+    if (orderIgd[key].quantity > qte) {
+        orderIgd[key].quantity -= qte;
+    } else {
+        delete orderIgd[key];
+    }
+    updateOrderTable();
+});
+
+let plusBtn = document.createElement("button");
+plusBtn.textContent = "+";
+plusBtn.classList.add("plus-btn"); // Ajoute une classe pour le CSS
+plusBtn.addEventListener("click", function(event) {
+    let qte = 1;
+    if (event.ctrlKey) {
+        qte += 5;  // Ajoute 5 si "Ctrl" est enfoncé
+    }
+    orderIgd[key].quantity += qte;
+    updateOrderTable();
+});
+
+let quantityText = document.createElement("span");
+quantityText.classList.add("quantity-text"); // Classe pour la largeur fixe
+quantityText.appendChild(document.createTextNode(`${orderIgd[key].quantity}`));
+
+quantityCell.appendChild(minusBtn);
+quantityCell.appendChild(quantityText);
+quantityCell.appendChild(plusBtn);
+
+row.appendChild(quantityCell);
+
 
         // Coût
         let costCell = document.createElement("td");
@@ -865,3 +1003,37 @@ document.getElementById("validate-order").addEventListener("click", function() {
     closeMenu()
 });
 
+/*
+##############################################
+goCraft - Début
+##############################################
+*/
+
+let goCraft_product_list = {}
+let goCraft = false;
+
+function populateGoCraftProductDropdown() {
+    const productDropdown = document.getElementById('goCraft-select-product');
+    productDropdown.innerHTML = '<option value="">Sélectionner un produit</option>';
+
+    for (let key in goCraft_product_list) {
+        console.log("loadRecipe",key)
+        let recipe = goCraft_product_list[key];
+
+        let option = document.createElement('option');
+        option.value = key; // La valeur est la clé (ex: "gmr_plat")
+        option.textContent = recipe.label; // Le texte est le label (ex: "Plat")
+        productDropdown.appendChild(option);
+    }  
+}
+
+function goCraftProduct(item,amount){
+    callLuaFunction({ action: 'goCraftProduct', param: {item :item,amount:amount }});
+    closeMenu()
+}
+
+/*
+##############################################
+goCraft - Fin
+##############################################
+*/

@@ -9,7 +9,7 @@ function stock(exist)
         local metadata ={
             label = details.label,
         }
-        local count = exports.ox_inventory:GetItemCount(VirtualFridgeName(), "leap_ingredient",metadata)
+        local count = exports.ox_inventory:GetItemCount(VirtualFridgeName(), "gmr_ingredient",metadata)
         local flg = false
 
         if(exist)then

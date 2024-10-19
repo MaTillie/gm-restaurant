@@ -1,62 +1,192 @@
 body {
-    font-family: Arial, sans-serif;
     background-color: transparent;
+    color: black;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    font-family: "Merriweather Sans", sans-serif;
 }
 
-.container {
-    background-color: white;
+
+.mng_ingredientOrder {
+    width: 800px;
+    height: 800px;
+    background-color: #f4f4f9;
+    border-radius: 8px;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 500px;
-    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
-h1 {
+.mng_ingredientOrder h1 {
     font-size: 24px;
     margin-bottom: 20px;
+    color: #333;
+    text-align: center;
 }
 
 .ingredient-selector {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
 
-select {
-    padding: 5px;
-    margin-right: 10px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-
-table th, table td {
-    border: 1px solid #ddd;
+#ingredientOrder {
+    width: 70%;
     padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-.total {
+#add-ingredient {
+    padding: 8px 12px;
     font-size: 18px;
-    margin-bottom: 20px;
-}
-
-button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
+    background-color: #28a745;
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
 }
 
-button:hover {
+#add-ingredient:hover {
+    background-color: #218838;
+}
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #d9534f;
+}
+
+.table-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+#order-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#order-table th, #order-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#order-table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+#order-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+#order-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+.quantity-cell {
+    width: 100px; /* Largeur fixe pour la cellule quantité */
+    text-align: center;
+    position: relative; /* Nécessaire pour positionner les boutons */
+    white-space: nowrap; /* Empêche le texte de passer à la ligne */
+}
+
+.quantity-cell button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.quantity-cell button:hover {
     background-color: #0056b3;
+}
+
+.quantity-cell .plus-btn {
+    position: absolute;
+    right: 0;
+}
+
+.quantity-cell .minus-btn {
+    position: absolute;
+    left: 0;
+}
+
+.quantity-text {
+    display: inline-block;
+    width: 100px; /* Largeur fixe pour la quantité */
+    text-align: center;
+}
+
+.total {
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: right;
+}
+
+
+#validate-order {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#validate-order:hover {
+    background-color: #0056b3;
+}
+
+#ticket {
+    display: none;
+}
+
+#completed {
+    text-decoration: line-through;
+}
+
+#mng_recipe{
+    display : none;
+}
+
+#mng_prix{
+    display : none;
+}
+
+.menu-container{
+    display : none;
+}
+
+.goCraft{
+    display : none;
 }

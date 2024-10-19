@@ -1,4 +1,4 @@
-function getConfig_jopizza()
+function getConfig_defaut()
     Config = {}
     Config.DebugMode = true
     
@@ -48,18 +48,14 @@ function getConfig_jopizza()
     */
 
     Config.Menu = {
-    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_soupe_chicaneur"] = { price = 20.00, categorie = "entree" },
-    ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 161.00, categorie = "soft" },
-    ["gmr_dsh_hogspub_polynectar"] = { price = 17.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_tartelette_citrouille"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
-    ["gmr_cpigd_caramel_magique"] = { price = 20.00, categorie = "plat" },
-}
-
+        ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
+        ["gmr_dsh_hogspub_bierraubeurre"] = { price = 20.00, categorie = "alcool" },
+        ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
+        ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
+        ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 11.00, categorie = "soft" },
+        ["gmr_dsh_hogspub_polynectar"] = { price = 15.00, categorie = "alcool" },
+        ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
+    }
     
     
     
@@ -141,7 +137,7 @@ function getConfig_jopizza()
     
     Config.Management={
         [1] ={
-            coords = vec3(-584.37, -278.72, 35.45),
+            coords = vec3(-584.81, -285.24, 41.71),
             size = 0.7,
             title = "Gestion du restaurant",
         },    

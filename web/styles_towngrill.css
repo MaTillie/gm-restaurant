@@ -254,3 +254,27 @@ html {
 #completed{
     text-decoration:line-through;
 }
+
+#ticket {
+    display: none;
+}
+
+#completed {
+    text-decoration: line-through;
+}
+
+#mng_recipe{
+    display : none;
+}
+
+#mng_prix{
+    display : none;
+}
+
+#mng_ingredientOrder{
+    display : none;    
+}
+
+.goCraft{
+    display : none;
+}

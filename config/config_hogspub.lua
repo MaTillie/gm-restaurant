@@ -42,12 +42,15 @@ Config.Categorie ={
 }
 
 Config.Menu = {
-    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 20.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
+    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
+    ["gmr_dsh_hogspub_polynectar"] = { price = 16.00, categorie = "alcool" },
+    ["gmr_dsh_hogspub_tartelette_citrouille"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_soupe_chicaneur"] = { price = 20.00, categorie = "entree" },
+    ["gmr_cpigd_caramel_magique"] = { price = 20.00, categorie = "plat" },
     ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
     ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 11.00, categorie = "soft" },
-    ["gmr_dsh_hogspub_polynectar"] = { price = 15.00, categorie = "alcool" },
+    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
     ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
 }
 
@@ -188,16 +191,6 @@ Config.Management={
 }
 
 
---## Delivery ##--
-
-Config.NPCCoords = vec3(-594.76, -285.07, 35.45)
-Config.NPCHeading = 227.13
-
-Config.Delivery = {
-    [1] = { coords = vec3(-639.91, 296.93, 82.46)}, 
-    [2] = { coords = vec3(-1221.67, -329.82, 37.55)}, 
-    [3] = { coords = vec3(-668.19, -971.63, 22.34)},
-}
     
     return Config
 end

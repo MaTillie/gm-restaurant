@@ -1,20 +1,51 @@
-* {
-    box-sizing: border-box;
-    /*font-family: 'Harry P','Bodoni MT',  Arial, sans-serif;*/
-    /*font-family: 'Bodoni MT', 'Bodoni 72', 'Didot', 'Didot LT STD', 'Hoefler Text', 'Garamond', 'Times New Roman', serif;
-    font-family: 'Optima', 'Segoe', 'Segoe UI', 'Candara', 'Calibri', Arial, sans-serif;*/
-    font-family: "Playwrite CU", cursive;
-  }
 
   body {
     background-color: transparent;
-    color: #fff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     display: none;    
 }
 
+
+#snackbar {
+  visibility: hidden;
+  display: none;
+}
+
+#snackbar.show {
+  visibility: visible;
+  display: block;
+  position: absolute;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #531313;
+  color: #fff;
+  text-align: center;
+  border-radius: 1%;
+  padding: 16px;  
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+  
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}

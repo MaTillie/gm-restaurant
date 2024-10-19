@@ -138,3 +138,38 @@ input[type="number"]:disabled {
     background-color: #226D68;
     color: #FEEAA1;
 }
+
+.trash-button {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.recipe-item:hover .trash-button {
+    display: inline;
+}
+
+#ticket {
+    display: none;
+}
+
+#completed {
+    text-decoration: line-through;
+}
+
+#mng_recipe{
+    display : none;
+}
+
+#mng_ingredientOrder{
+    display : none;    
+}
+
+.menu-container{
+    display : none;
+}
+.goCraft{
+    display : none;
+}

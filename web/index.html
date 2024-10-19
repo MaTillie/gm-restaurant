@@ -11,8 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link id="theme-link" rel="stylesheet" href="styles.css">
 
-   <link id="theme-link" rel="stylesheet" href="styles.css">
+   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Prociono&display=swap" rel="stylesheet">
   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js" integrity="sha256-hlKLmzaRlE8SCJC1Kw8zoUbU8BxA+8kR3gseuKfMjxA=" crossorigin="anonymous"></script>
@@ -20,10 +23,10 @@
     
 </head>
 <body>
-
-        <div class="menu-container">
+        <div id="snackbar">Message</div>
+        <div class="menu-container" >
             <button class="close-button" onclick="closeMenu()">×</button>
-            <h1 id="titre">Menu du Hogspub</h1>
+            <h1 id="titre">Menu</h1>
             <p>Liste de tous les articles disponibles</p>
 
             <!-- Conteneur avec scroll pour les items -->
@@ -50,7 +53,7 @@
             </div>
         </div>
 
-        <div id="ticket" class="notepad">
+        <div id="ticket" class="notepad" >
             <h1>Ticket de Commande</h1>
             <ul id="orderList">
                 <!-- Les items seront insérés ici via JS -->
@@ -58,13 +61,16 @@
             <button class="close-button" onclick="closeMenu()">×</button>
         </div>
         
-        <div id="mng_prix">
+        <div id="mng_prix" >
             <button class="close-button" onclick="closeMenu()">×</button>
             <h1>Changement des prix</h1>
             
             <div class="add-product">
                 <select id="product-select">
                     <option value="">Sélectionner un produit</option>
+                </select>
+                <select id="product-category-select">
+                    <option value="">Sélectionner une catégorie</option>
                 </select>
     
                 <button class="btn" onclick="addProductToMenu()">Ajouter le produit</button>
@@ -84,47 +90,6 @@
             </div>
             <button id="saveButton" onclick="savePrices()">Sauvegarder</button>
       </div>
-
-      <!--
-      <div id="mng_recipe">
-        <div id="header">
-            <button class="close-button" onclick="closeMenu()">×</button>
-        </div>
-        <div id="recipe-list">
-            <button class="btn-add" onclick="addNewRecipe()">Ajouter une nouvelle recette</button>
-            <h2>Liste des Recettes</h2>
-        </div>
-        <div id="recipe-details">
-            <h2>Modifier la Recette</h2>
-            <img id="recipe-image" src="" alt="Image de la recette" />
-            
-            <div class="inline-input">
-                <input type="text" id="image-url" placeholder="URL de l'image" />
-                <button class="btn-small" onclick="updateRecipeImage()">V</button>
-            </div>
-    
-            <h3>Nom du plat :</h3>
-            <input type="text" id="recipe-label" placeholder="Nom du plat" />
-            
-            <h3>Ingrédients :</h3>
-            <ul id="ingredients-list"></ul>
-    
-            <h3>Ajouter un ingrédient :</h3>
-            <select id="ingredient-category" onchange="updateIngredientDropdown()">
-                <option value="">Sélectionner une catégorie</option>
-            </select>
-    
-            <select id="ingredient-select">
-                <option value="">Sélectionner un ingrédient</option>
-            </select>
-    
-            <button class="btn" onclick="addIngredientToRecipe()">Ajouter l'ingrédient</button>
-    
-            <button class="btn" onclick="saveRecipe()">Enregistrer la recette</button>
-        </div>
-
-
-       -->
     
       <div id="mng_recipe">
         <div id="header">
@@ -139,7 +104,7 @@
     
             <div id="recipe-details">
                 <h2>Modifier la Recette</h2>
-                <img id="recipe-image" src="" alt="Image de la recette" />
+                <img id="recipe-image" src="https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/coal.png" alt="Image de la recette" />
                 
                 <div class="inline-input">
                     <input type="text" id="image-url" placeholder="URL de l'image" />
@@ -176,36 +141,64 @@
     
     
     
-    <div class="container">
+    <div class="mng_ingredientOrder" id="mng_ingredientOrder">
         <h1>Commander des Ingrédients</h1>
-
+    
         <div class="ingredient-selector">
             <select id="ingredientOrder">
-                <!-- Les ingrédients seront injectés ici par le script JS -->
-            </select>
+            </select>            
             <button id="add-ingredient">+</button>
+            <button class="close-button" onclick="closeMenu()">×</button>
         </div>
-
-        <table id="order-table">
-            <thead>
-                <tr>
-                    <th>Ingrédient</th>
-                    <th>Quantité</th>
-                    <th>Coût</th>
-                    <th>Qté/lot</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Les commandes seront ajoutées ici -->
-            </tbody>
-        </table>
-
+    
+        <div class="table-wrapper">
+            <table id="order-table">
+                <thead>
+                    <tr>
+                        <th>Ingrédient</th>
+                        <th>Quantité</th>
+                        <th>Coût</th>
+                        <th>Qté/lot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Les commandes seront ajoutées ici -->
+                </tbody>
+            </table>
+        </div>
+    
         <div class="total">
             <p>Total: <span id="total-price">$0</span></p>
         </div>
-
+    
         <button id="validate-order">Valider la commande</button>
     </div>
+
+    <div class="goCraft">
+        <div class="goCraft-header">
+            <h1>Quel produit préparer ?</h1>           
+            <button class="close-button" onclick="closeMenu()">×</button> 
+        </div>
+        <div class="goCraft-content">
+            <select id="goCraft-select-product">
+                <option value="">Sélectionner un produit</option>
+            </select>
+
+            <div class="quantity-control">
+                <button class="btn" id="decrease-quantity">-</button>
+                <span id="quantity">1</span>
+                <button class="btn" id="increase-quantity">+</button>
+            </div>
+
+            <button id="goCraft-validate">Valider</button>
+
+            <div class="goCraft-wip">
+                
+            </div>
+        </div>
+    </div>
+
+    
 
 
 
