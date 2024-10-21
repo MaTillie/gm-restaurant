@@ -200,3 +200,7 @@ body {
 .listFridgeIngredient{
     display : none;
 }
+
+.listPlayerIngredient{
+    display : none;
+}

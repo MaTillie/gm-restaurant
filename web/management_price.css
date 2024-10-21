@@ -177,3 +177,7 @@ input[type="number"]:disabled {
 .listFridgeIngredient{
     display : none;
 }
+
+.listPlayerIngredient{
+    display : none;
+}

@@ -103,3 +103,7 @@ table tbody tr:nth-child(even) {
 .goCraft{
     display : none;
 }
+
+.listPlayerIngredient{
+    display : none;
+}

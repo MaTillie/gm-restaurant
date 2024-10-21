@@ -314,7 +314,7 @@ function populateProductDropDown() {
      //       MenuRecipe = eventData.data.recipe
 
     let ingredientSelect = document.getElementById("product-select");
-
+    ingredientSelect.innerHTML = '';
     let sortedCategories = Object.keys(MenuRecipe).sort((a, b) => {
         let labelA = MenuRecipe[a].label.toLowerCase();
         let labelB = MenuRecipe[b].label.toLowerCase();
@@ -342,6 +342,8 @@ function populateMenuCategorieDropDown(){
 
         // Injecter les catégories triées dans la liste déroulante
         let selectElement = document.getElementById('product-category-select');
+        selectElement.innerHTML = '';
+
         MenuCategorie.forEach(category => {
             let option = document.createElement('option');
             option.value = category.name;
@@ -674,8 +676,12 @@ $(document).ready(function () {
 
 
 
-  // Liste des recettes récupérées depuis Lua
-
+  
+/*
+##############################################
+manageRecipe - Début
+##############################################
+*/
 
 let currentRecipeKey = null;
 let RecipeEditor = false;
@@ -684,7 +690,7 @@ let RecipeEditor = false;
 function loadRecipeList() {
     const recipeListDiv = document.getElementById('recipe-list');
     recipeListDiv.innerHTML = ''; // Vider la liste avant de la recharger
-
+    currentRecipeKey = null
     const addBtn = document.createElement('button');
     addBtn.className = 'btn-add';
     addBtn.textContent = 'Ajouter une nouvelle recette';
@@ -723,8 +729,11 @@ function loadRecipeList() {
     }   
 
     if(!RecipeEditor){        
-        document.querySelector('.btn').style.display = 'none';
+        document.getElementById('.recipe-details-btn').style.display = 'none';        
+        document.querySelector('.btn-add').style.display = 'none';
+        document.querySelector('.btn-small').style.display = 'none';        
     }
+
     document.getElementById('mng_prix').style.display = 'none';
     document.querySelector('.menu-container').style.display = 'none';
     document.querySelector('.footer').style.display = 'none';
@@ -735,14 +744,18 @@ function loadRecipeList() {
 // Fonction pour afficher les détails d'une recette
 function loadRecipeDetails(recipeKey) {
     currentRecipeKey = recipeKey;
-    const recipe = recipes[recipeKey];
+    const recipe = recipes[currentRecipeKey];
     document.getElementById('recipe-details').style.display = "block";
+
     document.getElementById('category-select').value = recipe.categorie;
     document.getElementById('recipe-label').value = recipe.label;
-    document.getElementById('recipe-label').key = recipeKey;
+    document.getElementById('recipe-label').key = currentRecipeKey;
     document.getElementById('recipe-image').src = recipe.image;
     document.getElementById('image-url').value = recipe.image;
 
+    if(!RecipeEditor){        
+        document.getElementById('.recipe-details-btn').style.display = 'none';          
+    }
     if(recipe.image==""){
         document.getElementById('recipe-image').src = "https://r2.fivemanage.com/UvidZxPIxWITZ0rY8lXWR/images/coal.png";
     }
@@ -829,6 +842,8 @@ function saveRecipe() {
         recipe.categorie = category;
         if (RecipeEditor){
             callLuaFunction({ action: 'saveRecipe', param: {recipes :recipes }});
+        }else{
+            showSnackbar("Vous n'avez pas le droit de modifier les recettes.");
         }    
         loadRecipeList();
     }   
@@ -915,7 +930,7 @@ function updateIngredientDropdown() {
 // Fonction pour ajouter un ingrédient à la recette
 function addIngredientToRecipe() {
     const ingredientKey = document.getElementById('ingredient-select').value;
-    
+
     if (ingredientKey) {
         const recipe = recipes[currentRecipeKey];
         if (!recipe.ingredients[ingredientKey]) {
@@ -930,6 +945,12 @@ function addIngredientToRecipe() {
         showSnackbar('Veuillez sélectionner un ingrédient.');
     }
 }
+
+/*
+##############################################
+manageRecipe - Fin
+##############################################
+*/
 
 
 let orderIgd = {};

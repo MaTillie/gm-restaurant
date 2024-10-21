@@ -291,3 +291,7 @@ ul#ingredients-list li {
 .listFridgeIngredient{
     display : none;
 }
+
+.listPlayerIngredient{
+    display : none;
+}

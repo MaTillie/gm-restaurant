@@ -168,10 +168,8 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
         -- Retirer les items de la commande de l'inventaire du joueur
         for _, item in ipairs(metadata) do
             local lkItem = lrec.List[item.name]
-            local mtdt = {
-                label = item.label ,
-                imageurl = lkItem.image,       
-            }
+            local mtdt = GetMetaDataItem(item.name,item.label,lkItem.image)
+            
             item.imageurl = lkItem.image
             item.categorie = lkItem.categorie
             exports.ox_inventory:RemoveItem(src, lkItem.categorie, item.amount, mtdt)
@@ -191,10 +189,8 @@ end)
 RegisterNetEvent('gm-restaurant:server:useBoite', function(source,metadata,slot)
     local src = source
     for _, item in ipairs(metadata) do
-        local mtdt = {
-            label = item.label ,
-            imageurl = item.imageurl,       
-        }
+        local mtdt = GetMetaDataItem(item.name,item.label,item.imageurl)
+
         exports.ox_inventory:AddItem(src, item.categorie , item.amount,mtdt)
     end 
     exports.ox_inventory:RemoveItem(src, "gmr_repas", 1,metadata, slot)
@@ -272,11 +268,13 @@ local function saveRecipeFile(data)
     local player = exports.qbx_core:GetPlayer(src)
     local cfg = {}
 
+    print("saveRecipeFile0")
+
     local configFile = LoadResourceFile(GetCurrentResourceName(), "config/recipe_"..player.PlayerData.job.name..".lua")
 
     -- Mise à jour de la section Recipe uniquement
     local menuStart = configFile:find("Recipes.List = {")
-    print("menuStart: "..menuStart)
+    
     local menuEnd = configFile:find("%s*}%s*[^\n,]", menuStart)
 
     if not menuEnd then
@@ -288,6 +286,7 @@ local function saveRecipeFile(data)
 
     local newRecipe = "Recipes.List = {\n"
     for recipe, detail in pairs(data)do
+        print("saveRecipeFile1 "..recipe.."/"..detail.label)
         newRecipe = newRecipe .. string.format('    ["%s"] = { \n', recipe)
         newRecipe = newRecipe .. string.format('              categorie = "%s",\n', detail.categorie)
         newRecipe = newRecipe .. string.format('              label = "%s",\n', detail.label)
