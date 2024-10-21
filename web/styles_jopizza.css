@@ -177,6 +177,16 @@ p {
     background-color: transparent;
 }
 
+.playerList{
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: transparent;
+}
+
 .buttons {
     display: flex;
     gap: 5px;
@@ -279,5 +289,9 @@ p {
 }
 
 .goCraft{
+    display : none;
+}
+
+.listFridgeIngredient{
     display : none;
 }

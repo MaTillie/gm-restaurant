@@ -173,3 +173,7 @@ input[type="number"]:disabled {
 .goCraft{
     display : none;
 }
+
+.listFridgeIngredient{
+    display : none;
+}

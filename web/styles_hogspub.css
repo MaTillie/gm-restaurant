@@ -311,3 +311,6 @@ html {
 #completed{
     text-decoration:line-through;
 }
+.listFridgeIngredient{
+    display : none;
+}

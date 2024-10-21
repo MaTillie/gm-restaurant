@@ -28,6 +28,26 @@ local function coordsEqual(a, b)
     return a.x == b.x and a.y == b.y and a.z == b.z
 end
 
+-- Fonction pour jouer une animation de cuisine
+function playCookingAnimation(playerPed)
+    local animDict = "amb@prop_human_bbq@male@base"
+    local animName = "base"
+
+    -- Charger l'animation
+    RequestAnimDict(animDict)
+    while not HasAnimDictLoaded(animDict) do
+        Citizen.Wait(100)
+    end
+
+    -- Jouer l'animation
+    TaskPlayAnim(playerPed, animDict, animName, 8.0, 1.0, -1, 49, 0, false, false, false)
+
+    -- Si tu veux arrêter l'animation après un certain temps (par exemple après 10 secondes)
+    Citizen.Wait(5000)
+    ClearPedTasks(playerPed) -- Stoppe l'animation après 10 secondes
+end
+
+
 local flg_ServerMenu = false
 function getServerMenu(job)
     flg_ServerMenu = false
@@ -85,36 +105,28 @@ end
 function initFidge(cfg,key)
     for key, fridge in pairs(cfg.Fridge) do
         local options = {}
-
-        for _, item in ipairs(fridge.items) do
             table.insert(options,{
-                name = item,  -- Nom de l'option, unique pour chaque interaction
-                label = exports.ox_inventory:Items()[item].label,  -- Texte affiché à l'utilisateur
+                name = "reserve",  -- Nom de l'option, unique pour chaque interaction
+                label = "Réserve",  -- Texte affiché à l'utilisateur
                 icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
                 onSelect = function()                    
-                    --local success = lib.progressBar({duration = 1000, label = "Fouille"})
-                    local success = lib.progressBar({duration = 1000, label = "Fouille", disable = {
-                        move = true,
-                        car = true,
-                        mouse = false,
-                        combat = true,
-                    }})
-                    if success then
-                        TriggerServerEvent('gm-restaurant:server:craft',{},item)    
-                        if(cfg.DebugMode) then  
-                            print("Progress success for: " .. item)    
-                        end                                          
-                    else
-                        if(cfg.DebugMode) then  
-                            print("Progress cancelled for: " .. item)
-                        end
-                    end
+                    TriggerServerEvent('gm-restaurant:server:getlistFridgeIngredient')
                 end,
                 groups = cfg.Job,
             });
 
-                    
-        end
+            table.insert(options,{
+                name = "depose",  -- Nom de l'option, unique pour chaque interaction
+                label = "Ajout à la réserve",  -- Texte affiché à l'utilisateur
+                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
+                onSelect = function()                    
+                    TriggerServerEvent('gm-restaurant:server:getPlayerIngredients')
+                end,
+                groups = cfg.Job,
+            });
+
+            
+
         exports.ox_target:addSphereZone({ 
             coords = fridge.coords,
             radius = fridge.size,
@@ -237,7 +249,7 @@ function initManagement(cfg,key)
 
         table.insert(options,{
             name = "ManagementOrder",  -- Nom de l'option, unique pour chaque interaction
-            label = "Commender ingrédients",  -- Texte affiché à l'utilisateur
+            label = "Commande d'ingrédients",  -- Texte affiché à l'utilisateur
             icon = 'fas fa-cogs',  -- Icône affichée à côté de l'option (utilise FontAwesome)
             groups = cfg.Job,
             onSelect = function()                    
@@ -467,6 +479,30 @@ function closeMenu()
     SetNuiFocus(false, false)
 end
 
+function getNearbyPlayers(radius)
+    local players = GetActivePlayers()
+    local playerPed = PlayerPedId() 
+    local playerCoords = GetEntityCoords(playerPed) 
+    local nearbyPlayers = {}
+
+    for _, playerId in ipairs(players) do
+        local targetPed = GetPlayerPed(playerId) 
+       -- if targetPed ~= playerPed then -- exclu le joueur courant
+            local targetCoords = GetEntityCoords(targetPed) 
+            local distance = #(playerCoords - targetCoords) 
+            if distance <= radius then
+                table.insert(nearbyPlayers, {id =playerId})
+            end
+       -- end
+    end
+
+    return nearbyPlayers
+end
+
+RegisterCommand("nearbyplayers", function()
+    getNearbyPlayers(10)
+end)
+
 -- Retour du js, permet de récuépérer les informations nécessaire à la facture
 function order(data)
     print("order indexCaisse "..data.indexCaisse..' key '..data.key)
@@ -518,6 +554,7 @@ function order(data)
     bill.title = data.cfg.invoiceWording
     bill.description = description
     bill.billFrom = billFrom
+    --bill.billFrom = data.playerId
     bill.amount = amount + (data.reduc * -1)
     bill.status = "unpaid"
     bill.type = "compagny"
@@ -537,7 +574,12 @@ end
 -- Met à jour la caisse la plus proche pour ajouter l'option payer 
 RegisterNetEvent('gm-restaurant:client:updateCarte')
 AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
-    local idCaisse = nil
+    local playerData = QBCore.Functions.GetPlayerData()
+    
+    TriggerServerEvent("okokBilling:CreateCustomInvoice", bill.target, bill.amount, bill.description, playerData.citizenid, true, cfg.Job)
+   
+
+    /*local idCaisse = nil
     local index 
 
     for i, v in ipairs(idCaisses) do
@@ -600,7 +642,7 @@ AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
 
             table.insert(idCaisses,{id=lidCaisse,index = key, key = bill.key})  
         end
-    end
+    end*/
 
 
 end)
@@ -625,6 +667,10 @@ end
 
 -- Gestion du NUI Callback
 RegisterNUICallback('nuiCallback', function(data, cb)
+    local retour = {}
+    retour.action = "defaut";
+    retour.data = {};
+    
     if data.action == 'closeMenu' then
         closeMenu()  -- Appelle la fonction Lua avec le paramètre envoyé depuis JS
     end
@@ -646,9 +692,19 @@ RegisterNUICallback('nuiCallback', function(data, cb)
     if(data.action == 'goCraftProduct')then
         goCraftProduct(data.param)
     end
+
+    if(data.action == 'getNearbyPlayers')then
+        retour.action = "getNearbyPlayers"
+        retour.data = getNearbyPlayers(10);
+    end
+
+    if(data.action == 'goListPlayerIngredient')then
+        TriggerServerEvent('gm-restaurant:server:getPlayerIngredient', data.param.item)  
+    end
+    
     
 
-    cb('ok')  -- Réponse à envoyer au JS
+    cb(retour)  -- Réponse à envoyer au JS
 end)
 
 function createReference()
@@ -971,7 +1027,6 @@ function launchGoCraft()
         toggle = true,
         data = Data
     })
-
 end
 
 function goCraftProduct(order)
@@ -989,7 +1044,6 @@ function goCraftProduct(order)
     repeat
         Wait(10)
     until(flg_ServerRecipe)
-
 
     repeat
         Wait(10)
@@ -1019,10 +1073,76 @@ function goCraftProduct(order)
         formattedIngredients[ingredient].label = ingredientLabel               
     end
 
-    TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,product,product.label,product.categorie,product.image,order.amount)
+    local playerPed = PlayerPedId()
+    playCookingAnimation(playerPed)
+
+    TriggerServerEvent('gm-restaurant:server:craft',formattedIngredients,item,product.label,product.categorie,product.image,order.amount)
 
 end
 
 -- #################################################################################################### --
 -- ## Fin de Section - goCraftProduct ## --
+-- #################################################################################################### --
+
+-- #################################################################################################### --
+-- ## Début de Section - listFridgeIngredient ## --
+-- #################################################################################################### --
+
+RegisterNetEvent('gm-restaurant:client:displayListFridgeIngredient')
+AddEventHandler('gm-restaurant:client:displayListFridgeIngredient', function(data)
+    print("displayListFridgeIngredient")
+    local Data = {}
+    Data.theme = "styles_ListFridgeIngredient.css"
+    Data.data = data
+
+    SetNuiFocus(true, true)
+    SendNUIMessage({
+        action = 'displayListFridgeIngredient',
+        toggle = true,
+        data = Data
+    })
+
+end)
+
+-- #################################################################################################### --
+-- ## Fin de Section - listFridgeIngredient ## --
+-- #################################################################################################### --
+
+-- #################################################################################################### --
+-- ## Début de Section - Ajout des ingrédients farmable par les joueurs ## --
+-- #################################################################################################### --
+
+function getPlayerIngredients()
+    TriggerServerEvent('gm-restaurant:server:getPlayerIngredients')
+end
+
+RegisterNetEvent('gm-restaurant:client:getPlayerIngredients')
+AddEventHandler('gm-restaurant:client:getPlayerIngredients', function(data)
+    print("displayListPlayerIngredient")
+
+
+    if next(data) == nil then
+        lib.notify({
+            title = "Aucun produit trouvé",
+            description = "Vous n'avez rien à mettre dans la réserve.",
+            type = 'info',
+            duration=5000,
+            position='center-right'
+        })
+    else
+        local Data = {}
+        Data.theme = "styles_ListPlayerIngredient.css"
+        Data.data = data
+        SetNuiFocus(true, true)
+        SendNUIMessage({
+            action = 'displayListPlayerIngredient',
+            toggle = true,
+            data = Data
+        })
+    end
+end)
+
+
+-- #################################################################################################### --
+-- ## Fin de Section - Ajout des ingrédients farmable par les joueurs ## --
 -- #################################################################################################### --

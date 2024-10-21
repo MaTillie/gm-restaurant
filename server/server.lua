@@ -35,6 +35,15 @@ function PrintTable(t, indent)
     end
 end
 
+function GetMetaDataItem(name,label,image)
+    return {ref = name,label = label ,imageurl = image,}
+end
+
+function GetMetaDataIngredient(name,label)
+    return {ref = name,label = label,}
+end
+
+
 function FridgeName()
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
@@ -46,8 +55,6 @@ function VirtualFridgeName(source)
     local player = exports.qbx_core:GetPlayer(src)
     return player.PlayerData.job.name.."virtualfridge" 
 end
-
-
 
 RegisterNetEvent('gm-restaurant:server:craftCompo')
 AddEventHandler('gm-restaurant:server:craftCompo', function(ingredients,item,quantity)	
@@ -78,11 +85,11 @@ AddEventHandler('gm-restaurant:server:craftCompo', function(ingredients,item,qua
 end)
 
 
-QBCore.Functions.CreateUseableItem('hogspub_ticket', function(source, item)
+QBCore.Functions.CreateUseableItem('gmr_ticket', function(source, item)
     TriggerEvent('gm-restaurant:server:useTicket', source, item.info or item.metadata,item.slot)
 end)
 
-QBCore.Functions.CreateUseableItem('hogspub_repas', function(source, item)
+QBCore.Functions.CreateUseableItem('gmr_repas', function(source, item)
     TriggerEvent('gm-restaurant:server:useBoite', source, item.info or item.metadata,item.slot)
 end)
 
@@ -103,14 +110,18 @@ AddEventHandler('gm-restaurant:server:order', function(bill,data,cfg)
         print("order data null")
     end
 
+  /*  local target = QBCore.Functions.GetPlayer(playerId)
 
-    exports.ox_inventory:AddItem(src, 'hogspub_ticket', 1, data)
+    local citizenid = target.PlayerData.ccitizenid
+    bill.target = citizenid*/
+
+    exports.ox_inventory:AddItem(src, 'gmr_ticket', 1, data)
     
 
-    local players = QBCore.Functions.GetQBPlayers()
+  /*  local players = QBCore.Functions.GetQBPlayers()
     for _, v in pairs(players) do
         TriggerClientEvent('gm-restaurant:client:updateCarte', v.PlayerData.source,bill,cfg)  
-    end    
+    end    */
 end)
 
 
@@ -152,7 +163,7 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
     
     if hasAllItems then
         -- Retirer le ticket
-        exports.ox_inventory:RemoveItem(src, "hogspub_ticket", 1, metadata,slot)
+        exports.ox_inventory:RemoveItem(src, "gmr_ticket", 1, metadata,slot)
 
         -- Retirer les items de la commande de l'inventaire du joueur
         for _, item in ipairs(metadata) do
@@ -167,7 +178,7 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
         end
         
         -- Ajouter l'item "repas_empaquete" avec les mêmes métadonnées
-        exports.ox_inventory:AddItem(src, 'hogspub_repas', 1, metadata)
+        exports.ox_inventory:AddItem(src, 'gmr_repas', 1, metadata)
         TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = 'Vous avez empaqueté le repas !'})
     else
         local src = source
@@ -186,10 +197,10 @@ RegisterNetEvent('gm-restaurant:server:useBoite', function(source,metadata,slot)
         }
         exports.ox_inventory:AddItem(src, item.categorie , item.amount,mtdt)
     end 
-    exports.ox_inventory:RemoveItem(src, "hogspub_repas", 1,metadata, slot)
+    exports.ox_inventory:RemoveItem(src, "gmr_repas", 1,metadata, slot)
 end)
 
-exports('hogspub_ticket', function(event, item, inventory, slot, data)
+exports('gmr_ticket', function(event, item, inventory, slot, data)
     -- print("Use ticket")
     if event == 'usingItem' then
         local itemSlot = exports.ox_inventory:GetSlot(inventory.id, slot)
@@ -406,33 +417,67 @@ end)
 -- Récupère la liste des items de farm que possède le joueur pour qu'il puisse les ajouter au stockage virtuel
 RegisterNetEvent('gm-restaurant:server:getPlayerIngredients')
 AddEventHandler('gm-restaurant:server:getPlayerIngredients', function()
-    local src = source
+    local src = source    
+    local player = exports.qbx_core:GetPlayer(src)
+
     local retour = {}
-    for item,detail in ipairs(IngList.Player) do
+
+    print("getPlayerIngredients")
+    
+    for item,detail in pairs(IngList.Player) do        
         local nb = exports.ox_inventory:GetItemCount(src, item)
         if (nb>0) then
-            table.insert(retour, {item=item, amount=nb}) 
+            local fitem = exports.ox_inventory:Items()[item]
+            table.insert(retour, {item=item, amount=nb,isMetadata = false, label=fitem.label}) 
         end
     end
+
+    for item,detail in pairs(getLocalRecipe(player.PlayerData.job.name).List) do
+        print("#"..item)
+        local metadata = GetMetaDataItem(item,detail.label,detail.image)
+        print("#"..detail.label)
+        local nb = exports.ox_inventory:GetItemCount(src, detail.categorie, metadata)
+        if (nb>0) then
+            print("##"..item)
+            table.insert(retour, {item=detail.categorie, amount=nb,label = detail.label,metadata=metadata,isMetadata = true}) 
+        end
+    end
+    
     TriggerClientEvent('gm-restaurant:client:getPlayerIngredients', src,retour)  
 end)
 
 -- Retire les items de farm de l'inventaire du joueur pour les convertir en ingrédients dans le stockage virtuel
 RegisterNetEvent('gm-restaurant:server:getPlayerIngredient')
 AddEventHandler('gm-restaurant:server:getPlayerIngredient', function(data)
+    print("gm-restaurant:server:getPlayerIngredient")
     local src = source
-    local nb = exports.ox_inventory:GetItemCount(src, data.itemPlayer)
-        if (nb>=data.amountPlayer) then
-            local total = data.amountPlayer*data.amount
-            
-            local metadata = {
-                label = IngList.Base[data.item].label ,
-                imageurl = IngList.Base[data.item].image,       
-            }
+    PrintTable(data)
+    
+    if(not data.isMetadata) then
+        local nb = exports.ox_inventory:GetItemCount(src, data.item)
+        if (nb>=data.amount) then
+            local igd = IngList.Player[data.item].item
+            local qte = IngList.Player[data.item].amount
+            local total = qte*data.amount
+            local metadata = GetMetaDataIngredient(igd,IngList.Base[igd].label)
 
-            exports.ox_inventory:RemoveItem(src, data.itemPlayer,data.amountPlayer)
+            exports.ox_inventory:RemoveItem(src, data.item,data.amount)
+
             exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",total,metadata)
         end
+    else
+        print("gm-restaurant:server:getPlayerIngredient1 ")
+        local nb = exports.ox_inventory:GetItemCount(src, data.item, data.metadata)
+        print("gm-restaurant:server:getPlayerIngredient2 "..nb)
+        if (nb>=data.amount) then
+            print("gm-restaurant:server:getPlayerIngredient3")
+            
+            exports.ox_inventory:RemoveItem(src, data.item,data.amount, data.metadata)
+            print(data.metadata.ref)
+            exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",data.amount,GetMetaDataIngredient(data.metadata.ref,data.metadata.label))
+        end        
+    end
+
 end)
 
 -- #################################################################################################### --
@@ -455,14 +500,14 @@ RegisterNetEvent('gm-restaurant:server:craft')
 AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabel,categorie,image,amount)	
     local src = source
 
-    print("craft "..itemLabel.." ("..amount..")")
+    print("craft "..item..'/'..itemLabel.." ("..amount..")")
+
 
     local requis = true
     for ingredient, details  in pairs(ingredients) do
-        local metadata = {
-            label = details.label ,
-            --imageurl = 'nui://gm-restaurant/web/image/'..item..'.png',       
-        }
+        print(details.label)
+
+        local metadata = GetMetaDataIngredient(ingredient,details.label)
 
         if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "gmr_ingredient",metadata)< details.amount*amount) then
             TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
@@ -473,14 +518,13 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabe
 
     if requis then        
         for ingredient, details in pairs(ingredients) do
+            print("delete "..details.label)
+            local metadata = GetMetaDataIngredient(ingredient,details.label)
             exports.ox_inventory:RemoveItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end
 
-        local metadata = {
-            label = itemLabel ,
-            imageurl = image,        
-        }
-        exports.ox_inventory:AddItem(src, categorie, amount,metadata)
+        local mtdt = GetMetaDataItem(item,itemLabel,image)
+        exports.ox_inventory:AddItem(src, categorie, amount,mtdt)
     end
 
 
@@ -490,3 +534,33 @@ end)
 -- ## Fin de Section - goCraftProduct ## --
 -- #################################################################################################### --
 
+
+-- #################################################################################################### --
+-- ## Début de Section - listFridgeIngredient ## --
+-- #################################################################################################### --
+
+function getlistFridgeIngredient(source) 
+    local src = source
+    local player = exports.qbx_core:GetPlayer(src)
+
+    local data = exports.ox_inventory:GetInventoryItems(VirtualFridgeName(src), false)
+
+    local retour = {}
+   
+    for _,item in pairs(data) do
+        print(item.metadata.ref.." :"..item.metadata.label.." ("..item.count..")")
+        table.insert(retour,{name=item.metadata.ref,label=item.metadata.label,count=item.count})
+    end
+
+    TriggerClientEvent('gm-restaurant:client:displayListFridgeIngredient', src, retour)  
+end
+
+RegisterNetEvent('gm-restaurant:server:getlistFridgeIngredient')
+AddEventHandler('gm-restaurant:server:getlistFridgeIngredient', function()
+    local src = source
+    getlistFridgeIngredient(source) 
+end)
+
+-- #################################################################################################### --
+-- ## Fin de Section - listFridgeIngredient ## --
+-- #################################################################################################### --

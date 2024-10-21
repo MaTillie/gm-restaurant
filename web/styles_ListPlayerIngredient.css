@@ -11,7 +11,7 @@ body {
 }
 
 
-.goCraft {
+.listPlayerIngredient {
     width: 500px;
     height: 250px;
     background-color: #f4f4f9;
@@ -23,27 +23,27 @@ body {
     position: relative;
 }
 
-.goCraft h1 {
+.listPlayerIngredient h1 {
     font-size: 24px;
     margin-bottom: 20px;
     color: #333;
     text-align: center;
 }
 
-#goCraft-quantity{
+#listPlayerIngredient-quantity{
     display: inline-block;
     width: 50px; /* Largeur fixe pour la quantité */
     text-align: center;
 }
 
-.goCraft-content{
+.listPlayerIngredient-content{
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-#goCraft-select-product {
+#listPlayerIngredient-select-product {
     width: 70%;
     padding: 8px;
     font-size: 16px;
@@ -81,7 +81,7 @@ body {
 }
 
 
-#goCraft-validate {
+#listPlayerIngredient-validate {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #007bff;
@@ -91,7 +91,7 @@ body {
     cursor: pointer;
 }
 
-#goCraft-validate:hover {
+#listPlayerIngredient-validate:hover {
     background-color: #0056b3;
 }
 
@@ -194,6 +194,10 @@ body {
 }
 
 .mng_ingredientOrder{
+    display : none;
+}
+
+.goCraft{
     display : none;
 }
 

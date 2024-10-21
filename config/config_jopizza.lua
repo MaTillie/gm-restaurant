@@ -59,7 +59,7 @@ function getConfig_jopizza()
     ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
     ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
 }
-   }
+
 
     
     
@@ -82,18 +82,11 @@ function getConfig_jopizza()
     
     Config.Fridge = {
         [1] ={
-            coords = vec3(-583.74, -280.97, 41.69),
+            coords = vec3(-586.2, -290.61, 35.47),
             size = 0.5,
             title = "Frigo",
             duration = 2000,
             items = {
-                "hogspub_fish",
-                "hogspub_chickenmeat",
-                "hogspub_flour",
-                "hogspub_cabbage",
-                "hogspub_cacaobean",
-                "hogspub_egg",
-                "hogspub_potato",
             }
             -- Animation plus tard
         },

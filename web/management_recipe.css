@@ -287,3 +287,7 @@ ul#ingredients-list li {
 .goCraft{
     display : none;
 }
+
+.listFridgeIngredient{
+    display : none;
+}

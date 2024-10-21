@@ -36,6 +36,13 @@
                     <!-- Les catégories et les items seront ajoutés ici -->
                 </div>
             </div>
+            <div class="playerList">
+                <select id="player-select">
+                    <option value="">Sélectionner le client</option>
+                </select>
+                <button id="payButton" onclick="valideOrder()">Valider la commande</button>
+            </div>
+
             <div class="footer">
                 <div class="price-details">
                     <p>Prix initial: $<span id="initialPrice">0.00</span></p>
@@ -177,7 +184,7 @@
     <div class="goCraft">
         <div class="goCraft-header">
             <h1>Quel produit préparer ?</h1>           
-            <button class="close-button" onclick="closeMenu()">×</button> 
+            <button class="close-button" id="goCraft-close-button" onclick="closeMenu()">×</button> 
         </div>
         <div class="goCraft-content">
             <select id="goCraft-select-product" onchange="goCraftChangeProduct()">
@@ -212,6 +219,46 @@
             
             <button id="goCraft-validate" onclick="goCraftProduct()">Valider</button>
         </div>
+    </div>
+
+    <div class="listFridgeIngredient">
+        <div id="listFridgeIngredient-header">
+            <h1>Contenue de la réserve</h1>
+            <button class="close-button" onclick="closeMenu()">×</button>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                    </tr>
+                </thead>
+                <tbody id="items-table-body">
+                    <!-- Les éléments seront injectés ici par JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    
+    <div class="listPlayerIngredient">
+        <div class="listPlayerIngredient-header">
+            <h1>Quel produit ajouter à la réserve ?</h1>           
+            <button class="close-button" id="listPlayerIngredient-close-button" onclick="closeMenu()">×</button> 
+        </div>
+
+        <div class="listPlayerIngredient-content">
+            <select id="listPlayerIngredient-select-product">
+                <option value="">Sélectionner un produit</option>
+            </select>
+
+        </div>
+        <div class="listPlayerIngredient-wip">       
+            <button id="listPlayerIngredient-validate" onclick="goListPlayerIngredient()">Valider</button>
+        </div>
+
     </div>
 
     

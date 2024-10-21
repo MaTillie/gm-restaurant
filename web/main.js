@@ -29,6 +29,8 @@ function wait(ms) {
 }
 
 
+
+
 // Fonction pour ajouter ou mettre à jour un article
 function updateItem(name, label, price, quantity) {
     // Rechercher si l'article existe déjà dans la liste
@@ -487,7 +489,18 @@ function callLuaFunction(data) {
         },
         body: JSON.stringify(data)
     }).then(resp => resp.json()).then(resp => {
-        console.log('Réponse Lua:', resp);
+        switch (resp.action) {
+            case "defaut":
+                console.log('Réponse Lua:', "ok");              
+              break;
+              case "getNearbyPlayers":
+                selectPlayerOrder(resp.data)
+                break
+                default:
+          break;
+
+        }
+        
     }).catch(error => {
         console.error('Erreur lors de l\'appel Lua:', error);
     });
@@ -505,20 +518,49 @@ function closeMenu() {
     document.getElementById('mng_recipe').style.display = 'none';    
     document.querySelector('.mng_ingredientOrder').style.display = 'none';    
     document.querySelector('.goCraft').style.display = 'none';    
+    document.querySelector('.listFridgeIngredient').style.display = 'none';  
+    document.querySelector('.listPlayerIngredient').style.display = 'none';
+    
     callLuaFunction({ action: 'closeMenu', param: 'someValue' });
     itemsList = [];
     currentDiscount = 0.00;
 }
+/*
+function order() {
+    callLuaFunction({ action: 'getNearbyPlayers', param: {} });    
+}   
+
+function selectPlayerOrder(data){
+    console.log("selectPlayerOrder")
+
+    document.querySelector('.items-container').style.display = 'none';
+    document.querySelector('.footer').style.display = 'none';
+    document.querySelector('.playerList').style.display = 'flex';
+    
+    const dropdown = document.getElementById('player-select');
+    data.forEach(player => {
+        console.log("selectPlayerOrder1 ",player.id)
+        let option = document.createElement('option');
+        option.value = player.id;
+        option.textContent = player.id;
+        dropdown.appendChild(option);
+    });
+
+    document.querySelector('.items-container').style.display = 'block';
+    document.querySelector('.footer').style.display = 'flex';
+    document.querySelector('.playerList').style.display = 'none';
+}*/
 
 function order() {
+
     document.querySelector('.menu-container').style.display = 'none';
     callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount,cfg:Config,key:Key} });
     itemsList = [];
     currentDiscount = 0.00;
     updateTotalPrice()
     closeMenu()
-}
-
+    
+}   
 
 let ingredientList = [];
 let currentRecipe = {};
@@ -546,6 +588,7 @@ $(document).ready(function () {
           break;
         case "openOrder":            
               if (eventData.toggle) {
+                document.querySelector('.playerList').style.display = 'none';
                 generateOrderItems(eventData.data.items);
                 Key = eventData.data.key;
                 IndexCaisse = eventData.data.indexCaisse;           
@@ -593,6 +636,15 @@ $(document).ready(function () {
         case "goCraft":
             goCraft_product_list = eventData.data.products;
             populateGoCraftProductDropdown();
+            break;
+        case "displayListFridgeIngredient":
+            console.log("displayListFridgeIngredient")
+            listFridgeIngredient = eventData.data.data
+            loadListFridgeIngredient()
+              break;
+        case "displayListPlayerIngredient":
+            listPlayerIngredient = eventData.data.data
+            populateListPlayerIngredientDropdown()
             break;
         case "openTicket":
         console.log("openTicket :" )
@@ -1073,18 +1125,37 @@ document.getElementById("goCraft-minus").addEventListener("click", function(even
 
 
 async function goCraftProduct(){
-    document.getElementById('goCraft-validate').style.display = 'none';
-    document.querySelector('.loading-container').style.display = 'block';
-
-    setTimeout(() => {
-        document.querySelector('.loading-container').style.display = 'none';
-        document.getElementById('goCraft-validate').style.display = 'block';
-    }, 3000);
-    
-    
     if(goCraft_current_craft.item){
-        await wait(3000);
+        let time = 1000;
+
+        if(goCraft_current_craft.amount<1){ // sécurité
+            goCraft_current_craft.amount = 1
+        }
+
+        if(goCraft_current_craft.amount<=10){
+            for (let i = 1; i <= goCraft_current_craft.amount; i++) {
+                time += 2500 - (250 * i)
+            }
+        }else{
+            for (let i = 1; i <= 10; i++) {
+                time += 2500 - (250 * i)
+            }
+            time += (goCraft_current_craft.amount - 10 )* 250;
+        }
+
+        document.getElementById('goCraft-validate').style.display = 'none';
+        document.querySelector('.loading-container').style.display = 'block';
+        document.getElementById("goCraft-close-button").style.display = 'none';
+        
+
+        setTimeout(() => {
+            document.querySelector('.loading-container').style.display = 'none';
+            document.getElementById('goCraft-validate').style.display = 'block';
+            document.getElementById("goCraft-close-button").style.display = 'block';
+        }, time);
+    
         callLuaFunction({ action: 'goCraftProduct', param: {item :goCraft_current_craft.item,amount:goCraft_current_craft.amount }});
+        await wait(time);
         closeMenu()
     }else{
         showSnackbar("Veuillez sélectionner un produit.")
@@ -1095,5 +1166,80 @@ async function goCraftProduct(){
 /*
 ##############################################
 goCraft - Fin
+##############################################
+*/
+
+/*
+##############################################
+listFridgeIngredient - Début
+##############################################
+*/
+let listFridgeIngredient = {}
+function loadListFridgeIngredient(){
+    console.log("loadListFridgeIngredient")
+    document.querySelector('.listFridgeIngredient').style.display = 'flex';  
+   
+    let tableBody = document.getElementById('items-table-body');
+    tableBody.innerHTML = ''; // Réinitialiser le tableau pour pas de doublon
+
+    listFridgeIngredient.forEach(item => {
+        let row = document.createElement('tr');
+
+        let labelCell = document.createElement('td');
+        labelCell.textContent = item.label;
+
+        let countCell = document.createElement('td');
+        countCell.textContent = item.count;
+
+        row.appendChild(labelCell);
+        row.appendChild(countCell);
+
+        tableBody.appendChild(row);
+    });
+}
+
+/*
+##############################################
+listFridgeIngredient - Fin
+##############################################
+*/
+
+/*
+##############################################
+listPlayerIngredient - Début
+##############################################
+*/
+let listPlayerIngredient = {}
+
+function populateListPlayerIngredientDropdown() {
+    const productDropdown = document.getElementById('listPlayerIngredient-select-product');
+    productDropdown.innerHTML = '<option value="">Sélectionner un produit</option>';
+    console.log(JSON.stringify(listPlayerIngredient))
+    for (let key in listPlayerIngredient) {
+        let recipe = listPlayerIngredient[key];
+
+        let option = document.createElement('option');
+        option.value = key; 
+        option.textContent = recipe.label+" ("+recipe.amount +")"; 
+        productDropdown.appendChild(option);
+    }  
+    document.querySelector('.listPlayerIngredient').style.display = 'flex';
+}
+
+function goListPlayerIngredient(){
+    const productDropdown = document.getElementById('listPlayerIngredient-select-product');
+    let selectedProduct = productDropdown.value;
+    
+    if(!selectedProduct){
+        showSnackbar("Veuillez sélectionner un produit.")
+    }else{
+        callLuaFunction({ action: 'goListPlayerIngredient', param: {item :listPlayerIngredient[selectedProduct] }});
+        closeMenu()
+    }
+    // fin
+}
+/*
+##############################################
+listPlayerIngredient - Fin
 ##############################################
 */
