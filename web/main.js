@@ -552,17 +552,47 @@ function selectPlayerOrder(data){
     document.querySelector('.footer').style.display = 'flex';
     document.querySelector('.playerList').style.display = 'none';
 }*/
-
+let proxiPlayers = {}
 function order() {
-
-    document.querySelector('.menu-container').style.display = 'none';
-    callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount,cfg:Config,key:Key} });
-    itemsList = [];
-    currentDiscount = 0.00;
-    updateTotalPrice()
-    closeMenu()
-    
+    populatePlayerListDropdown()
 }   
+
+function populatePlayerListDropdown(){
+    
+    document.querySelector('.items-container').style.display = 'none';
+    document.querySelector('.footer').style.display = 'none';
+    document.querySelector('.playerList').style.display = 'flex';
+    
+    const dropdown = document.getElementById('player-select');
+    dropdown.innerHTML = '<option value="">-- Sélectionnez un joueur --</option>';
+console.log("populatePlayerListDropdown");
+
+proxiPlayers.forEach(function(player) {
+    const option = document.createElement('option');
+    option.value = player.citizenid; // Utiliser citizenid comme valeur
+    option.text = player.name; // Utiliser name pour l'affichage
+    dropdown.appendChild(option);
+});
+
+
+}
+
+function valideOrder(){
+    const targetPlayer = document.getElementById('player-select').value;
+    if(!targetPlayer){
+        showSnackbar("Veuillez sélectionner le client.")
+    }else{
+        document.querySelector('.menu-container').style.display = 'none';
+        callLuaFunction({ action: 'order', param: {items :itemsList, indexCaisse:IndexCaisse, reduc:currentDiscount,cfg:Config,key:Key,targetPlayer:targetPlayer} });
+        itemsList = [];
+        currentDiscount = 0.00;
+        updateTotalPrice()
+        document.querySelector('.items-container').style.display = 'block';
+        document.querySelector('.footer').style.display = 'flex';
+        document.querySelector('.playerList').style.display = 'none';
+        closeMenu()
+    }
+}
 
 let ingredientList = [];
 let currentRecipe = {};
@@ -592,6 +622,7 @@ $(document).ready(function () {
               if (eventData.toggle) {
                 document.querySelector('.playerList').style.display = 'none';
                 generateOrderItems(eventData.data.items);
+                proxiPlayers = eventData.data.players
                 Key = eventData.data.key;
                 IndexCaisse = eventData.data.indexCaisse;           
               } else {

@@ -1,6 +1,6 @@
 function getConfig_jopizza()
     Config = {}
-    Config.DebugMode = true
+    Config.DebugMode = false
     
     
     Config.Job = "jopizza"

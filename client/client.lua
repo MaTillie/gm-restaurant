@@ -402,8 +402,61 @@ function lauchMenu(cfg, key)
 end
 
 -- Prépare et lance la caisse (uniquement disponible pour les employés)
+
+-- #################################################################################################### --
+-- ## Debut de Section - Lancement de la caisse  ## --
+-- #################################################################################################### --
+
+local proxiPlayers = {}
+local flg_proxiPlayers_Server = false
+
+-- Joueurs à proximité (pour le choix du qui paye)
+function GetPlayersInProximity()
+    print("GetPlayersInProximity")
+    proxiPlayers = {}
+    local players = GetActivePlayers() 
+    local nearbyPlayers = {}
+    local playerPed = PlayerPedId()
+    local playerCoords = GetEntityCoords(playerPed) 
+
+    for _, playerId in ipairs(players) do
+        print("GetPlayersInProximity1")
+        local targetPed = GetPlayerPed(playerId)
+        --if targetPed ~= playerPed then -- Le joueur courant
+            local targetCoords = GetEntityCoords(targetPed)
+            local distance = #(playerCoords - targetCoords)
+            if distance < 10.0 then 
+                table.insert(nearbyPlayers, GetPlayerServerId(playerId))
+            end
+        --end
+    end
+    flg_proxiPlayers_Server = false
+    TriggerServerEvent('gm-restaurant:server:getProxiPlayers', nearbyPlayers)
+end
+
+RegisterNetEvent('gm-restaurant:client:getProxiPlayers', function(data)
+    print("getProxiPlayers")
+    proxiPlayers = data
+    flg_proxiPlayers_Server = true
+end)
+
+
+
+
 function launchCaisse(indexCaisse,cfg,key)
+    flg_proxiPlayers_Server = false
+    GetPlayersInProximity()
+    
+    repeat
+        Wait(10)
+    until(flg_proxiPlayers_Server)
+    print("Pouette")
+PrintTable(proxiPlayers)
     print("indexCaisse "..indexCaisse)
+
+    for _, player in ipairs(proxiPlayers) do
+        print(player.name.."/"..player.citizenid)
+    end
     SetNuiFocus(true, true)
     local Menus = {}
     Menus.items = {}
@@ -451,10 +504,13 @@ function launchCaisse(indexCaisse,cfg,key)
             table.insert(Menus.items, {
                 label = categorie.label,
                 name = categorie.name,
-                items = categoryItems
+                items = categoryItems,
             })
         end
     end
+
+    Menus.players =proxiPlayers
+
 
     SendNUIMessage({
         action = 'openOrder',
@@ -463,6 +519,9 @@ function launchCaisse(indexCaisse,cfg,key)
     })
   
 end
+-- #################################################################################################### --
+-- ## Fin de Section - Lancement de la caisse  ## --
+-- #################################################################################################### --
 
 
 AddEventHandler('onResourceStart', function(r) 
@@ -478,30 +537,6 @@ end)
 function closeMenu()
     SetNuiFocus(false, false)
 end
-
-function getNearbyPlayers(radius)
-    local players = GetActivePlayers()
-    local playerPed = PlayerPedId() 
-    local playerCoords = GetEntityCoords(playerPed) 
-    local nearbyPlayers = {}
-
-    for _, playerId in ipairs(players) do
-        local targetPed = GetPlayerPed(playerId) 
-       -- if targetPed ~= playerPed then -- exclu le joueur courant
-            local targetCoords = GetEntityCoords(targetPed) 
-            local distance = #(playerCoords - targetCoords) 
-            if distance <= radius then
-                table.insert(nearbyPlayers, {id =playerId})
-            end
-       -- end
-    end
-
-    return nearbyPlayers
-end
-
-RegisterCommand("nearbyplayers", function()
-    getNearbyPlayers(10)
-end)
 
 -- Retour du js, permet de récuépérer les informations nécessaire à la facture
 function order(data)
@@ -1146,3 +1181,5 @@ end)
 -- #################################################################################################### --
 -- ## Fin de Section - Ajout des ingrédients farmable par les joueurs ## --
 -- #################################################################################################### --
+
+

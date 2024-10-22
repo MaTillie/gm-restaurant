@@ -563,3 +563,35 @@ end)
 -- #################################################################################################### --
 -- ## Fin de Section - listFridgeIngredient ## --
 -- #################################################################################################### --
+
+-- #################################################################################################### --
+-- ## Début de Section - getProxiPlayers ## --
+-- #################################################################################################### --
+
+RegisterNetEvent('gm-restaurant:server:getProxiPlayers')
+AddEventHandler('gm-restaurant:server:getProxiPlayers', function(nearbyPlayers)
+    print("getProxiPlayers")
+    local src = source
+    if #nearbyPlayers == 0 then
+        TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = 'Aucun joueur à proximité'})
+        return
+    end
+    local retour = {}
+    -- Parcourir les joueurs à proximité et récupérer les informations
+    for _, playerId in ipairs(nearbyPlayers) do
+        local xPlayer = QBCore.Functions.GetPlayer(playerId)
+        if xPlayer then
+            local name = xPlayer.PlayerData.charinfo.firstname
+            local surname = xPlayer.PlayerData.charinfo.lastname
+            local citizenid = xPlayer.PlayerData.citizenid
+            --retour[citizenid] ={name=name.." "..surname ,citizenid=citizenid,}
+            table.insert(retour,{name=name.." "..surname ,citizenid=citizenid,})
+            TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = string.format("Nom: %s %s | CitizenID: %s", name, surname, citizenid)})
+        end
+    end
+    TriggerClientEvent('gm-restaurant:client:getProxiPlayers', src, retour)  
+end)
+
+-- #################################################################################################### --
+-- ## Fin de Section - getProxiPlayers ## --
+-- #################################################################################################### --
