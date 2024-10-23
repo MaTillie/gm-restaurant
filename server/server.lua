@@ -507,8 +507,8 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabe
         local metadata = GetMetaDataIngredient(ingredient,details.label)
 
         if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "gmr_ingredient",metadata)< details.amount*amount) then
-            TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
-            requis = false
+          --  TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
+           -- requis = false
             exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end    
     end
@@ -581,7 +581,7 @@ AddEventHandler('gm-restaurant:server:getProxiPlayers', function(nearbyPlayers)
         if xPlayer then
             local name = xPlayer.PlayerData.charinfo.firstname
             local surname = xPlayer.PlayerData.charinfo.lastname
-            local citizenid = xPlayer.PlayerData.citizenid
+            local citizenid = xPlayer.PlayerData.source
             --retour[citizenid] ={name=name.." "..surname ,citizenid=citizenid,}
             table.insert(retour,{name=name.." "..surname ,citizenid=citizenid,})
             TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = string.format("Nom: %s %s | CitizenID: %s", name, surname, citizenid)})

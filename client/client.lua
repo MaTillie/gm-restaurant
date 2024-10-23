@@ -450,6 +450,7 @@ function launchCaisse(indexCaisse,cfg,key)
     repeat
         Wait(10)
     until(flg_proxiPlayers_Server)
+
     print("Pouette")
 PrintTable(proxiPlayers)
     print("indexCaisse "..indexCaisse)
@@ -564,6 +565,7 @@ function order(data)
         citizen = playerData.citizenid,
         name = playerData.charinfo.firstname .. " " .. playerData.charinfo.lastname,
         job = playerData.job.name,
+        label = playerData.job.label 
     }
 
     local descReduc = ""
@@ -581,7 +583,8 @@ function order(data)
         amount = amount + item.quantity * item.price
     end    
 
-    
+
+
     bill.indexCaisse = data.indexCaisse
     -- Clé de config
     bill.key = data.key
@@ -589,13 +592,25 @@ function order(data)
     bill.title = data.cfg.invoiceWording
     bill.description = description
     bill.billFrom = billFrom
+    bill.targetPlayer = data.targetPlayer
     --bill.billFrom = data.playerId
     bill.amount = amount + (data.reduc * -1)
     bill.status = "unpaid"
     bill.type = "compagny"
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
     bill.date = year.."-"..month.."-"..day
-    TriggerServerEvent('gm-restaurant:server:order',items)   
+
+    local target = playerData.source -- cible de l'addition
+    local price = bill.amount or 500 -- par défaut 500
+    local reason = bill.description or "Restaurant" -- raison par défaut
+    local invoiceSource = bill.billFrom.name -- source de la facture
+
+    local society = bill.billFrom.job -- le nom du métier du joueur comme société
+    local societyName =  bill.billFrom.label -- l'étiquette affichée du métier
+    --TriggerServerEvent("okokBilling:CreateCustomInvoice", 1, bill.amount, bill.description, bill.billFrom.name , bill.billFrom.job, bill.billFrom.label)
+    
+    TriggerServerEvent('gm-restaurant:server:order',bill,items,data.cfg)   
+    TriggerServerEvent("okokBilling:CreateCustomInvoice", data.targetPlayer, bill.amount, bill.description, bill.billFrom.name , bill.billFrom.job, bill.billFrom.label)
 end
 
 
