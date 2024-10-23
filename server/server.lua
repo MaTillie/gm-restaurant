@@ -393,13 +393,23 @@ end)
 
 RegisterNetEvent('gm-restaurant:server:paidIngredientOrder')
 AddEventHandler('gm-restaurant:server:paidIngredientOrder', function(job)
- /*   local src = source
-    IngredientOrder[job]
+    local src = source
+    if not IngredientOrder[job] then
+        TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Aucune commande en cours",duration=5000,position='center-right'})           
+    else
+        local total = 0
+        for item, detail in ipairs(t) do
+            total = total + detail.quantity*detail.price
 
-    TriggerClientEvent('gm-restaurant:client:getIngredientOrder', src,)  
-    if (!orderIgd[selectedIngredient]) {
-        orderIgd[selectedIngredient] = {quantity: 1, price: ingredientList[selectedIngredient].price};
-        */
+            local label = IngList.List[item].label
+            local metadata = GetMetaDataIngredient(item,label)
+
+            exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",detail.quantity,metadata)
+
+        end
+        TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = "Commande terminée",duration=5000,position='center-right'})  
+        
+    end
 end)
 
 
