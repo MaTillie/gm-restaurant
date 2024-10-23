@@ -318,10 +318,10 @@ IngList.Base = {
     ["gmwine_blanc3"] = {label = "Grapeseed Sensation",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
     ["gmwine_champ3"] = {label = "Vespucci Glamour Gold",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
 
-    -- Soft --
-    ["gmwine_jusderaisin"] = {label = "Jus de raisin",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
-    ["gmwine_jusderaisinpetillant"] = {label = "Jus de raisin pétillant",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
-
+     -- Soft --
+     ["gmwine_jusderaisin"] = {label = "Grappe'licious",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+     ["gmwine_jusderaisinpetillant"] = {label = "Grappe'licious Frizzante",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+ 
     -- #################################################################################################### --
     -- ## Fin de Section - Produits issus du vignoble Mancini ## --
     -- #################################################################################################### --
@@ -359,22 +359,22 @@ IngList.Player = {
 
     -- Item du Domaine Mancini --
     -- Vins d'exception --
-    ["gmwine_rouge1"] = {item = "gmwine_rouge1", amount = 1},
-    ["gmwine_rose1"] = {item = "gmwine_rose1", amount = 1},
-    ["gmwine_blanc1"] = {item = "gmwine_blanc1", amount = 1},
-    ["gmwine_champ1"] = {item = "gmwine_champ1", amount = 1},
+    ["gmwine_rouge1"] = {item = "gmwine_rouge1", amount = 2},
+    ["gmwine_rose1"] = {item = "gmwine_rose1", amount = 2},
+    ["gmwine_blanc1"] = {item = "gmwine_blanc1", amount = 2},
+    ["gmwine_champ1"] = {item = "gmwine_champ1", amount = 2},
 
     -- Vins remarquables --
-    ["gmwine_rouge2"] = {item = "gmwine_rouge2", amount = 1},
-    ["gmwine_rose2"] = {item = "gmwine_rose2", amount = 1},
-    ["gmwine_blanc2"] = {item = "gmwine_blanc2", amount = 1},
-    ["gmwine_champ2"] = {item = "gmwine_champ2", amount = 1},
+    ["gmwine_rouge2"] = {item = "gmwine_rouge2", amount = 2},
+    ["gmwine_rose2"] = {item = "gmwine_rose2", amount = 2},
+    ["gmwine_blanc2"] = {item = "gmwine_blanc2", amount = 2},
+    ["gmwine_champ2"] = {item = "gmwine_champ2", amount = 2},
 
     -- Vins standards --
-    ["gmwine_rouge3"] = {item = "gmwine_rouge3", amount = 1},
-    ["gmwine_rose3"] = {item = "gmwine_rose3", amount = 1},
-    ["gmwine_blanc3"] = {item = "gmwine_blanc3", amount = 1},
-    ["gmwine_champ3"] = {item = "gmwine_champ3", amount = 1},
+    ["gmwine_rouge3"] = {item = "gmwine_rouge3", amount = 2},
+    ["gmwine_rose3"] = {item = "gmwine_rose3", amount = 2},
+    ["gmwine_blanc3"] = {item = "gmwine_blanc3", amount = 2},
+    ["gmwine_champ3"] = {item = "gmwine_champ3", amount = 2},
 
     -- Soft --
     ["gmwine_jusderaisin"] = {item = "gmwine_jusderaisin", amount = 1},

@@ -627,6 +627,8 @@ RegisterNUICallback('nuiCallback', function(data, cb)
     local retour = {}
     retour.action = "defaut";
     retour.data = {};
+
+    local playerData = QBCore.Functions.GetPlayerData()
     
     if data.action == 'closeMenu' then
         closeMenu()  -- Appelle la fonction Lua avec le paramètre envoyé depuis JS
@@ -643,7 +645,7 @@ RegisterNUICallback('nuiCallback', function(data, cb)
     end
 
     if(data.action == 'saveIngredientOrder')then
-        TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.order)        
+        TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.order )        
     end
 
     if(data.action == 'goCraftProduct')then
@@ -889,10 +891,33 @@ function manageRecipe(cfg)
     })
 end
 
+
+
+local localIngredientOrder = {}
+local flg_ServerOrder = false
+function getServerIngredientOrder(job)
+    flg_ServerOrder = false
+    localIngredientOrder= {}
+    return TriggerServerEvent('gm-restaurant:server:getIngredientOrder', job)
+end
+
+
+RegisterNetEvent('gm-restaurant:client:getIngredientOrder')
+AddEventHandler('gm-restaurant:client:getIngredientOrder', function(data)
+    localIngredientOrder = data;
+    flg_ServerOrder = true
+end)
+
 function orderIngredient(cfg)
+    print("orderIngredient")
     local Data = {}
     Data.ingredient = {}
-
+    flg_ServerOrder = false;
+    getServerIngredientOrder(cfg.Job)
+    repeat
+        Wait(10)
+    until(flg_ServerOrder)
+    Data.order = localIngredientOrder
     Data.ingredient = IngList.Base
     
     Data.theme = "management_orderIngredient.css"
@@ -907,7 +932,10 @@ function getIngredientOrder()
     -- chk job -- Vous n'etes pas authorisé à prendre les commandes
     -- chk commande
     -- faire payer et valider au retour
-    TriggerServerEvent('gm-restaurant:server:setIngredientOrder', data.param.order)    
+    local playerData = QBCore.Functions.GetPlayerData()
+    local job = playerData.job.name
+    print("getIngredientOrder")
+    TriggerServerEvent('gm-restaurant:server:paidIngredientOrder',job )    
 end
 
 function loadPedModel(model)

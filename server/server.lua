@@ -353,8 +353,9 @@ RegisterNetEvent('gm-restaurant:server:setIngredientOrder')
 AddEventHandler('gm-restaurant:server:setIngredientOrder', function(order)
     local src = source
     local player = exports.qbx_core:GetPlayer(src)
-    order.done = false
-    IngredientOrder[player.PlayerData.job.name] = order
+    IngredientOrder[player.PlayerData.job.name] = {}
+    IngredientOrder[player.PlayerData.job.name].order = order
+    IngredientOrder[player.PlayerData.job.name].done = false
 end)
 
 RegisterNetEvent('gm-restaurant:server:getIngredientOrder')
@@ -370,10 +371,13 @@ AddEventHandler('gm-restaurant:server:paidIngredientOrder', function(job)
         TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Aucune commande en cours",duration=5000,position='center-right'})           
     else
         local total = 0
-        for item, detail in ipairs(IngredientOrder[job]) do
+        PrintTable(IngredientOrder[job].order)
+        for item, detail in pairs(IngredientOrder[job].order) do
+            
             total = total + detail.quantity*detail.price
 
-            local label = IngList.List[item].label
+            local label = IngList.Base[item].label
+            print(item.."/"..label)
             local metadata = GetMetaDataIngredient(item,label)
 
             exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",detail.quantity,metadata)
@@ -381,6 +385,7 @@ AddEventHandler('gm-restaurant:server:paidIngredientOrder', function(job)
            
 
         end
+        IngredientOrder[job] = {}
         exports['okokBanking']:RemoveMoney(job, total)
         /* Pour les logs des courses :
 
@@ -507,9 +512,9 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabe
         local metadata = GetMetaDataIngredient(ingredient,details.label)
 
         if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "gmr_ingredient",metadata)< details.amount*amount) then
-          --  TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
-           -- requis = false
-            exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
+            TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
+            requis = false
+           -- exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end    
     end
 
