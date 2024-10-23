@@ -69,7 +69,12 @@ AddEventHandler('gm-restaurant:client:delivery:requestOrder', function()
 
     local MenuDispo = {}
     local count=0
-
+    -- player, playerjob Menu[job], création de ticket
+/*
+    imageurl
+    categorie
+    name, label, price, quantity
+*/
     while (count< 15) do
         for key, item in ipairs(Config.Menu) do
             if (item.menu and (count< 15)) then
@@ -105,6 +110,14 @@ end)
 
 -- Vérification si le joueur possède tous les items requis
 function hasAllItems()
+/*
+    imageurl
+categorie
+name, label, price, quantity*/
+
+-- Etape 1 - Créer la liste des metadata
+-- Etape 2 - Créer la boite avec la liste des metadata
+-- Etape 3 -- vérifier que l'utilisateur à la boite avec les metadata
     -- Remplace cette fonction par la vérification réelle des items dans l'inventaire du joueur
     for _, item in ipairs(currentOrder) do
         if not PlayerHasItem(item) then
@@ -197,3 +210,13 @@ function DrawText3D(x, y, z, text)
         DrawText(_x, _y)
     end
 end
+
+/*
+
+
+imageurl
+categorie
+name, label, price, quantity
+
+
+*/

@@ -595,7 +595,7 @@ function order(data)
     bill.type = "compagny"
     local year --[[ integer ]], month --[[ integer ]], day --[[ integer ]], hour --[[ integer ]], minute --[[ integer ]], second --[[ integer ]] = GetLocalTime()
     bill.date = year.."-"..month.."-"..day
-    TriggerServerEvent('gm-restaurant:server:order',bill,items,data.cfg)   
+    TriggerServerEvent('gm-restaurant:server:order',items)   
 end
 
 
@@ -605,99 +605,6 @@ function clock(job)
         TriggerServerEvent('QBCore:ToggleDuty')
        -- QBCore.Functions.GetPlayerData().job.onduty
     end
-end
--- Met à jour la caisse la plus proche pour ajouter l'option payer 
-RegisterNetEvent('gm-restaurant:client:updateCarte')
-AddEventHandler('gm-restaurant:client:updateCarte', function(bill,cfg)
-    local playerData = QBCore.Functions.GetPlayerData()
-    
-    TriggerServerEvent("okokBilling:CreateCustomInvoice", bill.target, bill.amount, bill.description, playerData.citizenid, true, cfg.Job)
-   
-
-    /*local idCaisse = nil
-    local index 
-
-    for i, v in ipairs(idCaisses) do
-        if((v.index == bill.indexCaisse) and (v.key == bill.key))then
-            index = i
-            idCaisse = v.id 
-        end
-    end
-
-    table.remove(idCaisses, index)    
-    exports.ox_target:removeZone(idCaisse)
-    Wait(10)
-
-    for key, caisse in pairs(cfg.Carte) do
-        if(key == bill.indexCaisse)then
-            print("updateCarte égale")
-            local options = {}
-            table.insert(options,{
-                name = "carte",  -- Nom de l'option, unique pour chaque interaction
-                label = caisse.title,  -- Texte affiché à l'utilisateur
-                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                onSelect = function()                    
-                    lauchMenu(cfg,key)
-                end,
-            });
-
-            table.insert(options,{
-                name = "payment",  -- Nom de l'option, unique pour chaque interaction
-                label = "Payer",  -- Texte affiché à l'utilisateur
-                icon = 'fas fa-money-check',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                onSelect = function()                    
-                    createBill(bill,cfg)
-                end,
-            });
-
-            table.insert(options,{
-                name = "order",  -- Nom de l'option, unique pour chaque interaction
-                label = "Caisse",  -- Texte affiché à l'utilisateur
-                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                onSelect = function()                    
-                    launchCaisse(index,cfg,key)
-                end,
-                groups = cfg.Job,
-            });
-
-            table.insert(options,{
-                name = "plateau",  -- Nom de l'option, unique pour chaque interaction
-                label = "Plateau",  -- Texte affiché à l'utilisateur
-                icon = 'fa-solid fa-plate-utensils',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                onSelect = function()                    
-                    exports.ox_inventory:openInventory('stash', cfg.Job.."plateau"..key)
-                end,
-            });
-
-            local lidCaisse = exports.ox_target:addSphereZone({ 
-                coords = caisse.coords,
-                radius = caisse.size,
-                debug = cfg.DebugMode,
-                options = options   })    
-
-            table.insert(idCaisses,{id=lidCaisse,index = key, key = bill.key})  
-        end
-    end*/
-
-
-end)
-
-function createBill(bill,cfg)
-    local msg = "La  facture vient de vous être émise. Utilisez votre application de paiement favorite."
-    exports.qbx_core:Notify(msg, "inform",10000,"",'center-right')
-    local playerData = QBCore.Functions.GetPlayerData()
-
-    local billTo = {
-        citizen = playerData.citizenid,
-        name = playerData.charinfo.firstname .. " " .. playerData.charinfo.lastname,
-    }
-    
-    bill.billTo = billTo
-
-    TriggerServerEvent('dusa_billing:sv:createBill',bill)  
-
-    TriggerServerEvent('gm-restaurant:server:payment',bill,cfg)   
-    
 end
 
 -- Gestion du NUI Callback

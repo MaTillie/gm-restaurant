@@ -100,28 +100,9 @@ function CreateRegisterItem(k)
 end
 
 RegisterNetEvent('gm-restaurant:server:order')
-AddEventHandler('gm-restaurant:server:order', function(bill,data,cfg)
+AddEventHandler('gm-restaurant:server:order', function(data)
     local src = source
-    print("order")
-
-    if(data)then
-        print("order data"..json.encode(data))
-    else
-        print("order data null")
-    end
-
-  /*  local target = QBCore.Functions.GetPlayer(playerId)
-
-    local citizenid = target.PlayerData.ccitizenid
-    bill.target = citizenid*/
-
-    exports.ox_inventory:AddItem(src, 'gmr_ticket', 1, data)
-    
-
-  /*  local players = QBCore.Functions.GetQBPlayers()
-    for _, v in pairs(players) do
-        TriggerClientEvent('gm-restaurant:client:updateCarte', v.PlayerData.source,bill,cfg)  
-    end    */
+    exports.ox_inventory:AddItem(src, 'gmr_ticket', 1, data)    
 end)
 
 
@@ -202,15 +183,6 @@ exports('gmr_ticket', function(event, item, inventory, slot, data)
         local itemSlot = exports.ox_inventory:GetSlot(inventory.id, slot)
         --print(json.encode(itemSlot.metadata, {indent=true}))
     end
-end)
-
-RegisterNetEvent('gm-restaurant:server:payment')
-AddEventHandler('gm-restaurant:server:payment', function(bill,cfg)
-    local src = source 
-    local players = QBCore.Functions.GetQBPlayers()
-    for _, v in pairs(players) do
-        TriggerClientEvent('gm-restaurant:client:updateCartePayed', v.PlayerData.source,bill,cfg)  
-    end  
 end)
 
 -- #################################################################################################### --
@@ -398,17 +370,33 @@ AddEventHandler('gm-restaurant:server:paidIngredientOrder', function(job)
         TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Aucune commande en cours",duration=5000,position='center-right'})           
     else
         local total = 0
-        for item, detail in ipairs(t) do
+        for item, detail in ipairs(IngredientOrder[job]) do
             total = total + detail.quantity*detail.price
 
             local label = IngList.List[item].label
             local metadata = GetMetaDataIngredient(item,label)
 
             exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",detail.quantity,metadata)
+           -- exports['okokBanking']:AddMoney(society, value)
+           
 
         end
+        exports['okokBanking']:RemoveMoney(job, total)
+        /* Pour les logs des courses :
+
+okokbanking_transactions
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`receiver_identifier` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci', -- job
+	`receiver_name` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci', -- jopizza (Custom)
+	`sender_identifier` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci', -- "Commande"
+	`sender_name` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci', -- Ingrédients
+	`date` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci', -- 2024-10-22 22:14:35
+	`value` INT(50) NOT NULL, -- montant
+	`type` VARCHAR(255) NOT NULL COLLATE 'utf8mb3_general_ci', -- "transfer"
+
+*/
         TriggerClientEvent('ox_lib:notify', src, {type = 'success', description = "Commande terminée",duration=5000,position='center-right'})  
-        
+
     end
 end)
 
