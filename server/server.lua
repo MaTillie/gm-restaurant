@@ -170,7 +170,7 @@ end)
 RegisterNetEvent('gm-restaurant:server:useBoite', function(source,metadata,slot)
     local src = source
     for _, item in ipairs(metadata) do
-        local mtdt = GetMetaDataItem(item.name,item.label,item.imageurl)
+        local mtdt = GetMetaDataItem(item.ref,item.label,item.imageurl)
 
         exports.ox_inventory:AddItem(src, item.categorie , item.amount,mtdt)
     end 
