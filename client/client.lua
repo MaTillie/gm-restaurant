@@ -608,8 +608,7 @@ function order(data)
     local society = bill.billFrom.job -- le nom du métier du joueur comme société
     local societyName =  bill.billFrom.label -- l'étiquette affichée du métier
     --TriggerServerEvent("okokBilling:CreateCustomInvoice", 1, bill.amount, bill.description, bill.billFrom.name , bill.billFrom.job, bill.billFrom.label)
-    
-    TriggerServerEvent('gm-restaurant:server:order',bill,items,data.cfg)   
+    TriggerServerEvent('gm-restaurant:server:order',items)   
     TriggerServerEvent("okokBilling:CreateCustomInvoice", data.targetPlayer, bill.amount, bill.description, bill.billFrom.name , bill.billFrom.job, bill.billFrom.label)
 end
 

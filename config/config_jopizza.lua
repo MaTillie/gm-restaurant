@@ -48,17 +48,20 @@ function getConfig_jopizza()
     */
 
     Config.Menu = {
+    ["gmr_dsh_hogspub_bierraubeurre_glacee"] = { price = 20.00, categorie = "entree" },
     ["gmr_dsh_hogspub_polynectar"] = { price = 17.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_soupe_chicaneur"] = { price = 23.00, categorie = "entree" },
-    ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 160.00, categorie = "soft" },
-    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
-    ["gmr_cpigd_caramel_magique"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_tartelette_citrouille"] = { price = 20.00, categorie = "plat" },
     ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
+    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
     ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_tartelette_citrouille"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729544241328"] = { price = 20.00, categorie = "side" },
+    ["gmr_cpigd_caramel_magique"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 160.00, categorie = "soft" },
+    ["gmr_dsh_hogspub_soupe_chicaneur"] = { price = 23.00, categorie = "entree" },
+    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
+    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
 }
+
 
 
     

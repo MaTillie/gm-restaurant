@@ -116,15 +116,15 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
     local player = exports.qbx_core:GetPlayer(src)
     local lrec = getRecipe(player.PlayerData.job.name)
 
-    for _, item in ipairs(metadata) do       
+    for _, item in ipairs(metadata) do     
         local lkItem = lrec.List[item.name]
-        local mtdt = {
-            label = item.label ,
+        local mtdt = GetMetaDataItem(item.name,item.label,lkItem.image)
+        /* {
+           label = item.label ,
           --  imageurl = lkItem.image,       
-        }
+        }*/
 
         local itemCount = exports.ox_inventory:GetItemCount(src, lkItem.categorie,mtdt)
-        print("itemname "..item.name.." amount "..item.amount )
 
         if itemCount < item.amount then
             hasAllItems = false
@@ -145,7 +145,6 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
     if hasAllItems then
         -- Retirer le ticket
         exports.ox_inventory:RemoveItem(src, "gmr_ticket", 1, metadata,slot)
-
         -- Retirer les items de la commande de l'inventaire du joueur
         for _, item in ipairs(metadata) do
             local lkItem = lrec.List[item.name]
@@ -506,14 +505,14 @@ AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabe
 
     local requis = true
     for ingredient, details  in pairs(ingredients) do
-        print(details.label)
+       
 
         local metadata = GetMetaDataIngredient(ingredient,details.label)
 
         if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "gmr_ingredient",metadata)< details.amount*amount) then
             TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
             requis = false
-           -- exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
+           exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end    
     end
 
