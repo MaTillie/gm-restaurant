@@ -379,9 +379,8 @@ AddEventHandler('gm-restaurant:server:paidIngredientOrder', function(job)
             local label = IngList.Base[item].label
             print(item.."/"..label)
             local metadata = GetMetaDataIngredient(item,label)
-
-            exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",detail.quantity,metadata)
-           -- exports['okokBanking']:AddMoney(society, value)
+            local qte = IngList.Base[item].amount*detail.quantity
+            exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",qte,metadata)            
            
 
         end
