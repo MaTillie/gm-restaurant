@@ -4,7 +4,7 @@ AddEventHandler('onServerResourceStart', function(resourceName)
     if resourceName == 'ox_inventory' or resourceName == GetCurrentResourceName() then
         for index, restaurant in ipairs(Config.Restaurants) do
             -- ToDo -- Charger les compo intermédiaires généraux
-            print("onServerResourceStart")
+            -- print("onServerResourceStart")
             setLocalMenu(restaurant.Job,restaurant.Menu)
             setLocalRecipe(restaurant.Job,getRecipe(restaurant.Job))
             
@@ -36,6 +36,7 @@ function PrintTable(t, indent)
 end
 
 function GetMetaDataItem(name,label,image)
+    print("GetMetaDataItem name:"..name.." label:"..label.." image:"..image)
     return {ref = name,label = label ,imageurl = image,}
 end
 
@@ -59,14 +60,9 @@ end
 RegisterNetEvent('gm-restaurant:server:craftCompo')
 AddEventHandler('gm-restaurant:server:craftCompo', function(ingredients,item,quantity)	
     local src = source
-    if(ingredients) then
-        print("pas null")
-    else
-        print("null")
-    end
+
     local requis = true
     for ingredient, amount in pairs(ingredients) do
-        print("Ingrédient: " .. ingredient .. ", Quantité: " .. amount)
         local igd = exports.ox_inventory:GetItem(src, ingredient, nil, true)
 
         if igd and igd >= amount then
@@ -114,9 +110,11 @@ RegisterNetEvent('gm-restaurant:server:useTicket', function(source,metadata,slot
     local hasAllItems = true
 
     local player = exports.qbx_core:GetPlayer(src)
-    local lrec = getRecipe(player.PlayerData.job.name)
+    local lrec = getLocalRecipe(player.PlayerData.job.name)
 
+   -- PrintTable(metadata)
     for _, item in ipairs(metadata) do     
+        -- print(item.name)
         local lkItem = lrec.List[item.name]
         local mtdt = GetMetaDataItem(item.name,item.label,lkItem.image)
         /* {
@@ -169,7 +167,7 @@ end)
 RegisterNetEvent('gm-restaurant:server:useBoite', function(source,metadata,slot)
     local src = source
     for _, item in ipairs(metadata) do
-        local mtdt = GetMetaDataItem(item.ref,item.label,item.imageurl)
+        local mtdt = GetMetaDataItem(item.name,item.label,item.imageurl)
 
         exports.ox_inventory:AddItem(src, item.categorie , item.amount,mtdt)
     end 
@@ -500,25 +498,25 @@ RegisterNetEvent('gm-restaurant:server:craft')
 AddEventHandler('gm-restaurant:server:craft', function(ingredients,item,itemLabel,categorie,image,amount)	
     local src = source
 
-    print("craft "..item..'/'..itemLabel.." ("..amount..")")
+   -- print("craft "..item..'/'..itemLabel.." ("..amount..")")
 
 
     local requis = true
     for ingredient, details  in pairs(ingredients) do
-       
+    --   print("craft1 "..details.label)
 
         local metadata = GetMetaDataIngredient(ingredient,details.label)
 
         if (exports.ox_inventory:GetItemCount(VirtualFridgeName(src), "gmr_ingredient",metadata)< details.amount*amount) then
             TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = "Il n'y a pas "..details.amount*amount.." x "..details.label.." dans la réserve",duration=5000,position='center-right'})
             requis = false
-           exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
+           --exports.ox_inventory:AddItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end    
     end
 
     if requis then        
         for ingredient, details in pairs(ingredients) do
-            print("delete "..details.label)
+            -- print("delete "..details.label)
             local metadata = GetMetaDataIngredient(ingredient,details.label)
             exports.ox_inventory:RemoveItem(VirtualFridgeName(src), "gmr_ingredient",details.amount*amount,metadata)
         end
@@ -548,7 +546,7 @@ function getlistFridgeIngredient(source)
     local retour = {}
    
     for _,item in pairs(data) do
-        print(item.metadata.ref.." :"..item.metadata.label.." ("..item.count..")")
+        -- print(item.metadata.ref.." :"..item.metadata.label.." ("..item.count..")")
         table.insert(retour,{name=item.metadata.ref,label=item.metadata.label,count=item.count})
     end
 
@@ -571,7 +569,7 @@ end)
 
 RegisterNetEvent('gm-restaurant:server:getProxiPlayers')
 AddEventHandler('gm-restaurant:server:getProxiPlayers', function(nearbyPlayers)
-    print("getProxiPlayers")
+    -- print("getProxiPlayers")
     local src = source
     if #nearbyPlayers == 0 then
         TriggerClientEvent('ox_lib:notify', src, {type = 'error', description = 'Aucun joueur à proximité'})

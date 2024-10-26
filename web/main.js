@@ -841,10 +841,10 @@ function addNewRecipe() {
 
 // Fonction pour supprimer une recette
 function deleteRecipe(recipeKey) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
+
         delete recipes[recipeKey]; // Supprimer la recette de la liste
         loadRecipeList(); // Recharger la liste des recettes après la suppression
-    }
+    
 }
 
 // Fonction pour mettre à jour l'image de la recette
