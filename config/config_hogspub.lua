@@ -42,17 +42,15 @@ Config.Categorie ={
 }
 
 Config.Menu = {
-    ["gmr_dsh_hogspub_bierraubeurre"] = { price = 21.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_polynectar"] = { price = 16.00, categorie = "alcool" },
-    ["gmr_dsh_hogspub_tartelette_citrouille"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_soupe_chicaneur"] = { price = 20.00, categorie = "entree" },
-    ["gmr_cpigd_caramel_magique"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
-    ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 11.00, categorie = "soft" },
-    ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
-    ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1730121436573"] = { price = 20.00, categorie = "alcool" },
+    ["gmr_dsh_new_recipe_1730118764964"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1730121890454"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1730120926131"] = { price = 15.00, categorie = "dessert" },
+    ["gmr_dsh_new_recipe_1730121525224"] = { price = 25.00, categorie = "dessert" },
 }
+
+
+
 
 
 
@@ -190,6 +188,10 @@ Config.Management={
     },    
 }
 
+Config.Delivery ={
+    NPCCoords = vec3(-594.76, -285.07, 35.45),
+    NPCHeading = 227.13,
+}
 
     
     return Config

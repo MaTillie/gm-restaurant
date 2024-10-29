@@ -577,6 +577,12 @@ proxiPlayers.forEach(function(player) {
 
 }
 
+function modifyOrder(){
+    document.querySelector('.items-container').style.display = 'block';
+    document.querySelector('.footer').style.display = 'flex';
+    document.querySelector('.playerList').style.display = 'none';
+}
+
 function valideOrder(){
     const targetPlayer = document.getElementById('player-select').value;
     if(!targetPlayer){
@@ -652,9 +658,12 @@ $(document).ready(function () {
             ingredientCategories = eventData.data.categoryIngredient
             recipesCategories = eventData.data.categoryDish 
             RecipeEditor =  eventData.data.boss
+            propsList = eventData.data.props
+            
             loadRecipeList();
             populateCategoryDropdown();
             populateDishCategoryDropdown();
+            populatePropsDropdown();
             document.querySelector('.menu-container').style.display = 'none';
             document.getElementById('ticket').style.display = 'none';
             document.getElementById('mng_prix').style.display = 'none';
@@ -716,6 +725,7 @@ manageRecipe - Début
 
 let currentRecipeKey = null;
 let RecipeEditor = false;
+let propsList = {}
 
 // Fonction pour afficher la liste des recettes
 function loadRecipeList() {
@@ -744,6 +754,12 @@ function loadRecipeList() {
         div.onclick = () => loadRecipeDetails(key);
         let label = document.createElement('span');
         label.textContent = recipe.label;
+        if(!recipe.editable | recipe.lock){
+            label.textContent = "* " + label.textContent;
+            if(recipe.amount>1){
+                label.textContent =   label.textContent + " (X"+recipe.amount+")";
+            }
+        }
         label.onclick = () => loadRecipeDetails(key);
 
         let trashBtn = document.createElement('button');
@@ -783,6 +799,8 @@ function loadRecipeDetails(recipeKey) {
     document.getElementById('recipe-label').key = currentRecipeKey;
     document.getElementById('recipe-image').src = recipe.image;
     document.getElementById('image-url').value = recipe.image;
+    document.getElementById('props-select').value = recipe.props;
+    
 
     if(!RecipeEditor){        
         document.getElementById('.recipe-details-btn').style.display = 'none';          
@@ -832,7 +850,11 @@ function addNewRecipe() {
         categorie: "gmr_plat",
         label: "Nouvelle Recette",
         image: "",
-        ingredients: {}
+        ingredients: {},
+        props: "burger_01",
+        editable: new Boolean(true),
+        lock: false,
+        amount:1,
     };
     loadRecipeList();
     loadRecipeDetails(newRecipeKey);
@@ -841,9 +863,19 @@ function addNewRecipe() {
 
 // Fonction pour supprimer une recette
 function deleteRecipe(recipeKey) {
+    const recipe = recipes[currentRecipeKey];
 
+    if (RecipeEditor & recipe.editable & !recipe.lock){
         delete recipes[recipeKey]; // Supprimer la recette de la liste
-        loadRecipeList(); // Recharger la liste des recettes après la suppression
+        callLuaFunction({ action: 'saveRecipe', param: {recipes :recipes }});
+        loadRecipeList();
+    }else{
+        if(recipe.editable){
+            showSnackbar("Vous n'avez pas le droit de modifier les recettes.");
+        }else{
+            showSnackbar("Vous n'avez pas le droit de modifier cette recette.");
+        }            
+    } 
     
 }
 
@@ -864,20 +896,45 @@ function updateRecipeImage() {
 function saveRecipe() {
     const recipe = recipes[currentRecipeKey];
 
+    let flg = true;
     // Vérifie si l'objet ingredients est vide
     if(Object.keys(recipe.ingredients).length === 0){
         showSnackbar("Veuillez ajouter des ingrédients.");
+        flg = false;
+    }
+    
+    if(document.getElementById('recipe-label').value == ""){
+        showSnackbar("Veuillez saisir un libellé.");
+        flg = false;
     }else{
         recipe.label = document.getElementById('recipe-label').value;
-        const category = document.getElementById('category-select').value;
-        recipe.categorie = category;
-        if (RecipeEditor){
+    }
+
+    if(!document.getElementById('category-select').value){
+        showSnackbar("Veuillez sélectionner une catégorie.");
+        flg = false;
+    }
+
+    if(!document.getElementById('props-select').value){
+        showSnackbar("Veuillez sélectionner un props.");
+        flg = false;
+    }
+
+    if (RecipeEditor & recipe.editable & !recipe.lock){
+        if(flg){
             callLuaFunction({ action: 'saveRecipe', param: {recipes :recipes }});
-        }else{
+            loadRecipeList();
+        }
+        
+    }else{
+        if(recipe.editable){
             showSnackbar("Vous n'avez pas le droit de modifier les recettes.");
-        }    
-        loadRecipeList();
-    }   
+        }else{
+            showSnackbar("Vous n'avez pas le droit de modifier cette recette.");
+        }            
+    }    
+        
+    
 }
 
 // Fonction pour remplir la dropdown des catégories
@@ -909,6 +966,18 @@ function populateDishCategoryDropdown() {
         option.value = category; // La valeur est la clé (ex: "gmr_plat")
         option.textContent = recipesCategories[category].label; // Le texte est le label (ex: "Plat")
         categoryDropdown.appendChild(option);
+    });
+}
+
+function populatePropsDropdown(){
+    const dropdown = document.getElementById('props-select');
+    dropdown.innerHTML = '<option value="">Sélectionner un props</option>';
+
+    Object.keys(propsList).forEach(key => {
+        let option = document.createElement('option');
+        option.value = key; // La valeur est la clé (ex: "gmr_plat")
+        option.textContent = propsList[key].label; // Le texte est le label (ex: "Plat")
+        dropdown.appendChild(option);
     });
 }
 
@@ -967,13 +1036,44 @@ function addIngredientToRecipe() {
         if (!recipe.ingredients[ingredientKey]) {
             // Si l'ingrédient n'existe pas déjà dans la recette, on l'ajoute
             recipe.ingredients[ingredientKey] = { amount: 1, base: true };
-            recipe.label = document.getElementById('recipe-label').value;
             loadRecipeDetails(currentRecipeKey); // Recharger la vue des détails de la recette
         } else {
             showSnackbar('Cet ingrédient est déjà présent dans la recette.');
         }
     } else {
         showSnackbar('Veuillez sélectionner un ingrédient.');
+    }
+}
+
+function  updateSelectedRecipeCategory(){
+    const key = document.getElementById('category-select').value;
+    if (key) {
+        const recipe = recipes[currentRecipeKey];
+        if (recipe) {
+            recipe.categorie = key;
+        }
+    }
+}
+
+function updateSelectedProps(){
+    console.log("updateSelectedProps")
+    
+    const key = document.getElementById('props-select').value;
+    if (key) {
+        const recipe = recipes[currentRecipeKey];
+        console.log("updateSelectedProps1")
+        if (recipe) {
+            console.log("updateSelectedProps2")
+            recipe.props = key;
+        }
+    }
+}
+
+
+function updateLabelRecipe(){
+    const recipe = recipes[currentRecipeKey];
+    if (recipe) {
+        recipe.label = document.getElementById('recipe-label').value;
     }
 }
 

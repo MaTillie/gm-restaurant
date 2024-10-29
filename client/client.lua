@@ -294,16 +294,6 @@ function initCarte(cfg,key)
             end,
             groups = cfg.Job,
         });
-
-        table.insert(options,{
-            name = "Pointeuse",  -- Nom de l'option, unique pour chaque interaction
-            label = "Pointeuse",  -- Texte affiché à l'utilisateur
-            icon = 'fas fa-clock',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-            onSelect = function()                 
-                clock(cfg.Job)
-            end,
-            groups = cfg.Job,
-        });
         
         table.insert(options,{
             name = "plateau",  -- Nom de l'option, unique pour chaque interaction
@@ -543,13 +533,15 @@ end
 function order(data)
     print("order indexCaisse "..data.indexCaisse..' key '..data.key)
     local player = source
-    local items = {}
+    local playerData = QBCore.Functions.GetPlayerData()
+
+    local items = {}    
 
     for _, item in ipairs(data.items) do
         table.insert(items, {
             name = item.name,
             label = item.label,
-            amount = item.quantity
+            amount = item.quantity,
         })
     end
 
@@ -559,7 +551,7 @@ function order(data)
 
     local bill ={}
 
-    local playerData = QBCore.Functions.GetPlayerData()
+    
 
     local billFrom = {
         citizen = playerData.citizenid,
@@ -751,7 +743,10 @@ end)
 -- Fonction pour afficher la commande
 RegisterNetEvent('gm-restaurant:client:displayOrder')
 AddEventHandler('gm-restaurant:client:displayOrder', function(orderItems,job)   
-     
+    displayOrder(orderItems,job)
+end)
+
+function displayOrder(orderItems,job)
     orderDisplayOpen = true
     print("displayOrder")    
     if(orderItems)then
@@ -771,8 +766,7 @@ AddEventHandler('gm-restaurant:client:displayOrder', function(orderItems,job)
         data = data
     })
 
-
-end)
+end
 
 -- Gestion de la fermeture de l'affichage avec la touche échapp
 CreateThread(function()
@@ -790,6 +784,9 @@ end)
 
 -- Pour les changements de prix
 function managePrice(cfg)
+    flg_ServerRecipe = false
+    flg_ServerMenu = false
+
     getServerMenu(cfg.Job)
     getServerRecipe(cfg.Job)
 
@@ -861,25 +858,50 @@ function manageRecipe(cfg)
         ["gmr_alcoolfort"] = {label = "Alcool fort"}
     }
     
+    flg_ServerRecipe = false
+    flg_ServerMenu = false
     getServerRecipe(cfg.Job)
 
     repeat
         Wait(10)
     until(flg_ServerRecipe)
 
+    getServerMenu(cfg.Job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerMenu)
+
+    Data.props = Config.Animation
     Data.ingredient = IngList.Base
     print("manageRecipe "..cfg.Job)
     PrintTable(Recipe[cfg.Job].List)
+
+    Data.recipe = Recipe[cfg.Job].List
+    for key, value in pairs(Data.recipe)  do
+        value.lock = false
+    end
     
      for key, value in pairs(Recipe[cfg.Job].List)  do
-        Data.ingredient[key] = {label = value.label,cat="Compo"}      
+        Data.ingredient[key] = {label = value.label,cat="Compo"}  
+
+        for k, v in pairs(value.ingredients)  do
+            if(Data.recipe[k])then
+                Data.recipe[k].lock = true
+            end
+        end
+
+        if(Menu[cfg.Job][key])then
+            Data.recipe[key].lock = true
+        end
      end
 
     for key, value in pairs(IngList.Compo)  do
         Data.ingredient[key] = {label = value.label,cat="Compo"}  
+        
      end
 
-    Data.recipe = Recipe[cfg.Job].List
+    
     
     Data.categoryIngredient = genIngredientsCategory()
     Data.theme = "management_recipe.css"
@@ -1131,4 +1153,337 @@ end)
 -- ## Fin de Section - Ajout des ingrédients farmable par les joueurs ## --
 -- #################################################################################################### --
 
+-- #################################################################################################### --
+-- ## Début de Section - Annimation de consomation d'ingrédient ## --
+-- #################################################################################################### --
 
+
+RegisterNetEvent('gm-restaurant:client:playConsumptionAnimation')
+AddEventHandler('gm-restaurant:client:playConsumptionAnimation', function(key)
+    local data = Config.Animation[key]
+    if(not data) then
+        data = {}
+        data.label = "burger"
+        data.model = `prop_cs_burger_01`
+        data.position = {
+            bone = 0x49D9,
+            offset = {
+                pos = vector3(0.11, 0.02, -0.02),
+                rot = vector3(0.0, 0.0, 0.0),
+            },
+        }
+    end
+
+    -- Tempo anim de base manger check pour boire
+    RequestAnimDict("mp_player_inteat@burger")
+    while not HasAnimDictLoaded("mp_player_inteat@burger") do
+        Wait(100)
+    end
+
+    TaskPlayAnim(PlayerPedId(), "mp_player_inteat@burger", "mp_player_int_eat_burger_fp", 8.0, -8.0, -1, 49, 0, false, false, false)
+    
+    local propName = data.model
+    RequestModel(propName)
+    while not HasModelLoaded(propName) do
+        Wait(100)
+    end
+
+    local props = nil
+    -- Attacher le prop à la main du joueur
+    props = CreateObject(GetHashKey(propName), 0, 0, 0, true, true, true)
+    
+    AttachEntityToEntity(props, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), data.position.bone), data.position.offset.pos.x, data.position.offset.pos.y, data.position.offset.pos.z, data.position.offset.rot.x, data.position.offset.rot.y, data.position.offset.rot.z, true, true, false, true, 1, true)
+
+    -- Attendre quelques secondes pour simuler le temps de manger
+    Wait(5000)
+
+    -- Supprimer le prop et arrêter l'animation
+    DeleteObject(props)
+    props = nil
+    ClearPedTasks(PlayerPedId())
+
+end)
+
+
+-- Fonction pour jouer l'animation de manger une pizza
+function EatPizza()
+    local pizzaProp = nil
+    -- Charger l'animation
+    RequestAnimDict("mp_player_inteat@burger")
+    while not HasAnimDictLoaded("mp_player_inteat@burger") do
+        Wait(100)
+    end
+
+    -- Jouer l'animation
+    TaskPlayAnim(PlayerPedId(), "mp_player_inteat@burger", "mp_player_int_eat_burger_fp", 8.0, -8.0, -1, 49, 0, false, false, false)
+    
+    -- Charger le prop de pizza
+    local propName = "knjgh_pizzaslice1"
+    RequestModel(propName)
+    while not HasModelLoaded(propName) do
+        Wait(100)
+    end
+
+    -- Attacher le prop à la main du joueur
+    pizzaProp = CreateObject(GetHashKey(propName), 0, 0, 0, true, true, true)
+    AttachEntityToEntity(pizzaProp, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 0x49D9), 0.11, 0.02, -0.02, 0.0, 90.0, 0.0, true, true, false, true, 1, true)
+
+    -- Attendre quelques secondes pour simuler le temps de manger
+    Wait(5000)
+
+    -- Supprimer le prop et arrêter l'animation
+    DeleteObject(pizzaProp)
+    pizzaProp = nil
+    ClearPedTasks(PlayerPedId())
+end
+
+-- Exécuter l'animation en tapant la commande /eatpizza
+RegisterCommand("eatpizza", function()
+    EatPizza()
+end, false)
+
+
+-- #################################################################################################### --
+-- ## Fin de Section - Annimation de consomation d'ingrédient ## --
+-- #################################################################################################### --
+
+-- #################################################################################################### --
+-- ## Début de Section - Delivery ## --
+-- #################################################################################################### --
+local currentOrder = nil
+local currentDelivery = nil
+local pedModel = 'mp_f_forgery_01' -- Modèle du PNJ (remplace par le modèle que tu souhaites utiliser)
+local orderCompleted = false
+/*
+Citizen.CreateThread(function()
+    local playerData = QBCore.Functions.GetPlayerData()    
+    local job = playerData.job.name
+
+    local cfg = getConfig(job)
+    if(cfg) then
+        -- Charger le modèle du PNJ
+        loadPedModel(pedModel)
+
+        -- Positionner le PNJ sur la carte
+        local pnjCoords = cfg.Delivery.NPCCoords
+        local ped = CreatePed(4, pedModel, pnjCoords.x, pnjCoords.y, pnjCoords.z - 1.0, cfg.Delivery.NPCHeading, false, true)
+        SetEntityHeading(ped, 90.0) -- Orienter le PNJ
+        FreezeEntityPosition(ped, true)
+        SetEntityInvincible(ped, true)
+        SetBlockingOfNonTemporaryEvents(ped, true)
+
+        -- Utiliser ox_target pour interagir avec ce modèle de PNJ
+        exports.ox_target:addLocalEntity(ped, {
+            {
+                name = 'delivery:start',
+                event = 'gm-restaurant:client:delivery:requestOrder',
+                icon = 'fa-solid fa-box',
+                label = 'Prendre une commande',
+                canInteract = function(entity, distance, coords)
+                    return not currentOrder -- Seulement si aucune commande n'est en cours
+                end
+            },
+            {
+                name = 'delivery:validate',
+                event = 'gm-restaurant:client:delivery:validateOrder',
+                icon = 'fa-solid fa-box-check',
+                label = 'Valider la commande',
+                canInteract = function(entity, distance, coords)
+                    return currentOrder and hasAllItems() -- Si le joueur a tous les items nécessaires
+                end
+            },
+            {
+                name = 'delivery:finish',
+                event = 'gm-restaurant:client:delivery:finishOrder',
+                icon = 'fa-solid fa-coins',
+                label = 'Toucher sa prime',
+                canInteract = function(entity, distance, coords)
+                    return currentOrder and orderCompleted -- Si le joueur a terminé la livraison
+                end
+            },
+        })
+
+    end
+
+end)*/
+
+-- Génère le metadata des items craft
+function GetMetaDataItem(name,label,image,dishType,props)
+    print("GetMetaDataItem name:"..name.." label:"..label.." image:"..image.." dishType:"..dishType.." props:"..props)
+    return {ref = name,label = label ,imageurl = image,dishType=dishType,props=props}
+end
+
+-- Interaction avec le PNJ pour récupérer la commande
+RegisterNetEvent('gm-restaurant:client:delivery:requestOrder')
+AddEventHandler('gm-restaurant:client:delivery:requestOrder', function()
+    if currentOrder then
+        TriggerEvent('ox_lib:notify', {type = 'error', description = 'Vous avez déjà une commande en cours !'})
+        return
+    end
+
+    local order = {}
+    local itemCount = math.random(3, 10)
+
+    local MenuDispo = {}
+    local count=0
+
+    local playerData = QBCore.Functions.GetPlayerData()    
+    local job = playerData.job.name
+
+    flg_ServerRecipe = false
+    flg_ServerMenu = false
+    getServerRecipe(job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerRecipe)
+
+    getServerMenu(job)
+
+    repeat
+        Wait(10)
+    until(flg_ServerMenu)
+
+    Wait(1000)
+
+    while (count< 15) do
+        for key, item in pairs(Menu[job]) do
+            if (count< 15) then
+                if (math.random(1, 10)>5) then
+                    local lamount = math.random(1, 4)
+                    count = count + lamount
+                    local lkItem = Recipe[job].List[key]
+                    local mtdt = GetMetaDataItem(key,lkItem.label,lkItem.image,lkItem.categorie,lkItem.props)
+                    if order[key] then
+                        order[key] = order[key].amount + lamount
+                    else
+                        table.insert(order,{name=key,amount=lamount, price = lamount*item.price,metadata = mtdt})
+                    end
+                    TriggerEvent('ox_lib:notify', {type = 'error', description = 'requestOrder'})
+                end
+            end
+            print("Pouette")
+        end
+        count = count+1
+    end
+
+
+    orderCompleted = false
+    currentOrder = order
+    TriggerEvent('ox_lib:notify', {type = 'success', description = 'Vous avez reçu une commande, récupérez les items nécessaires.'})
+end)
+
+-- Vérification si le joueur possède tous les items requis
+function hasAllItems()
+    for _, item in ipairs(currentOrder) do
+        local count = exports.ox_inventory:Search("count", "gmr_dish", item.metadata)
+
+        if count>=item.amount then
+            return false
+        end
+    end
+    return true
+end
+
+RegisterNetEvent('gm-restaurant:client:delivery:validateOrder')
+AddEventHandler('gm-restaurant:client:delivery:validateOrder', function()
+    if not currentOrder then
+        TriggerEvent('ox_lib:notify', {type = 'error', description = 'Aucune commande en cours.'})
+        return
+    end
+
+    if hasAllItems() then        
+        TriggerServerEvent('gm-restaurant:server:delivery:valideDelivery',currentOrder ) 
+        print(#Config.Locations)
+        PrintTable(Config.Locations)
+        local randomIndex = math.random(#Config.Locations)
+        print(randomIndex)
+        local randomDelivery = Config.Locations[randomIndex]
+
+        currentDelivery = {
+            coords = vector3(randomDelivery[1], randomDelivery[2], randomDelivery[3]),
+        }
+        PrintTable(randomDelivery)
+        currentDelivery.coords = randomDelivery
+
+
+        -- Création du marqueur et du trajet
+        SetNewWaypoint(currentDelivery.coords.x, currentDelivery.coords.y)
+        TriggerEvent('ox_lib:notify', {type = 'success', description = 'Tous les items sont récupérés, direction la destination.'})
+
+        -- Affichage d'un marqueur visuel pour la livraison
+        local blip = AddBlipForCoord(currentDelivery.coords.x, currentDelivery.coords.y, currentDelivery.coords.z)
+        SetBlipSprite(blip, 1) -- Blip bleu
+        SetBlipRoute(blip, true)
+        SetBlipColour(blip, 3)
+        currentDelivery.blip = blip
+    else
+        TriggerEvent('ox_lib:notify', {type = 'error', description = 'Il vous manque des items pour compléter la commande.'})
+    end
+end)
+
+
+
+-- Vérification pour la validation de la livraison à destination
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+
+        if currentDelivery and IsPlayerNearCoords(currentDelivery.coords) and not orderCompleted then
+            DrawText3D(currentDelivery.coords.x, currentDelivery.coords.y, currentDelivery.coords.z, "[E] Valider la livraison")
+
+            if IsControlJustPressed(0, 38) then -- Touche E
+                -- serveur remove item
+                orderCompleted = true
+                TriggerServerEvent('gm-restaurant:server:delivery:rewardPlayer',currentOrder ) 
+                RemoveBlip(currentDelivery.blip)    
+                exports.qbx_core:Notify("Livraison effectuée, retournez voir Monique", "inform",10000,"",'center-right')
+            end
+        end
+    end
+end)
+
+RegisterNetEvent('gm-restaurant:client:delivery:finishOrder')
+AddEventHandler('gm-restaurant:client:delivery:finishOrder', function()
+    
+    currentOrder = nil
+    orderCompleted = false
+end)
+
+-- Fonction pour vérifier si le joueur est proche de coordonnées données (utile pour la livraison)
+function IsPlayerNearCoords(coords)
+    local playerCoords = GetEntityCoords(PlayerPedId())
+    return #(playerCoords - coords) < 5.0 -- Proximité de 5 unités
+end
+
+-- Fonction pour afficher du texte 3D à l'écran
+function DrawText3D(x, y, z, text)
+    local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+    local px, py, pz = table.unpack(GetGameplayCamCoords())
+    local dist = #(vector3(px, py, pz) - vector3(x, y, z))
+
+    local scale = (1 / dist) * 2
+    local fov = (1 / GetGameplayCamFov()) * 100
+    scale = scale * fov
+
+    if onScreen then
+        SetTextScale(0.35, 0.35)
+        SetTextFont(4)
+        SetTextProportional(1)
+        SetTextColour(255, 255, 255, 215)
+        SetTextDropshadow(0, 0, 0, 0, 255)
+        SetTextEdge(2, 0, 0, 0, 150)
+        SetTextDropShadow()
+        SetTextOutline()
+        SetTextCentre(1)
+
+        SetTextEntry("STRING")
+        AddTextComponentString(text)
+        DrawText(_x, _y)
+    end
+end
+
+
+-- #################################################################################################### --
+-- ## Fin de Section - Delivery ## --
+-- #################################################################################################### --

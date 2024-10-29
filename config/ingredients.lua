@@ -7,6 +7,7 @@ IngList.Base = {
     -- Légumes --
     ['gmr_igd_tomate'] = {label = 'Tomate', weight = 50, stack = true, close = true, cat = 'Légume', amount = 10, price = 5},
     ['gmr_igd_oignon'] = {label = 'Oignon', weight = 40, stack = true, close = true, cat = 'Légume', amount = 10, price = 5},
+    ['gmr_igd_echalotte'] = {label = 'Échalotte', weight = 40, stack = true, close = true, cat = 'Légume', amount = 10, price = 5},
     ['gmr_igd_pomme_de_terre'] = {label = 'Pomme de terre', weight = 60, stack = true, close = true, cat = 'Légume', amount = 10, price = 5},
     ['gmr_igd_carotte'] = {label = 'Carotte', weight = 45, stack = true, close = true, cat = 'Légume', amount = 10, price = 5},
     ['gmr_igd_salade'] = {label = 'Salade', weight = 30, stack = true, close = true, cat = 'Légume', amount = 10, price = 5},
@@ -65,6 +66,8 @@ IngList.Base = {
     ['gmr_igd_figue'] = {label = 'Figue', weight = 25, stack = true, close = true, cat = 'Fruit', amount = 10, price = 5},
     ['gmr_igd_grenade'] = {label = 'Grenade', weight = 40, stack = true, close = true, cat = 'Fruit', amount = 10, price = 5},
     ['gmr_igd_pamplemousse'] = {label = 'Pamplemousse', weight = 50, stack = true, close = true, cat = 'Fruit', amount = 10, price = 5},
+    ['gmr_igd_myrtille'] = {label = 'Myrtille', weight = 50, stack = true, close = true, cat = 'Fruit', amount = 10, price = 5},
+    ['gmr_igd_litchi'] = {label = 'Litchi', weight = 50, stack = true, close = true, cat = 'Fruit', amount = 10, price = 5},
 
     -- Viandes --
     ['gmr_igd_jambon'] = {label = 'Jambon', weight = 45, stack = true, close = true, cat = 'Viande', amount = 2, price = 5},
@@ -109,6 +112,7 @@ IngList.Base = {
 
     -- Produits laitiers et œufs --
     ['gmr_igd_lait'] = {label = 'Lait', weight = 55, stack = true, close = true, cat = 'Produit laitier', amount = 10, price = 5},
+    ['gmr_igd_creme_fraiche'] = {label = 'Crème fraiche', weight = 55, stack = true, close = true, cat = 'Produit laitier', amount = 10, price = 5},
     ['gmr_igd_oeuf'] = {label = 'Œuf', weight = 20, stack = true, close = true, cat = 'Produit laitier', amount = 10, price = 5},
     ['gmr_igd_gruyere'] = {label = 'Gruyère', weight = 50, stack = true, close = true, cat = 'Fromage', amount = 5, price = 5},
     ['gmr_igd_parmesan'] = {label = 'Parmesan', weight = 40, stack = true, close = true, cat = 'Fromage', amount = 5, price = 5},
@@ -168,7 +172,8 @@ IngList.Base = {
     ['gmr_igd_galanga'] = {label = 'Galanga', weight = 15, stack = true, close = true, cat = 'Épice', amount = 50, price = 5},
     ['gmr_igd_fenugrec'] = {label = 'Fenugrec', weight = 10, stack = true, close = true, cat = 'Épice', amount = 50, price = 5},
     ['gmr_igd_lavande'] = {label = 'Lavande', weight = 1, stack = true, close = true, cat = 'Herbe', amount = 50, price = 5},
-
+    ['gmr_igd_capre'] = {label = 'Câpre', weight = 1, stack = true, close = true, cat = 'Herbe', amount = 50, price = 5},
+    
     -- Sauces et condiments liquides --
     ['gmr_igd_sauce_soja'] = {label = 'Sauce soja', weight = 50, stack = true, close = true, cat = 'Sauce', amount = 50, price = 5},
     ['gmr_igd_vinaigre'] = {label = 'Vinaigre', weight = 35, stack = true, close = true, cat = 'Condiment liquide', amount = 50, price = 5},
@@ -189,6 +194,7 @@ IngList.Base = {
     ['gmr_igd_lentille'] = {label = 'Lentille', weight = 40, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
     ['gmr_igd_haricot'] = {label = 'Haricot', weight = 40, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
     ['gmr_igd_pois_chiche'] = {label = 'Pois chiche', weight = 45, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
+    ['gmr_igd_levure'] = {label = 'Levure', weight = 45, stack = true, close = true, cat = 'Céréales et farines', amount = 10, price = 5},
 
     -- Pâte --
     ['gmr_igd_penne'] = {label = 'Penne', weight = 50, stack = true, close = true, cat = 'Pâte', amount = 10, price = 5},
@@ -318,10 +324,10 @@ IngList.Base = {
     ["gmwine_blanc3"] = {label = "Grapeseed Sensation",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
     ["gmwine_champ3"] = {label = "Vespucci Glamour Gold",weight = 500,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
 
-     -- Soft --
-     ["gmwine_jusderaisin"] = {label = "Grappe'licious",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
-     ["gmwine_jusderaisinpetillant"] = {label = "Grappe'licious Frizzante",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
- 
+    -- Soft --
+    ["gmwine_jusderaisin"] = {label = "Grappe'licious",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+    ["gmwine_jusderaisinpetillant"] = {label = "Grappe'licious Frizzante",weight = 250,stack = true,close = true,cat = 'Produit Mancini',  amount = 1, price = 1000},
+
     -- #################################################################################################### --
     -- ## Fin de Section - Produits issus du vignoble Mancini ## --
     -- #################################################################################################### --
@@ -332,11 +338,21 @@ IngList.Base = {
 
     ["gmr_igd_jus_de_pomme"] = {label = "Jus de pomme",weight = 500,stack = true,close = true,cat = 'Produit de la ferme',  amount = 1, price = 1000},
     ["gmr_igd_jus_d_orange"] = {label = "Jus d'orange",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1, price = 1000},
-    ["gmr_igd_jus_de_citrouille"] = {label = "Jus de citrouille",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1, price = 1000},
+    ["gmr_igd_jus_de_tomate"] = {label = "Jus de tomate",weight = 500,stack = true,close = true,cat = 'Produit de la ferme', amount = 1, price = 1000},
 
     -- #################################################################################################### --
     -- ## Fin de Section - Produits issus de la ferme ## --
     -- #################################################################################################### --    
+
+    -- #################################################################################################### --
+    -- ## Début de Section - Sumol ## --
+    -- #################################################################################################### --
+
+    ["sumol"] = {label = "sumol",weight = 500,stack = true,close = true,cat = 'Produit de sumol', amount = 1, price = 1000},
+
+    -- #################################################################################################### --
+    -- ## Fin de Section - Sumol ## --
+    -- #################################################################################################### --
 
 }
 
@@ -356,6 +372,17 @@ IngList.Player = {
     ['hen'] = {item = "gmr_igd_poulet",amount = 10},
     ['milk'] = {item = "gmr_igd_lait",amount = 10},
     ['wheat'] = {item = "gmr_igd_ble",amount = 10},
+
+    ['pineapple'] = {item = "gmr_igd_ble",amount = 10},
+    ['mangue'] = {item = "gmr_igd_ble",amount = 10},
+    ['maracuya'] = {item = "gmr_igd_ble",amount = 10},
+
+    ['jusorange'] = {item = "gmr_igd_jus_de_pomme",amount = 1},
+    ['juspommes'] = {item = "gmr_igd_jus_d_orange",amount = 1},
+    ['justomates'] = {item = "gmr_igd_jus_de_tomate",amount = 1},
+
+    ['sumol'] = {item = "gmr_igd_ble",amount = 1},
+    
 
     -- Item du Domaine Mancini --
     -- Vins d'exception --
@@ -382,449 +409,6 @@ IngList.Player = {
 }
 
 IngList.Compo = {
-    ["gmr_cpigd_bechamel"] = {
-        label = "Sauce béchamel",
-        ingredients = {
-            ["gmr_igd_lait"] = {amount = 1},
-            ["gmr_igd_beurre"] = {amount = 1},
-            ["gmr_igd_farine"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-            ["gmr_igd_noix_de_muscade"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_pesto"] = {
-        label = "Sauce pesto",
-        ingredients = {
-            ["gmr_igd_basilic"] = {amount = 2},
-            ["gmr_igd_ail"] = {amount = 1},
-            ["gmr_igd_huile_olive"] = {amount = 1},
-            ["gmr_igd_parmesan"] = {amount = 1},
-            ["gmr_igd_pignons"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_mayonnaise"] = {
-        label = "Mayonnaise maison",
-        ingredients = {
-            ["gmr_igd_oeuf"] = {amount = 1},
-            ["gmr_igd_huile_tournesol"] = {amount = 1},
-            ["gmr_igd_moutarde"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-            ["gmr_igd_vinaigre"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_tapenade"] = {
-        label = "Tapenade d'olives noires",
-        ingredients = {
-            ["gmr_igd_olive_noire"] = {amount = 4},
-            ["gmr_igd_câpres"] = {amount = 1},
-            ["gmr_igd_ail"] = {amount = 1},
-            ["gmr_igd_huile_olive"] = {amount = 2},
-        },
-    },
-    
-    ["gmr_cpigd_pate_sablee"] = {
-        label = "Pâte sablée",
-        ingredients = {
-            ["gmr_igd_farine"] = {amount = 4},
-            ["gmr_igd_beurre"] = {amount = 2},
-            ["gmr_igd_sucre"] = {amount = 2},
-            ["gmr_igd_oeuf"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_pate_brisee"] = {
-        label = "Pâte brisée",
-        ingredients = {
-            ["gmr_igd_farine"] = {amount = 4},
-            ["gmr_igd_beurre"] = {amount = 2},
-            ["gmr_igd_eau"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_caramel"] = {
-        label = "Caramel maison",
-        ingredients = {
-            ["gmr_igd_sucre"] = {amount = 3},
-            ["gmr_igd_eau"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_bouillon_viande"] = {
-        label = "Bouillon de viande maison",
-        ingredients = {
-            ["gmr_igd_boeuf"] = {amount = 1},
-            ["gmr_igd_oignon"] = {amount = 1},
-            ["gmr_igd_carotte"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 5},
-        },
-    },
-    
-    ["gmr_cpigd_sauce_bolognaise"] = {
-        label = "Sauce bolognaise",
-        ingredients = {
-            ["gmr_igd_boeuf"] = {amount = 1},
-            ["gmr_igd_tomate"] = {amount = 2},
-            ["gmr_igd_oignon"] = {amount = 1},
-            ["gmr_igd_ail"] = {amount = 1},
-            ["gmr_igd_huile_olive"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_fumet_poisson"] = {
-        label = "Fumet de poisson maison",
-        ingredients = {
-            ["gmr_igd_cabillaud"] = {amount = 1},
-            ["gmr_igd_carotte"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 5},
-        },
-    },
-    ["gmr_cpigd_tzatziki"] = {
-        label = "Sauce tzatziki",
-        ingredients = {
-            ["gmr_igd_concombre"] = {amount = 1},
-            ["gmr_igd_yaourt"] = {amount = 2},
-            ["gmr_igd_ail"] = {amount = 1},
-            ["gmr_igd_huile_olive"] = {amount = 1},
-            ["gmr_igd_persil"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_sauce_teriyaki"] = {
-        label = "Sauce teriyaki",
-        ingredients = {
-            ["gmr_igd_sauce_soja"] = {amount = 2},
-            ["gmr_igd_sucre"] = {amount = 1},
-            ["gmr_igd_sake"] = {amount = 1},
-            ["gmr_igd_mirin"] = {amount = 1},
-            ["gmr_igd_gingembre"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_roux"] = {
-        label = "Base pour épaissir les sauces",
-        ingredients = {
-            ["gmr_igd_beurre"] = {amount = 2},
-            ["gmr_igd_farine"] = {amount = 2},
-        },
-    },
-    
-    ["gmr_cpigd_pate_a_choux"] = {
-        label = "Pâte à choux",
-        ingredients = {
-            ["gmr_igd_farine"] = {amount = 2},
-            ["gmr_igd_beurre"] = {amount = 1},
-            ["gmr_igd_oeuf"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_coulis_fruit"] = {
-        label = "Coulis de fruits rouges",
-        dose = 2,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_framboise"] = {amount = 3},
-            ["gmr_igd_sucre"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_fond_de_veau"] = {
-        label = "Fond de veau maison",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_os_veau"] = {amount = 2},  -- nouvel ingrédient de base
-            ["gmr_igd_carotte"] = {amount = 1},
-            ["gmr_igd_oignon"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 5},
-        },
-    },
-    
-    ["gmr_cpigd_sauce_hollandaise"] = {
-        label = "Sauce hollandaise",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_beurre"] = {amount = 3},
-            ["gmr_igd_oeuf"] = {amount = 2},
-            ["gmr_igd_jus_de_citron"] = {amount = 1},  -- nouvel ingrédient de base
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_ail_confit"] = {
-        label = "Ail confit",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_ail"] = {amount = 10},  -- 10 gousses d'ail
-            ["gmr_igd_huile_olive"] = {amount = 2},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_vinaigrette"] = {
-        label = "Vinaigrette classique",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_vinaigre"] = {amount = 1},
-            ["gmr_igd_huile_olive"] = {amount = 3},
-            ["gmr_igd_moutarde"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_coulis_tomate"] = {
-        label = "Coulis de tomate maison",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_tomate"] = {amount = 5},
-            ["gmr_igd_oignon"] = {amount = 1},
-            ["gmr_igd_huile_olive"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_sauce_au_poivre"] = {
-        label = "Sauce au poivre",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_poivre_noir"] = {amount = 1},
-            ["gmr_cpigd_creme_fraiche"] = {amount = 2},  -- nouvel ingrédient de base
-            ["gmr_igd_beurre"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_sauce_aux_champignons"] = {
-        label = "Sauce aux champignons",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_champignon"] = {amount = 3},
-            ["gmr_igd_beurre"] = {amount = 2},
-            ["gmr_cpigd_creme_fraiche"] = {amount = 2},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_pate_brisee_sucree"] = {
-        label = "Pâte brisée sucrée",
-        dose = 4,  -- pour 1 tarte
-        ingredients = {
-            ["gmr_igd_farine"] = {amount = 4},
-            ["gmr_igd_beurre"] = {amount = 2},
-            ["gmr_igd_sucre"] = {amount = 2},
-            ["gmr_igd_oeuf"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_sauce_pistou"] = {
-        label = "Sauce au pistou",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_basilic"] = {amount = 2},
-            ["gmr_igd_huile_olive"] = {amount = 2},
-            ["gmr_igd_ail"] = {amount = 1},
-            ["gmr_igd_parmesan"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_puree_de_pomme"] = {
-        label = "Purée de pommes",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_pomme"] = {amount = 5},
-            ["gmr_igd_sucre"] = {amount = 1},
-            ["gmr_igd_beurre"] = {amount = 1},
-            ["gmr_igd_cannelle"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_sauce_gribiche"] = {
-        label = "Sauce gribiche",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_oeuf"] = {amount = 2},
-            ["gmr_igd_cornichon"] = {amount = 1},  -- nouvel ingrédient de base
-            ["gmr_igd_câpres"] = {amount = 1},
-            ["gmr_igd_moutarde"] = {amount = 1},
-            ["gmr_igd_huile_tournesol"] = {amount = 1},
-            ["gmr_igd_vinaigre"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_creme_patissiere"] = {
-        label = "Crème pâtissière",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_lait"] = {amount = 3},
-            ["gmr_igd_sucre"] = {amount = 2},
-            ["gmr_igd_oeuf"] = {amount = 2},
-            ["gmr_igd_farine"] = {amount = 1},
-            ["gmr_igd_vanille"] = {amount = 1},
-        },
-    },
-    
-    ["gmr_cpigd_tapenade_verte"] = {
-        label = "Tapenade d'olives vertes",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_olive_verte"] = {amount = 4},  -- nouvel ingrédient de base
-            ["gmr_igd_câpres"] = {amount = 1},
-            ["gmr_igd_ail"] = {amount = 1},
-            ["gmr_igd_huile_olive"] = {amount = 2},
-        },
-    },
-    ["gmr_cpigd_sauce_tartare"] = {
-        label = "Sauce tartare",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_cpigd_mayonnaise"] = {amount = 2},  -- ingrédient intermédiaire précédent
-            ["gmr_igd_cornichon"] = {amount = 1},
-            ["gmr_igd_ciboulette"] = {amount = 1},
-            ["gmr_igd_persil"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_creme_fraiche"] = {
-        label="Crème fraiche",
-        ingredients = {
-            ["gmr_igd_lait"] = {amount = 2},
-            ["gmr_igd_beurre"] = {amount = 1},
-            ["gmr_igd_citron"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_glace"] = {
-        label = "Glace vanille maison",
-        dose = 4,  -- pour 4 portions
-        ingredients = {
-            ["gmr_igd_lait"] = {amount = 3},
-            ["gmr_cpigd_creme_fraiche"] = {amount = 2},  -- ingrédient intermédiaire
-            ["gmr_igd_sucre"] = {amount = 2},
-            ["gmr_igd_oeuf"] = {amount = 2},
-            ["gmr_igd_vanille"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_sauce_barbecue"] = {
-        label = "Sauce barbecue maison",
-        dose = 4,
-        ingredients = {
-            ["gmr_igd_sauce_tomate"] = {amount = 2},
-            ["gmr_igd_vinaigre"] = {amount = 1},
-            ["gmr_igd_sucre"] = {amount = 1},
-            ["gmr_igd_paprika"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_beurre_maitre_hotel"] = {
-        label = "Beurre maître d'hôtel",
-        dose = 4,
-        ingredients = {
-            ["gmr_igd_beurre"] = {amount = 3},
-            ["gmr_igd_persil"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_marinade_tofu"] = {
-        label = "Marinade pour tofu",
-        dose = 4,
-        ingredients = {
-            ["gmr_igd_sauce_soja"] = {amount = 4},
-            ["gmr_igd_huile_olive"] = {amount = 1},
-            ["gmr_igd_ail"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_sauce_burger"] = {
-        label = "Sauce burger maison",
-        dose = 4,
-        ingredients = {
-            ["gmr_cpigd_mayonnaise"] = {amount = 2},  -- ingrédient intermédiaire existant
-            ["gmr_igd_moutarde"] = {amount = 1},
-            ["gmr_igd_vinaigre"] = {amount = 1},
-            ["gmr_igd_sucre"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_chips"] = {
-        label = "Chips nature maison, à assaisoner",
-        dose = 2,
-        ingredients = {
-            ["gmr_igd_pomme_de_terre"] = {amount = 4},
-            ["gmr_igd_huile_tournesol"] = {amount = 2},
-        },
-    },  
-    ["gmr_cpigd_pain"] = {
-        label = "Pain classique",
-        dose = 1,  -- pour 1 pain
-        ingredients = {
-            ["gmr_igd_farine"] = {amount = 4},
-            ["gmr_igd_levure"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 3},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_baguette"] = {
-        label = "Baguette traditionnelle",
-        dose = 1,  -- pour 1 baguette
-        ingredients = {
-            ["gmr_igd_farine"] = {amount = 2},
-            ["gmr_igd_levure"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 1},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_frites"] = {
-        label = "Frites croustillantes",
-        dose = 4,
-        ingredients = {
-            ["gmr_igd_pomme_de_terre"] = {amount = 5},
-            ["gmr_igd_huile_tournesol"] = {amount = 2},
-            ["gmr_igd_sel"] = {amount = 1},
-        },
-    },
-    ["gmr_cpigd_pate_feuilletee"] = {
-        label = "Pâte feuilletée maison",
-        dose = 4,
-        ingredients = {
-            ["gmr_igd_farine"] = {amount = 4},
-            ["gmr_igd_beurre"] = {amount = 4},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 2},
-        },
-    },
-    ["gmr_cpigd_fond_soupe"] = {
-        label = "Fond de soupe",
-        dose = 4,
-        ingredients = {
-            ["gmr_igd_carotte"] = {amount = 2},
-            ["gmr_igd_oignon"] = {amount = 1},
-            ["gmr_igd_celeri"] = {amount = 1},
-            ["gmr_igd_poireau"] = {amount = 1},
-            ["gmr_igd_eau"] = {amount = 4},
-            ["gmr_igd_sel"] = {amount = 1},
-            ["gmr_igd_poivre"] = {amount = 1},
-            ["gmr_igd_thym"] = {amount = 1},
-            ["gmr_igd_feuille_de_laurier"] = {amount = 1},
-        },
-    }
+
     
 }

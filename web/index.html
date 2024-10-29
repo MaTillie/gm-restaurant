@@ -40,6 +40,7 @@
                 <select id="player-select">
                     <option value="">Sélectionner le client</option>
                 </select>
+                <button id="payButton" onclick="modifyOrder()">Modifier la commande</button>
                 <button id="payButton" onclick="valideOrder()">Valider la commande</button>
             </div>
 
@@ -119,11 +120,16 @@
                 </div>
     
                 <h3>Nom du plat :</h3>
-                <input type="text" id="recipe-label" placeholder="Nom du plat" />
+                <input type="text" onchange="updateLabelRecipe()" id="recipe-label" placeholder="Nom du plat" />
 
                 <h3>Type de plat :</h3>
-                <select id="category-select">
-                    <option value="">Sélectionner un type</option>
+                <select id="category-select" onchange="updateSelectedRecipeCategory()">
+                    <option value="" >Sélectionner un type</option>
+                </select>
+
+                <h3>Props :</h3>
+                <select id="props-select"  onchange="updateSelectedProps()">
+                    <option value="">Sélectionner un props</option>
                 </select>
                 
                 <h3>Ingrédients :</h3>

@@ -1,11 +1,14 @@
 * {
     box-sizing: border-box;
-    font-family: 'Harry P',  Arial, sans-serif;
-  }
+    font-family: "Playwrite CU", cursive;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}
 
 body {
-    background-color: transparent;
-    color: #fff;
+    background-color: transparent; /* Fond blanc pour équilibrer les autres couleurs */
+    color: #333;
     margin: 0;
     padding: 0;
     display: flex;
@@ -18,7 +21,7 @@ body {
     position: absolute;
     top: 15px;
     right: 15px;
-    background-color: #690101;
+    background-color: #d32f2f; /* Rouge italien */
     color: white;
     border: none;
     border-radius: 50%;
@@ -29,38 +32,35 @@ body {
     transition: background-color 0.3s ease;
 }
 
-
-
 .close-button:hover {
-    background-color: #9e0f0f;
+    background-color: #c62828; /* Rouge plus intense au survol */
 }
 
-/* Conteneur principal du menu (fixe, sans scroll) */
+/* Conteneur principal du menu */
 .menu-container {
     display: none;
     flex-direction: column;
     width: 800px;
     height: 800px;
-    background-color: #221301;
+    background-color: #012218; /* Fond blanc pour rappeler le drapeau italien */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     margin: auto;
     position: relative;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
-/* Conteneur pour les items avec scroll */
 .items-container {
-    flex: 1; /* Permet de prendre tout l'espace disponible */
-    overflow-y: auto; /* Activer le défilement uniquement sur cette zone */
-    padding-right: 10px; /* Espacement pour que la barre de défilement n'empiète pas sur le contenu */
-    margin-top: 20px; /* Espacement par rapport au titre */
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+    margin-top: 20px;
 }
 
 h1 {
     font-size: 30px;
-    color: #dfa300;
+    color: #2e7d32; /* Vert italien pour les titres */
     margin-bottom: 5px;
 }
 
@@ -74,64 +74,32 @@ p {
 .category-container {
     width: 100%;
     margin-bottom: 30px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 15px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Titre de la catégorie */
 .category h2 {
     font-size: 28px;
-    color: #dfa300;
+    color: #2e7d32; /* Vert italien */
     margin-bottom: 20px;
     text-align: left;
-    border-bottom: 2px solid #dfa300;
+    border-bottom: 2px solid #2e7d32;
     padding-bottom: 10px;
 }
 
-/* Ajustements pour la grille des items dans une catégorie */
 .category .grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /*repeat(auto-fill, minmax(150px, 1fr));*/
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     padding: 15px;
     width: 100%;
-    overflow: hidden; /* Empêche les items de sortir de la grille */
-}
-
-
-/* Style pour les items */
-.item {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    border-radius: 10px;
-    text-align: center;
-    transition: transform 0.2s;
-    position: relative;
-}
-
-.item:hover {
-    transform: scale(1.05);
-}
-
-
-
-.grid-container {
-    /*flex: 1;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;    
-    overflow-y: auto;
-    box-sizing: content-box;
-    padding: 15px;
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1);*/
-    justify-items: center;
 }
 
 .item {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.9); /* Fond blanc légèrement transparent */
     padding: 10px;
     border-radius: 10px;
     text-align: center;
@@ -158,17 +126,17 @@ p {
 }
 
 .price-tag {
-    background-color: #003d1c;
+    background-color: #005e75;
     color: #fff;
     padding: 5px 10px;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 12px;
     position: absolute;
     top: 10px;
     right: 10px;
 }
 
-.quantity-control{
+.quantity-control {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -176,10 +144,10 @@ p {
 }
 
 .quantity-btn {
-    background-color: #312200;
+    background-color: #00311e;
     border: none;
     color: white;
-    font-size: 18px;
+    font-size: 14px;
     width: 30px;
     height: 30px;
     border-radius: 5px;
@@ -188,13 +156,13 @@ p {
 }
 
 .quantity-btn:hover {
-    background-color: #dfa300;
-    color: #312200;
+    background-color: #00df70;
+    color: #00311e;
 }
 
 .quantity {
     margin: 0 10px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
     min-width: 30px;
     text-align: center;
@@ -206,23 +174,30 @@ p {
     align-items: center;
     padding: 5px;
     border-radius: 10px;
-    background-color: transparent;    
+    font-size: 15px;
+    background-color: transparent;
 }
 
-.price-details {
-    font-size: 24px;
+.playerList{
+    display: none;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: transparent;
 }
 
 .buttons {
-    font-size: 24px;
     display: flex;
     gap: 5px;
+    font-size: 15px;
 }
 
 #addButton, #subtractButton {
     padding: 5px 15px;
-    font-size: 20px;
-    background-color: #312200;
+    font-size: 12px;
+    background-color: #00311e;
     color: white;
     border: none;
     border-radius: 5px;
@@ -230,14 +205,14 @@ p {
 }
 
 #addButton:hover, #subtractButton:hover {
-    background-color: #dfa300;
-    color: #312200;
+    background-color: #00df70;
+    color: #00311e;
 }
 
 #payButton {
     padding: 10px 20px;
-    font-size: 24px;
-    background-color: #312200;
+    font-size: 16px;
+    background-color: #00311e;
     color: white;
     border: none;
     border-radius: 5px;
@@ -245,8 +220,8 @@ p {
 }
 
 #payButton:hover {
-    background-color: #dfa300;
-    color: #312200;
+    background-color: #00df70;
+    color: #00311e;
 }
 
 /* Style pour l'ascenseur */
@@ -261,7 +236,7 @@ p {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #312200;
+    background: #00311e; /* Vert italien pour l'ascenseur */
     border-radius: 10px;
 }
 
@@ -269,15 +244,9 @@ p {
     background: #3b2101;
 }
 
-/* Style pour les ascenseurs Firefox */
-html {
-    scrollbar-width: thin;
-    scrollbar-color: #ff00d4 #00ff62;
-}
-
 .notepad {
     width: 300px;
-    background-color: #221301;
+    background-color: #012218;
     /*border: 2px solid #000;*/
     border-radius: 10 px;
     padding: 20px;
@@ -302,21 +271,6 @@ html {
 .notepad ul li {
     margin-bottom: 10px;
     font-size: 24px;
-}
-
-#ticket{
-    display : none;
-}
-
-#completed{
-    text-decoration:line-through;
-}
-.listFridgeIngredient{
-    display : none;
-}
-
-.listPlayerIngredient{
-    display : none;
 }
 
 #ticket {

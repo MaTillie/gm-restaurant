@@ -1,14 +1,14 @@
-function getConfig_jopizza()
+function getConfig_leapfrog()
     Config = {}
     Config.DebugMode = true
     
     
-    Config.Job = "jopizza"
+    Config.Job = "leapfrog"
     Config.Ticket = true
-    Config.TrayLabel = "Jo'Pizza"
+    Config.TrayLabel = "Leap Frog"
     
     -- Titre de la facture
-    Config.invoiceWording = "Facture du Jo'Pizza"
+    Config.invoiceWording = "Facture du Leap frog"
     
     Config.Categorie ={
         [1]={
@@ -48,8 +48,7 @@ function getConfig_jopizza()
     */
 
     Config.Menu = {
-    ["gmr_dsh_new_recipe_1729933491473"] = { price = 20.00, categorie = "soft" },
-    ["gmr_dsh_new_recipe_1729934123322"] = { price = 20.00, categorie = "side" },
+
 }
 
 
@@ -110,11 +109,12 @@ function getConfig_jopizza()
             title = "Gestion du restaurant",
         },    
     }
-    
+
     Config.Delivery ={
         NPCCoords = vec3(-594.76, -285.07, 35.45),
         NPCHeading = 227.13,
     }
+    
         
         return Config
     end
