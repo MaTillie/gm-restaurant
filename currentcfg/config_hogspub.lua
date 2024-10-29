@@ -1,6 +1,6 @@
 function getConfig_hogspub()
-local Config = {}
-Config.DebugMode = true
+Config = {}
+Config.DebugMode = false
 
 
 Config.Job = "hogspub"
@@ -42,12 +42,15 @@ Config.Categorie ={
 }
 
 Config.Menu = {
-    ["gmr_dsh_new_recipe_1730121436573"] = { price = 20.00, categorie = "alcool" },
-    ["gmr_dsh_new_recipe_1730118764964"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729933491473"] = { price = 20.00, categorie = "soft" },
+    ["gmr_dsh_new_recipe_1730120926131"] = { price = 1.00, categorie = "dessert" },
+    ["gmr_dsh_new_recipe_1730122232367"] = { price = 20.00, categorie = "alcool" },
     ["gmr_dsh_new_recipe_1730121890454"] = { price = 30.00, categorie = "plat" },
-    ["gmr_dsh_new_recipe_1730120926131"] = { price = 15.00, categorie = "dessert" },
-    ["gmr_dsh_new_recipe_1730121525224"] = { price = 25.00, categorie = "dessert" },
+    ["gmr_dsh_new_recipe_1730118150953"] = { price = 20.00, categorie = "snack" },
+    ["gmr_dsh_new_recipe_1730118764964"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1730121436573"] = { price = 20.00, categorie = "alcool" },
 }
+
 
 
 

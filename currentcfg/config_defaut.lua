@@ -1,5 +1,5 @@
-function getConfig_jopizza()
-    local Config = {}
+function getConfig_defaut()
+    Config = {}
     Config.DebugMode = true
     
     
@@ -48,13 +48,14 @@ function getConfig_jopizza()
     */
 
     Config.Menu = {
-    ["gmr_dsh_new_recipe_1729933491473"] = { price = 20.00, categorie = "soft" },
-    ["gmr_dsh_new_recipe_1729934123322"] = { price = 20.00, categorie = "side" },
-}
-
-
-
-
+        ["gmr_dsh_hogspub_bubblensqueak"] = { price = 20.00, categorie = "plat" },
+        ["gmr_dsh_hogspub_bierraubeurre"] = { price = 20.00, categorie = "alcool" },
+        ["gmr_dsh_hogspub_chocogrenouille"] = { price = 5.00, categorie = "dessert" },
+        ["gmr_dsh_hogspub_fishnchips"] = { price = 20.00, categorie = "plat" },
+        ["gmr_dsh_hogspub_jus_de_citrouille"] = { price = 11.00, categorie = "soft" },
+        ["gmr_dsh_hogspub_polynectar"] = { price = 15.00, categorie = "alcool" },
+        ["gmr_dsh_hogspub_chickenpie"] = { price = 20.00, categorie = "plat" },
+    }
     
     
     
@@ -63,12 +64,36 @@ function getConfig_jopizza()
     
     Config.Kitchen = {
         [1] ={
-            coords = vec3(-583.7, -289.17, 35.45),
+            -- Cuisson vec3(-587.63, -278.46, 41.69)
+            coords = vec3(-587.03, -279.30, 41.69),
             size = 0.5,
             title = "Préparer",
             duration = 5000,
             items = {
+                "gmr_dsh_hogspub_bubblensqueak",
             }
+        },
+        [2] ={
+            -- Tonneau rez de chaussée
+            coords = vec3(-592.61, -285.44, 36.00),
+            size = 0.5,
+            title = "Verser",
+            duration = 2000,
+            items = {
+                "gmr_dsh_hogspub_bubblensqueak",
+            }
+            -- Animation plus tard
+        },   
+        [3] ={
+            -- Tonneau rooftop
+            coords = vec3(-588.63, -284.09, 50.93),
+            size = 0.5,
+            title = "Verser",
+            duration = 2000,
+            items = {
+                "gmr_dsh_hogspub_bubblensqueak",
+            }
+            -- Animation plus tard
         },
     }
     
@@ -76,11 +101,18 @@ function getConfig_jopizza()
     
     Config.Fridge = {
         [1] ={
-            coords = vec3(-586.2, -290.61, 35.47),
+            coords = vec3(-583.74, -280.97, 41.69),
             size = 0.5,
             title = "Frigo",
             duration = 2000,
             items = {
+                "hogspub_fish",
+                "hogspub_chickenmeat",
+                "hogspub_flour",
+                "hogspub_cabbage",
+                "hogspub_cacaobean",
+                "hogspub_egg",
+                "hogspub_potato",
             }
             -- Animation plus tard
         },
@@ -105,16 +137,12 @@ function getConfig_jopizza()
     
     Config.Management={
         [1] ={
-            coords = vec3(-584.37, -278.72, 35.45),
+            coords = vec3(-584.81, -285.24, 41.71),
             size = 0.7,
             title = "Gestion du restaurant",
         },    
     }
     
-    Config.Delivery ={
-        NPCCoords = vec3(-594.76, -285.07, 35.45),
-        NPCHeading = 227.13,
-    }
         
         return Config
     end

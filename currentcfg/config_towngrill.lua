@@ -1,5 +1,5 @@
 function getConfig_towngrill()
-local Config = {}
+Config = {}
 Config.DebugMode = true
 
 

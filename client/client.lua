@@ -1254,7 +1254,7 @@ local currentOrder = nil
 local currentDelivery = nil
 local pedModel = 'mp_f_forgery_01' -- Modèle du PNJ (remplace par le modèle que tu souhaites utiliser)
 local orderCompleted = false
-/*
+
 Citizen.CreateThread(function()
     local playerData = QBCore.Functions.GetPlayerData()    
     local job = playerData.job.name
@@ -1289,7 +1289,7 @@ Citizen.CreateThread(function()
                 icon = 'fa-solid fa-box-check',
                 label = 'Valider la commande',
                 canInteract = function(entity, distance, coords)
-                    return currentOrder and hasAllItems() -- Si le joueur a tous les items nécessaires
+                    return currentOrder -- Si le joueur a tous les items nécessaires
                 end
             },
             {
@@ -1305,7 +1305,7 @@ Citizen.CreateThread(function()
 
     end
 
-end)*/
+end)
 
 -- Génère le metadata des items craft
 function GetMetaDataItem(name,label,image,dishType,props)
@@ -1325,7 +1325,7 @@ AddEventHandler('gm-restaurant:client:delivery:requestOrder', function()
     local itemCount = math.random(3, 10)
 
     local MenuDispo = {}
-    local count=0
+    
 
     local playerData = QBCore.Functions.GetPlayerData()    
     local job = playerData.job.name
@@ -1346,26 +1346,39 @@ AddEventHandler('gm-restaurant:client:delivery:requestOrder', function()
 
     Wait(1000)
 
-    while (count< 15) do
+    PrintTable(Menu[job])
+    local count = 0
+    local max = math.random(5,9)
+    while count < max do
         for key, item in pairs(Menu[job]) do
-            if (count< 15) then
-                if (math.random(1, 10)>5) then
-                    local lamount = math.random(1, 4)
+            if count < max then
+                if math.random(1, 10) > 5 then
+                    local lamount = math.random(1, 3)
                     count = count + lamount
                     local lkItem = Recipe[job].List[key]
-                    local mtdt = GetMetaDataItem(key,lkItem.label,lkItem.image,lkItem.categorie,lkItem.props)
-                    if order[key] then
-                        order[key] = order[key].amount + lamount
-                    else
-                        table.insert(order,{name=key,amount=lamount, price = lamount*item.price,metadata = mtdt})
+                    local mtdt = GetMetaDataItem(key, lkItem.label, lkItem.image, lkItem.categorie, lkItem.props)
+                    
+                    local flg = false
+                    for _, entry in ipairs(order) do
+                        if entry.name == key then
+                            entry.amount = entry.amount + lamount
+                            entry.price = entry.price + lamount * item.price
+                            flg = true
+                            break
+                        end
                     end
-                    TriggerEvent('ox_lib:notify', {type = 'error', description = 'requestOrder'})
+                    
+                    -- Ajouter un nouvel item s'il n'existe pas déjà
+                    if not flg then
+                        table.insert(order, {name = key, amount = lamount, price = lamount * item.price, metadata = mtdt})
+                    end
+                    
+                    TriggerEvent('ox_lib:notify', {type = 'error', description = 'requestOrder ' .. lkItem.label .. " (" .. lamount .. ")"})
                 end
             end
-            print("Pouette")
         end
-        count = count+1
     end
+    
 
 
     orderCompleted = false
@@ -1375,14 +1388,23 @@ end)
 
 -- Vérification si le joueur possède tous les items requis
 function hasAllItems()
+    local playerData = QBCore.Functions.GetPlayerData()    
+    local job = playerData.job.name    
+    local items = {}
+    local flg = true
     for _, item in ipairs(currentOrder) do
         local count = exports.ox_inventory:Search("count", "gmr_dish", item.metadata)
-
-        if count>=item.amount then
-            return false
+        table.insert(items,{name=item.metadata.label,amount= count.."/"..item.amount})
+        if count<item.amount then
+            flg= false
         end
     end
-    return true
+
+    if (not flg)then
+        displayOrder(items,job)
+    end
+
+    return flg
 end
 
 RegisterNetEvent('gm-restaurant:client:delivery:validateOrder')
@@ -1392,8 +1414,16 @@ AddEventHandler('gm-restaurant:client:delivery:validateOrder', function()
         return
     end
 
+    if currentDelivery then
+        if not currentDelivery.finish then
+            TriggerEvent('ox_lib:notify', {type = 'info', description = 'Vous avez une livraison en attente, allez hop !'})
+            return        
+        end
+    end
+
     if hasAllItems() then        
         TriggerServerEvent('gm-restaurant:server:delivery:valideDelivery',currentOrder ) 
+        PrintTable(Config)
         print(#Config.Locations)
         PrintTable(Config.Locations)
         local randomIndex = math.random(#Config.Locations)
@@ -1402,6 +1432,7 @@ AddEventHandler('gm-restaurant:client:delivery:validateOrder', function()
 
         currentDelivery = {
             coords = vector3(randomDelivery[1], randomDelivery[2], randomDelivery[3]),
+            finish = false,
         }
         PrintTable(randomDelivery)
         currentDelivery.coords = randomDelivery
@@ -1419,6 +1450,7 @@ AddEventHandler('gm-restaurant:client:delivery:validateOrder', function()
         currentDelivery.blip = blip
     else
         TriggerEvent('ox_lib:notify', {type = 'error', description = 'Il vous manque des items pour compléter la commande.'})
+ 
     end
 end)
 
@@ -1453,7 +1485,7 @@ end)
 -- Fonction pour vérifier si le joueur est proche de coordonnées données (utile pour la livraison)
 function IsPlayerNearCoords(coords)
     local playerCoords = GetEntityCoords(PlayerPedId())
-    return #(playerCoords - coords) < 5.0 -- Proximité de 5 unités
+    return #(playerCoords - vector3(coords)) < 5.0 -- Proximité de 5 unités
 end
 
 -- Fonction pour afficher du texte 3D à l'écran

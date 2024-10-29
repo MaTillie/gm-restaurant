@@ -1,14 +1,14 @@
-function getConfig_leapfrog()
-   local Config = {}
-    Config.DebugMode = true
+function getConfig_jopizza()
+    Config = {}
+    Config.DebugMode = false
     
     
-    Config.Job = "leapfrog"
+    Config.Job = "jopizza"
     Config.Ticket = true
-    Config.TrayLabel = "Leap Frog"
+    Config.TrayLabel = "Jo'Pizza"
     
     -- Titre de la facture
-    Config.invoiceWording = "Facture du Leap frog"
+    Config.invoiceWording = "Facture du Jo'Pizza"
     
     Config.Categorie ={
         [1]={
@@ -48,7 +48,16 @@ function getConfig_leapfrog()
     */
 
     Config.Menu = {
-
+    ["gmr_dsh_new_recipe_1729340090886"] = { price = 20.00, categorie = "side" },
+    ["gmr_dsh_new_recipe_1729797744307"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729342845872"] = { price = 40.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729344023687"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729340525596"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729714171548"] = { price = 15.00, categorie = "soft" },
+    ["gmr_dsh_new_recipe_1729797834422"] = { price = 40.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729344279367"] = { price = 15.00, categorie = "soft" },
+    ["gmr_dsh_new_recipe_1729797619052"] = { price = 30.00, categorie = "plat" },
+    ["gmr_dsh_new_recipe_1729343066904"] = { price = 30.00, categorie = "plat" },
 }
 
 
@@ -56,26 +65,23 @@ function getConfig_leapfrog()
 
     
     
-    
-    
-    
-    
     Config.Kitchen = {
         [1] ={
-            coords = vec3(-583.7, -289.17, 35.45),
-            size = 0.5,
+            -- Cuisson vec3(-587.63, -278.46, 41.69)
+            coords = vec3(546.35, 105.9, 96.55),
+            size = 1,
             title = "Préparer",
             duration = 5000,
             items = {
             }
-        },
+        }, 
     }
     
     --# Fridge #--
     
     Config.Fridge = {
         [1] ={
-            coords = vec3(-586.2, -290.61, 35.47),
+            coords = vec3(544.4, 111.86, 96.55),
             size = 0.5,
             title = "Frigo",
             duration = 2000,
@@ -88,7 +94,7 @@ function getConfig_leapfrog()
     --## Caisse ##--
     Config.Carte ={
         [1] ={
-            coords = vec3(-581.55, -284.26, 35.47),
+            coords = vec3(541.99,106.43,96.55),
             size = 0.7,
             title = "Afficher la carte",
         },
@@ -96,7 +102,7 @@ function getConfig_leapfrog()
     
     Config.RecipeBook ={
         [1] ={
-            coords = vec3(-586.19, -276.94, 41.69),
+            coords = vec3(544.4, 111.86, 96.55),
             size = 0.7,
             title = "Afficher les recettes",
         },
@@ -104,15 +110,10 @@ function getConfig_leapfrog()
     
     Config.Management={
         [1] ={
-            coords = vec3(-584.37, -278.72, 35.45),
+            coords = vec3(550.26, 109.18, 96.55),
             size = 0.7,
             title = "Gestion du restaurant",
         },    
-    }
-
-    Config.Delivery ={
-        NPCCoords = vec3(-594.76, -285.07, 35.45),
-        NPCHeading = 227.13,
     }
     
         
