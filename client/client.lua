@@ -136,83 +136,6 @@ function initFidge(cfg,key)
     end 
 end
 
-function RecipeBook(cfg,key)
-    
-
-    for index, caisse in pairs(cfg.RecipeBook) do
-        local options = {}
-        for item, menu in pairs(cfg.Menu) do
-            table.insert(options,{
-                name = "carte",  -- Nom de l'option, unique pour chaque interaction
-                label = caisse.title,  -- Texte affiché à l'utilisateur
-                icon = 'fas fa-coffee',  -- Icône affichée à côté de l'option (utilise FontAwesome)
-                onSelect = function()                    
-                    getRecipeItem(item,cfg)
-                end,
-            });
-        end        
-        
-
-        local idCaisse = exports.ox_target:addSphereZone({ 
-            coords = caisse.coords,
-            radius = caisse.size,
-            debug = cfg.DebugMode,
-            options = options   })    
-
-        table.insert(idCaisses,{id=idCaisse,index = index, key=key})  
-    end
-
-end
-
-function getRecipeItem(item,cfg)
-    local result = {}
-    local lkItem = cfg.Menu[item]
-    if (not lkItem) then
-        local lrec = getRecipe(cfg.Job)
-        lkItem = lrec.List[item]
-    end
-
-    if (not lkItem) then
-        local lrec = getRecipe(cfg.Job)
-        lkItem = lrec.Compo[item]
-    end
-
-    if (not lkItem) then
-        lkItem = IngList.Compo[item]
-    end
-
-    if (lkItem) then
-        print("lkItem "..lkItem.label)
-        for ingredient, details in pairs(lkItem.ingredients) do    
-            if(details.base)then                
-                table.insert(ingredient,{label=IngList.Base[ingredient].label,amount=details.amount})  
-            end
-
-            if(not details.base)then   
-                local lkIgd = lrec.Compo[item]
-                if (not lkItem) then
-                    lkItem = IngList.Compo[item]
-                end
-
-                if (lkItem) then
-                    table.insert(ingredient,{label=lkItem.label.."(*)",amount=details.amount})  
-                end
-
-            end
-
-            
-        end
-
-        for key, element in pairs(result) do
-            TriggerClientEvent('ox_lib:notify', src, {type = 'info', description = element.amount.."x "..element.label,duration=5000,position='center-right'})
-        end
-        TriggerClientEvent('ox_lib:notify', src, {type = 'info', description = "Recette: "..lkItem.label ,duration=5000,position='center-right'})
-    end
-    
-   
-    return result
-end
-
 local function init()
     idCaisses ={}
     for index, restaurant in ipairs(Config.Restaurants) do
@@ -894,13 +817,7 @@ function manageRecipe(cfg)
         if(Menu[cfg.Job][key])then
             Data.recipe[key].lock = true
         end
-     end
-
-    for key, value in pairs(IngList.Compo)  do
-        Data.ingredient[key] = {label = value.label,cat="Compo"}  
-        
-     end
-
+    end
     
     
     Data.categoryIngredient = genIngredientsCategory()

@@ -57,30 +57,6 @@ function VirtualFridgeName(source)
     return player.PlayerData.job.name.."virtualfridge" 
 end
 
-RegisterNetEvent('gm-restaurant:server:craftCompo')
-AddEventHandler('gm-restaurant:server:craftCompo', function(ingredients,item,quantity)	
-    local src = source
-
-    local requis = true
-    for ingredient, amount in pairs(ingredients) do
-        local igd = exports.ox_inventory:GetItem(src, ingredient, nil, true)
-
-        if igd and igd >= amount then
-            requis = requis
-        else
-            requis = false
-        end        
-    end
-
-    if requis then
-        for ingredient, amount in pairs(ingredients) do
-            exports.ox_inventory:RemoveItem(src, ingredient, amount)
-        end
-        exports.ox_inventory:AddItem(VirtualFridgeName(), item, quantity)
-    end
-end)
-
-
 QBCore.Functions.CreateUseableItem('gmr_ticket', function(source, item)
     TriggerEvent('gm-restaurant:server:useTicket', source, item.info or item.metadata,item.slot)
 end)
