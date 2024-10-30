@@ -664,17 +664,19 @@ AddEventHandler('gm-restaurant:server:delivery:valideDelivery', function(order)
 end)
 
 RegisterNetEvent('gm-restaurant:server:delivery:rewardPlayer')
-AddEventHandler('gm-restaurant:server:delivery:rewardPlayer', function(currentOrder)
-    local xPlayer = QBCore.Functions.GetPlayer(source)
-    local total = 0
-
+AddEventHandler('gm-restaurant:server:delivery:rewardPlayer', function(order)
+    print("rewardPlayer")
+    local src = source
+    local xPlayer = QBCore.Functions.GetPlayer(src)
+    local total = 150
+    PrintTable(order)
     for _, item in ipairs(order) do
-        total = total+price
+        total = total+item.price
     end
 
     xPlayer.Functions.AddMoney('cash', total)
     local amountJob = (total- (total%2))/4 -- le quart
-    exports['okokBanking']:AddMoney(xPlayer.job.name, amountJob)
+    exports['okokBanking']:AddMoney(xPlayer.PlayerData.job.name, amountJob)
 
 end)
 

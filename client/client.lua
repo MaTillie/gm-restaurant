@@ -1289,7 +1289,7 @@ Citizen.CreateThread(function()
                 icon = 'fa-solid fa-box-check',
                 label = 'Valider la commande',
                 canInteract = function(entity, distance, coords)
-                    return currentOrder -- Si le joueur a tous les items nécessaires
+                    return currentOrder and not orderCompleted-- Si le joueur a tous les items nécessaires
                 end
             },
             {
@@ -1362,7 +1362,7 @@ AddEventHandler('gm-restaurant:client:delivery:requestOrder', function()
                     for _, entry in ipairs(order) do
                         if entry.name == key then
                             entry.amount = entry.amount + lamount
-                            entry.price = entry.price + lamount * item.price
+                            entry.price = entry.price + lamount * 50
                             flg = true
                             break
                         end
@@ -1370,7 +1370,7 @@ AddEventHandler('gm-restaurant:client:delivery:requestOrder', function()
                     
                     -- Ajouter un nouvel item s'il n'existe pas déjà
                     if not flg then
-                        table.insert(order, {name = key, amount = lamount, price = lamount * item.price, metadata = mtdt})
+                        table.insert(order, {name = key, amount = lamount, price = lamount * 50, metadata = mtdt})
                     end
                     
                     TriggerEvent('ox_lib:notify', {type = 'error', description = 'requestOrder ' .. lkItem.label .. " (" .. lamount .. ")"})
@@ -1415,7 +1415,7 @@ AddEventHandler('gm-restaurant:client:delivery:validateOrder', function()
     end
 
     if currentDelivery then
-        if not currentDelivery.finish then
+        if not orderCompleted then
             TriggerEvent('ox_lib:notify', {type = 'info', description = 'Vous avez une livraison en attente, allez hop !'})
             return        
         end
@@ -1465,9 +1465,7 @@ Citizen.CreateThread(function()
             DrawText3D(currentDelivery.coords.x, currentDelivery.coords.y, currentDelivery.coords.z, "[E] Valider la livraison")
 
             if IsControlJustPressed(0, 38) then -- Touche E
-                -- serveur remove item
                 orderCompleted = true
-                TriggerServerEvent('gm-restaurant:server:delivery:rewardPlayer',currentOrder ) 
                 RemoveBlip(currentDelivery.blip)    
                 exports.qbx_core:Notify("Livraison effectuée, retournez voir Monique", "inform",10000,"",'center-right')
             end
@@ -1476,10 +1474,10 @@ Citizen.CreateThread(function()
 end)
 
 RegisterNetEvent('gm-restaurant:client:delivery:finishOrder')
-AddEventHandler('gm-restaurant:client:delivery:finishOrder', function()
-    
-    currentOrder = nil
+AddEventHandler('gm-restaurant:client:delivery:finishOrder', function()    
+    TriggerServerEvent('gm-restaurant:server:delivery:rewardPlayer',currentOrder ) 
     orderCompleted = false
+    currentOrder = nil
 end)
 
 -- Fonction pour vérifier si le joueur est proche de coordonnées données (utile pour la livraison)

@@ -190,7 +190,7 @@ Config.Management={
 
 Config.Delivery ={
     NPCCoords = vec3(-594.76, -285.07, 35.45),
-    NPCHeading = 227.13,
+    NPCHeading = 248.93,
 }
 
     
